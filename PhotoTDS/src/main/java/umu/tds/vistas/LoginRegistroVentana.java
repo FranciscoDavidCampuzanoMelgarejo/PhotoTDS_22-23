@@ -54,9 +54,6 @@ public class LoginRegistroVentana {
 	
 	private CardLayout c;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -71,16 +68,10 @@ public class LoginRegistroVentana {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public LoginRegistroVentana() {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		noPicture = true;	
 		
@@ -205,8 +196,17 @@ public class LoginRegistroVentana {
 		lblRegstrate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelCrearCuenta.add(lblRegstrate);
 		
+		
+		/* Registro de usuario */
+		
+		JScrollPane panelRegistroScroll = new JScrollPane();
+		panelRegistroScroll.setViewportBorder(null);
+		panelRegistroScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			frame.getContentPane().add(panelRegistroScroll, "panelRegistro");
 		JPanel panelRegistro = new JPanel();
-		frame.getContentPane().add(panelRegistro, "panelRegistro");
+			panelRegistroScroll.setViewportView(panelRegistro);
+			
+		//frame.getContentPane().add(panelRegistro, "panelRegistro");
 		GridBagLayout gbl_panelRegistro = new GridBagLayout();
 		gbl_panelRegistro.columnWidths = new int[]{0, 300, 0, 0};
 		gbl_panelRegistro.rowHeights = new int[]{150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 150, 0, 0, 0, 0};
@@ -446,6 +446,8 @@ public class LoginRegistroVentana {
 		gbc_botonRegistro.gridx = 1;
 		gbc_botonRegistro.gridy = 15;
 		panelRegistro.add(botonRegistro, gbc_botonRegistro);
+		
+		
 	}
 
 }
