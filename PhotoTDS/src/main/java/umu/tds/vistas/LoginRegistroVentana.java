@@ -16,6 +16,7 @@ import java.awt.Insets;
 import javax.swing.border.EtchedBorder;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
+import com.toedter.calendar.*;
 
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -34,6 +35,9 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.SwingConstants;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class LoginRegistroVentana {
 
@@ -46,6 +50,7 @@ public class LoginRegistroVentana {
 	private JTextField registroUserName;
 	private JTextField registroCorreo;
 	private JPasswordField passwordField;
+	private JDateChooser fecha;
 
 	/**
 	 * Launch the application.
@@ -78,7 +83,7 @@ public class LoginRegistroVentana {
 		noPicture = true;			
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 643, 688);
+		frame.setBounds(100, 100, 665, 768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
@@ -201,9 +206,9 @@ public class LoginRegistroVentana {
 		frame.getContentPane().add(panelRegistro, "panelRegistro");
 		GridBagLayout gbl_panelRegistro = new GridBagLayout();
 		gbl_panelRegistro.columnWidths = new int[]{0, 300, 0, 0};
-		gbl_panelRegistro.rowHeights = new int[]{150, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panelRegistro.rowHeights = new int[]{150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 150, 0};
 		gbl_panelRegistro.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_panelRegistro.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelRegistro.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelRegistro.setLayout(gbl_panelRegistro);
 		
 		final ImageIcon noPicture1 = new ImageIcon(LoginRegistroVentana.class.getResource("/resources/noPicture-user-1.png"));
@@ -225,7 +230,6 @@ public class LoginRegistroVentana {
 		
 		JPanel penalProfilePic = new JPanel();
 		GridBagConstraints gbc_penalProfilePic = new GridBagConstraints();
-		gbc_penalProfilePic.insets = new Insets(0, 0, 5, 0);
 		gbc_penalProfilePic.fill = GridBagConstraints.BOTH;
 		gbc_penalProfilePic.gridx = 0;
 		gbc_penalProfilePic.gridy = 0;
@@ -269,11 +273,20 @@ public class LoginRegistroVentana {
 			profilePicLabel.setIcon(noPicture1);
 		penalProfilePic.add(profilePicLabel, BorderLayout.CENTER);
 		
+		JLabel lblNewLabel_6 = new JLabel("Presentación (opcional)");
+		lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
+		gbc_lblNewLabel_6.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_6.gridx = 1;
+		gbc_lblNewLabel_6.gridy = 12;
+		panelRegistro.add(lblNewLabel_6, gbc_lblNewLabel_6);
+		
 		JLabel lblNewLabel_1 = new JLabel("Nombre y apellidos");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_1.gridx = 1;
 		gbc_lblNewLabel_1.gridy = 1;
 		panelRegistro.add(lblNewLabel_1, gbc_lblNewLabel_1);
@@ -293,7 +306,7 @@ public class LoginRegistroVentana {
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_2.gridx = 1;
 		gbc_lblNewLabel_2.gridy = 3;
 		panelRegistro.add(lblNewLabel_2, gbc_lblNewLabel_2);
@@ -312,7 +325,7 @@ public class LoginRegistroVentana {
 		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
 		gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_3.gridx = 1;
 		gbc_lblNewLabel_3.gridy = 5;
 		panelRegistro.add(lblNewLabel_3, gbc_lblNewLabel_3);
@@ -331,7 +344,7 @@ public class LoginRegistroVentana {
 		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
 		gbc_lblNewLabel_4.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_4.gridx = 1;
 		gbc_lblNewLabel_4.gridy = 7;
 		panelRegistro.add(lblNewLabel_4, gbc_lblNewLabel_4);
@@ -344,6 +357,52 @@ public class LoginRegistroVentana {
 		gbc_passwordField.gridx = 1;
 		gbc_passwordField.gridy = 8;
 		panelRegistro.add(passwordField, gbc_passwordField);
+		
+		JLabel lblNewLabel_5 = new JLabel("Fecha de nacimiento");
+		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
+		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel_5.gridx = 1;
+		gbc_lblNewLabel_5.gridy = 9;
+		panelRegistro.add(lblNewLabel_5, gbc_lblNewLabel_5);
+		
+		fecha = new JDateChooser();
+		fecha.setDateFormatString("d MMM YY");
+		fecha.setForeground(Color.WHITE);
+			fecha.setToolTipText("Introduce tu fecha de nacimiento");
+		GridBagConstraints gbc_fecha = new GridBagConstraints();
+		gbc_fecha.insets = new Insets(0, 0, 5, 0);
+		gbc_fecha.anchor = GridBagConstraints.WEST;
+		gbc_fecha.gridy = 10;
+		gbc_fecha.gridx = 1;
+		panelRegistro.add(fecha, gbc_fecha);
+		
+		JPanel panel = new JPanel();
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.insets = new Insets(15, 0, 15, 0);
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 1;
+		gbc_panel.gridy = 11;
+		panelRegistro.add(panel, gbc_panel);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		JSeparator separator = new JSeparator();
+		panel.add(separator, BorderLayout.NORTH);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 1;
+		gbc_scrollPane.gridy = 13;
+		panelRegistro.add(scrollPane, gbc_scrollPane);
+		
+		JTextArea presentacion = new JTextArea();
+		presentacion.setLineWrap(true);
+		presentacion.setFont(new Font("Tahoma", Font.ITALIC, 12));
+		scrollPane.setViewportView(presentacion);
+			
 		
 		
 		
