@@ -1,30 +1,23 @@
 package umu.tds.vistas;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.border.EtchedBorder;
-
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.toedter.calendar.*;
-
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Cursor;
@@ -33,7 +26,6 @@ import javax.swing.JSeparator;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
@@ -49,24 +41,31 @@ public class LoginRegistroVentana {
 	private JTextField registroNombreApellidos;
 	private JTextField registroUserName;
 	private JTextField registroCorreo;
-	private JPasswordField passwordField;
+	private JPasswordField registroPasswd;
 	private JDateChooser fecha;
-	
+	private JTextArea presentacion;
 	private CardLayout c;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(new FlatDarculaLaf());
-					LoginRegistroVentana window = new LoginRegistroVentana();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	/* Limpia los contenidos de login */
+	public void limpiaLogin() {
+		loginUser.setText("");
+		loginPasswd.setText("");
 	}
+	
+	/* Limpia los contenidos de registro */
+	public void limpiaRegistro() {
+		noPicture = true;
+		registroNombreApellidos.setText("");
+		registroUserName.setText("");
+		registroCorreo.setText("");
+		registroPasswd.setText("");
+		presentacion.setText("");
+		
+		fecha.setDate(null);
+	}
+	
+	public void mostrar() { frame.setVisible(true); }
+	public void ocultar() { frame.setVisible(false); }
 
 	public LoginRegistroVentana() {
 		initialize();
@@ -189,6 +188,7 @@ public class LoginRegistroVentana {
 		lblRegstrate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				limpiaLogin();
 				c.show(frame.getContentPane(), "panelRegistro");
 			}
 		});
@@ -197,7 +197,7 @@ public class LoginRegistroVentana {
 		panelCrearCuenta.add(lblRegstrate);
 		
 		
-		/* Registro de usuario */
+		/* Ventana registro de usuario */
 		
 		JScrollPane panelRegistroScroll = new JScrollPane();
 		panelRegistroScroll.setViewportBorder(null);
@@ -206,7 +206,6 @@ public class LoginRegistroVentana {
 		JPanel panelRegistro = new JPanel();
 			panelRegistroScroll.setViewportView(panelRegistro);
 			
-		//frame.getContentPane().add(panelRegistro, "panelRegistro");
 		GridBagLayout gbl_panelRegistro = new GridBagLayout();
 		gbl_panelRegistro.columnWidths = new int[]{0, 300, 0, 0};
 		gbl_panelRegistro.rowHeights = new int[]{150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 150, 0, 0, 0, 0};
@@ -281,6 +280,7 @@ public class LoginRegistroVentana {
 		lblNewLabel_7.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				limpiaRegistro();
 				c.show(frame.getContentPane(), "panelLogin");
 			}
 		});
@@ -369,14 +369,14 @@ public class LoginRegistroVentana {
 		gbc_lblNewLabel_4.gridy = 7;
 		panelRegistro.add(lblNewLabel_4, gbc_lblNewLabel_4);
 		
-		passwordField = new JPasswordField();
-		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_passwordField = new GridBagConstraints();
-		gbc_passwordField.insets = new Insets(0, 0, 15, 5);
-		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_passwordField.gridx = 1;
-		gbc_passwordField.gridy = 8;
-		panelRegistro.add(passwordField, gbc_passwordField);
+		registroPasswd = new JPasswordField();
+		registroPasswd.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_registroPasswd = new GridBagConstraints();
+		gbc_registroPasswd.insets = new Insets(0, 0, 15, 5);
+		gbc_registroPasswd.fill = GridBagConstraints.HORIZONTAL;
+		gbc_registroPasswd.gridx = 1;
+		gbc_registroPasswd.gridy = 8;
+		panelRegistro.add(registroPasswd, gbc_registroPasswd);
 		
 		JLabel lblNewLabel_5 = new JLabel("Fecha de nacimiento");
 		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -419,7 +419,7 @@ public class LoginRegistroVentana {
 		gbc_scrollPane.gridy = 13;
 		panelRegistro.add(scrollPane, gbc_scrollPane);
 		
-		JTextArea presentacion = new JTextArea();
+		presentacion = new JTextArea();
 		presentacion.setLineWrap(true);
 		presentacion.setFont(new Font("Tahoma", Font.ITALIC, 12));
 		scrollPane.setViewportView(presentacion);
@@ -436,7 +436,14 @@ public class LoginRegistroVentana {
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1);
 		
+		/* Crear cuenta */
 		JButton botonRegistro = new JButton("Crear cuenta");
+		botonRegistro.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//limpiaRegistro();
+			}
+		});
 		botonRegistro.setForeground(new Color(233, 233, 233));
 		botonRegistro.setBackground(new Color(0, 126, 187));
 		botonRegistro.setFont(new Font("Tahoma", Font.PLAIN, 13));
