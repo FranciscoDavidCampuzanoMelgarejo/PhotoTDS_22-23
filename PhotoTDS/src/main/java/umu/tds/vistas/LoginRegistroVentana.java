@@ -23,6 +23,8 @@ import javax.swing.JSeparator;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Date;
+
 import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
@@ -61,6 +63,17 @@ public class LoginRegistroVentana {
 		fecha.setDate(null);
 	}
 	
+	/* Getters */
+	public String getLogin() { return loginUser.getText(); }
+	public String getPasswd() { return new String(loginPasswd.getPassword()); }
+	public String getRegNombre() { return registroNombreApellidos.getText(); }
+	public String getRegLogin() { return registroUserName.getText(); }
+	public String getRegCorreo() { return registroCorreo.getText(); }
+	public String getRegPasswd() { return new String(registroPasswd.getPassword()); }
+	public Date getFecha() { return fecha.getDate(); }
+	public String getPresentacion() { return presentacion.getText(); }
+	
+	/* Mostrar u ocultar la ventana */
 	public void mostrar() { frame.setVisible(true); }
 	public void ocultar() { frame.setVisible(false); }
 
@@ -101,7 +114,7 @@ public class LoginRegistroVentana {
 		gbc_panelFormulario.gridy = 0;
 		panelCentro.add(panelFormulario, gbc_panelFormulario);
 		GridBagLayout gbl_panelFormulario = new GridBagLayout();
-		gbl_panelFormulario.columnWidths = new int[]{40, 200, 40, 0};
+		gbl_panelFormulario.columnWidths = new int[]{40, 300, 40, 0};
 		gbl_panelFormulario.rowHeights = new int[]{50, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelFormulario.columnWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelFormulario.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
@@ -121,18 +134,19 @@ public class LoginRegistroVentana {
 		JLabel lblNombre = new JLabel("Usuario o correo electrónico");
 		lblNombre.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblNombre = new GridBagConstraints();
+		gbc_lblNombre.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblNombre.ipady = 4;
 		gbc_lblNombre.anchor = GridBagConstraints.WEST;
-		gbc_lblNombre.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNombre.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNombre.gridx = 1;
 		gbc_lblNombre.gridy = 2;
 		panelFormulario.add(lblNombre, gbc_lblNombre);
 		
 		loginUser = new JTextField();
 		GridBagConstraints gbc_loginUser = new GridBagConstraints();
+		gbc_loginUser.fill = GridBagConstraints.HORIZONTAL;
 		gbc_loginUser.ipady = 2;
-		gbc_loginUser.anchor = GridBagConstraints.WEST;
-		gbc_loginUser.insets = new Insets(0, 0, 15, 5);
+		gbc_loginUser.insets = new Insets(0, 0, 15, 0);
 		gbc_loginUser.gridx = 1;
 		gbc_loginUser.gridy = 3;
 		panelFormulario.add(loginUser, gbc_loginUser);
@@ -141,9 +155,10 @@ public class LoginRegistroVentana {
 		JLabel lblContrasea = new JLabel("Contraseña");
 		lblContrasea.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblContrasea = new GridBagConstraints();
+		gbc_lblContrasea.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblContrasea.ipady = 4;
 		gbc_lblContrasea.anchor = GridBagConstraints.WEST;
-		gbc_lblContrasea.insets = new Insets(0, 0, 5, 5);
+		gbc_lblContrasea.insets = new Insets(0, 0, 5, 0);
 		gbc_lblContrasea.gridx = 1;
 		gbc_lblContrasea.gridy = 4;
 		panelFormulario.add(lblContrasea, gbc_lblContrasea);
@@ -151,9 +166,9 @@ public class LoginRegistroVentana {
 		loginPasswd = new JPasswordField();
 		loginPasswd.setColumns(30);
 		GridBagConstraints gbc_loginPasswd = new GridBagConstraints();
+		gbc_loginPasswd.fill = GridBagConstraints.HORIZONTAL;
 		gbc_loginPasswd.ipady = 2;
-		gbc_loginPasswd.anchor = GridBagConstraints.WEST;
-		gbc_loginPasswd.insets = new Insets(0, 0, 25, 5);
+		gbc_loginPasswd.insets = new Insets(0, 0, 25, 0);
 		gbc_loginPasswd.gridx = 1;
 		gbc_loginPasswd.gridy = 5;
 		panelFormulario.add(loginPasswd, gbc_loginPasswd);
@@ -165,7 +180,7 @@ public class LoginRegistroVentana {
 		GridBagConstraints gbc_btnIniciarSesin = new GridBagConstraints();
 		gbc_btnIniciarSesin.ipady = 5;
 		gbc_btnIniciarSesin.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnIniciarSesin.insets = new Insets(0, 0, 5, 5);
+		gbc_btnIniciarSesin.insets = new Insets(0, 0, 5, 0);
 		gbc_btnIniciarSesin.gridx = 1;
 		gbc_btnIniciarSesin.gridy = 6;
 		panelFormulario.add(btnIniciarSesin, gbc_btnIniciarSesin);
