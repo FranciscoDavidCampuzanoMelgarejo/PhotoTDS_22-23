@@ -1,6 +1,5 @@
 package umu.tds.vistas;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
@@ -10,11 +9,9 @@ import javax.swing.JOptionPane;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.toedter.calendar.*;
 import java.awt.Font;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -69,13 +66,15 @@ public class LoginRegistroVentana {
 
 	public LoginRegistroVentana() {
 		initialize();
+		limpiaLogin();
+		limpiaRegistro();
 	}
 
 	private void initialize() {
 		noPicture = true;	
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 714, 692);
+		frame.setBounds(100, 100, 440, 740);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
@@ -104,7 +103,7 @@ public class LoginRegistroVentana {
 		GridBagLayout gbl_panelFormulario = new GridBagLayout();
 		gbl_panelFormulario.columnWidths = new int[]{40, 200, 40, 0};
 		gbl_panelFormulario.rowHeights = new int[]{50, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panelFormulario.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_panelFormulario.columnWeights = new double[]{1.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelFormulario.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		panelFormulario.setLayout(gbl_panelFormulario);
 		
@@ -306,7 +305,7 @@ public class LoginRegistroVentana {
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 0);
 		gbc_lblNewLabel_1.gridx = 1;
 		gbc_lblNewLabel_1.gridy = 1;
 		panelRegistro.add(lblNewLabel_1, gbc_lblNewLabel_1);
@@ -314,7 +313,7 @@ public class LoginRegistroVentana {
 		registroNombreApellidos = new JTextField();
 		registroNombreApellidos.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_registroNombreApellidos = new GridBagConstraints();
-		gbc_registroNombreApellidos.insets = new Insets(0, 0, 15, 5);
+		gbc_registroNombreApellidos.insets = new Insets(0, 0, 15, 0);
 		gbc_registroNombreApellidos.fill = GridBagConstraints.HORIZONTAL;
 		gbc_registroNombreApellidos.gridx = 1;
 		gbc_registroNombreApellidos.gridy = 2;
@@ -334,7 +333,7 @@ public class LoginRegistroVentana {
 		registroUserName = new JTextField();
 		registroUserName.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_registroUserName = new GridBagConstraints();
-		gbc_registroUserName.insets = new Insets(0, 0, 15, 5);
+		gbc_registroUserName.insets = new Insets(0, 0, 15, 0);
 		gbc_registroUserName.fill = GridBagConstraints.HORIZONTAL;
 		gbc_registroUserName.gridx = 1;
 		gbc_registroUserName.gridy = 4;
@@ -353,7 +352,7 @@ public class LoginRegistroVentana {
 		registroCorreo = new JTextField();
 		registroCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_registroCorreo = new GridBagConstraints();
-		gbc_registroCorreo.insets = new Insets(0, 0, 15, 5);
+		gbc_registroCorreo.insets = new Insets(0, 0, 15, 0);
 		gbc_registroCorreo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_registroCorreo.gridx = 1;
 		gbc_registroCorreo.gridy = 6;
@@ -372,7 +371,7 @@ public class LoginRegistroVentana {
 		registroPasswd = new JPasswordField();
 		registroPasswd.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_registroPasswd = new GridBagConstraints();
-		gbc_registroPasswd.insets = new Insets(0, 0, 15, 5);
+		gbc_registroPasswd.insets = new Insets(0, 0, 15, 0);
 		gbc_registroPasswd.fill = GridBagConstraints.HORIZONTAL;
 		gbc_registroPasswd.gridx = 1;
 		gbc_registroPasswd.gridy = 8;
@@ -413,7 +412,7 @@ public class LoginRegistroVentana {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 1;
 		gbc_scrollPane.gridy = 13;
