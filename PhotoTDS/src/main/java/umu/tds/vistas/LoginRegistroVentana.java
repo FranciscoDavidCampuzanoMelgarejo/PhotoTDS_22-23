@@ -227,8 +227,8 @@ public class LoginRegistroVentana {
 		gbl_panelRegistro.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelRegistro.setLayout(gbl_panelRegistro);
 		
-		final ImageIcon noPicture1 = new ImageIcon(LoginRegistroVentana.class.getResource("/resources/noPicture-user-1.png"));
-		final ImageIcon noPicture2 = new ImageIcon(LoginRegistroVentana.class.getResource("/resources/noPicture-user-2.png"));
+		final ImageIcon noPicture1 = new ImageIcon(LoginRegistroVentana.class.getResource("/imagenes/noPicture-user-1.png"));
+		final ImageIcon noPicture2 = new ImageIcon(LoginRegistroVentana.class.getResource("/imagenes/noPicture-user-2.png"));
 		
 		JPanel panelInfoRegistro = new JPanel();
 		GridBagConstraints gbc_panelInfoRegistro = new GridBagConstraints();
