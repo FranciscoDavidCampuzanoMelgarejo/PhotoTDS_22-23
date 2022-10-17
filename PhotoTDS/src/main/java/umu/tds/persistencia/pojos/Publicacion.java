@@ -2,14 +2,23 @@ package umu.tds.persistencia.pojos;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -39,14 +48,21 @@ public abstract class Publicacion implements Serializable {
 	@Column(name = "fecha_publicacion", columnDefinition = "TIMESTAMP")
 	private LocalDateTime fecha;
 
-	/*
-	 * @Column(name = "hashtags") private List<String> hashtags;
-	 */
+	@ElementCollection
+	@CollectionTable(name = "HASHTAGS", joinColumns = @JoinColumn(name = "publicacion_id"))
+	@Column(name = "texto")
+	private List<String> hashtags = new LinkedList<String>();
 
-	/*
-	 * TODO -> Establecer la relacion ManyToOne con el Usuario Establecer la
-	 * relacion OneToMany con la clase Comentario
-	 */
+	@ManyToOne(fetch = FetchType.EAGER) // Al recuperar una publicacion, tambien recuperamos al usuario
+	@JoinColumn(name = "usuario")
+	private Usuario usuario;
+
+	// Al eliminar una publicacion se eliminan los comentarios
+	// Al recuperar una publicacion, los comentarios no se recuperados hasta que se
+	// recuperen explicitamente (llamando a un get)
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+	@JoinColumn(name = "publicacion_id")
+	private List<Comentario> comentarios = new LinkedList<Comentario>();
 
 	public Publicacion() {
 
@@ -99,10 +115,35 @@ public abstract class Publicacion implements Serializable {
 		this.fecha = fecha;
 	}
 
+	public List<String> getHashtags() {
+		return hashtags;
+	}
+
+	public void setHashtags(List<String> hashtags) {
+		this.hashtags = hashtags;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public List<Comentario> getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(List<Comentario> comentarios) {
+		this.comentarios = comentarios;
+	}
+
 	@Override
 	public String toString() {
 		return "Publicacion [id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", likes=" + likes
-				+ ", fecha=" + fecha + "]";
+				+ ", fecha=" + fecha + ", hashtags=" + hashtags + ", usuario=" + usuario.getUsuario() + ", comentarios="
+				+ comentarios + "]";
 	}
 
 }

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -25,17 +27,22 @@ public class Comentario implements Serializable {
 
 	@Column(name = "texto")
 	private String texto;
-	
+
 	/*
 	 * TODO -> Establecer la relacion ManyToOne con Usuario
 	 */
+
+	@ManyToOne
+	@JoinColumn(name = "usuario")
+	private Usuario usuario;
 
 	public Comentario() {
 
 	}
 
-	public Comentario(String texto) {
+	public Comentario(String texto, Usuario usuario) {
 		this.texto = texto;
+		this.usuario = usuario;
 	}
 
 	public String getTexto() {
@@ -46,9 +53,17 @@ public class Comentario implements Serializable {
 		this.texto = texto;
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
 	@Override
 	public String toString() {
-		return "Comentario [id=" + id + ", texto=" + texto + "]";
+		return "Comentario [id=" + id + ", texto=" + texto + ", usuario=" + usuario.getUsuario() + "]";
 	}
 
 }

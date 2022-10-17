@@ -2,14 +2,18 @@ package umu.tds.persistencia.pojos;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -49,18 +53,23 @@ public class Usuario implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "perfil")
 	private PerfilUsuario perfil;
-	
+
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	private List<Publicacion> publicaciones = new LinkedList<Publicacion>();
+
 	/*
-	 * TODO -> Establecer la relacion relfexiva (ManyToMany). Es decir, la lista de seguidores y la lista de personas a las que sigue un usuario
-	 * 		   Establcer la relacion OneToMany con publicacion
+	 * TODO -> Establecer la relacion relfexiva (ManyToMany). Es decir, la lista de
+	 * seguidores y la lista de personas a las que sigue un usuario
+	 * 
 	 */
 
 	// Constructor por defecto obligatorio para que la clase sea Serializable
 	public Usuario() {
 
 	}
-	
-	public Usuario(String nombre, String email, String usuario, String password, LocalDate fechaNacimiento, PerfilUsuario perfil) {
+
+	public Usuario(String nombre, String email, String usuario, String password, LocalDate fechaNacimiento,
+			PerfilUsuario perfil) {
 		this.nombre = nombre;
 		this.email = email;
 		this.usuario = usuario;
@@ -134,11 +143,19 @@ public class Usuario implements Serializable {
 		this.perfil = perfil;
 	}
 
+	public List<Publicacion> getPublicaciones() {
+		return publicaciones;
+	}
+
+	public void setPublicaciones(List<Publicacion> publicaciones) {
+		this.publicaciones = publicaciones;
+	}
+
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nombre=" + nombre + ", email=" + email + ", usuario=" + usuario + ", password="
 				+ password + ", fechaNacimiento=" + fechaNacimiento + ", premium=" + premium + ", perfil=" + perfil
-				+ "]";
+				+ ", publicaciones=" + publicaciones + "]";
 	}
 
 }
