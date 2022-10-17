@@ -49,10 +49,25 @@ public class Usuario implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "perfil")
 	private PerfilUsuario perfil;
+	
+	/*
+	 * TODO -> Establecer la relacion relfexiva (ManyToMany). Es decir, la lista de seguidores y la lista de personas a las que sigue un usuario
+	 * 		   Establcer la relacion OneToMany con publicacion
+	 */
 
 	// Constructor por defecto obligatorio para que la clase sea Serializable
 	public Usuario() {
 
+	}
+	
+	public Usuario(String nombre, String email, String usuario, String password, LocalDate fechaNacimiento, PerfilUsuario perfil) {
+		this.nombre = nombre;
+		this.email = email;
+		this.usuario = usuario;
+		this.password = password;
+		this.fechaNacimiento = fechaNacimiento;
+		this.perfil = perfil;
+		this.premium = false;
 	}
 
 	public Integer getId() {

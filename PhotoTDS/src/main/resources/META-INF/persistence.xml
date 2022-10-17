@@ -8,6 +8,10 @@
 		transaction-type="RESOURCE_LOCAL">
 		<class>umu.tds.persistencia.pojos.PerfilUsuario</class>
 		<class>umu.tds.persistencia.pojos.Usuario</class>
+		<class>umu.tds.persistencia.pojos.Publicacion</class>
+		<class>umu.tds.persistencia.pojos.Foto</class>
+		<class>umu.tds.persistencia.pojos.Album</class>
+		<class>umu.tds.persistencia.pojos.Comentario</class>
 
 		<properties>
 			<property name="javax.persistence.jdbc.driver"
