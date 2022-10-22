@@ -1,4 +1,4 @@
-package umu.tds.persistencia.pojos;
+package umu.tds.modelo.pojos;
 
 import java.time.LocalDateTime;
 

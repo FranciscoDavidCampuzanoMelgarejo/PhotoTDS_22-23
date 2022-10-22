@@ -10,6 +10,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import umu.tds.modelo.pojos.Album;
+import umu.tds.modelo.pojos.Foto;
+import umu.tds.modelo.pojos.PerfilUsuario;
+import umu.tds.modelo.pojos.Publicacion;
+import umu.tds.modelo.pojos.Usuario;
+
 public class PruebaPersistencia {
 
 	private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("PhotoTDS");
