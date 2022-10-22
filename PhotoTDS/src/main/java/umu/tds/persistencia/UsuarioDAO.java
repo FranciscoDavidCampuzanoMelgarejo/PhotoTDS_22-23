@@ -88,7 +88,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 	public List<Usuario> findAll() {
 		EntityManager em = emf.createEntityManager();
 		List<Usuario> usuarios = null;
-		String query = "SELECT u FROM USUARIO u";
+		String query = "Select u from Usuario u";
 		try {
 			TypedQuery<Usuario> q = em.createQuery(query, Usuario.class);
 			usuarios = q.getResultList();

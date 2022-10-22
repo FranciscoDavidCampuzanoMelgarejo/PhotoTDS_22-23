@@ -105,7 +105,7 @@ public class PublicacionDAO implements IPublicacionDAO {
 	public List<Publicacion> findAll() {
 		EntityManager em = emf.createEntityManager();
 		List<Publicacion> publicaciones = null;
-		String query = "SELECT p FROM PUBLICACION p";
+		String query = "Select p from Publicacion p";
 		try {
 			TypedQuery<Publicacion> q = em.createQuery(query, Publicacion.class);
 			publicaciones = q.getResultList();

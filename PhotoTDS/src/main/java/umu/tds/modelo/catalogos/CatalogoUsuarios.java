@@ -3,6 +3,7 @@ package umu.tds.modelo.catalogos;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import umu.tds.modelo.pojos.Usuario;
@@ -35,6 +36,8 @@ public class CatalogoUsuarios {
 		return catalogo;
 	}
 
+	// METODOS CRUD
+
 	// Añadir un usuario al catalogo
 	public void add(Usuario usuario) {
 		usuarios.put(usuario.getId(), usuario);
@@ -49,10 +52,18 @@ public class CatalogoUsuarios {
 	public void remove(Usuario usuario) {
 		usuarios.remove(usuario.getId());
 	}
-	
+
 	// Obtener todos los usuarios del catalogo
-	public List<Usuario> getAll(){
+	public List<Usuario> getAll() {
 		return usuarios.values().stream().collect(Collectors.toList());
+	}
+
+	// METODO ADICIONALES
+	public boolean existeUsuario(Predicate<Usuario> filtro) {
+		if (!usuarios.isEmpty()) {
+			return usuarios.values().stream().anyMatch(filtro);
+		}
+		return false;
 	}
 
 }

@@ -99,7 +99,7 @@ public class ComentarioDAO implements IComentarioDAO {
 	public List<Comentario> findAll() {
 		EntityManager em = emf.createEntityManager();
 		List<Comentario> comentarios = null;
-		String query = "SELECT c FROM COMENTARIO c";
+		String query = "Select c from Comentario c";
 		try {
 			em.getTransaction().begin();
 			TypedQuery<Comentario> q = em.createQuery(query, Comentario.class);

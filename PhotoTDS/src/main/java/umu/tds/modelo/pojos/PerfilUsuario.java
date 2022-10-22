@@ -26,12 +26,16 @@ public class PerfilUsuario implements Serializable {
 	@Column(name = "presentacion", nullable = true)
 	private String presentacion;
 
-	/*
-	 * @Column(name = "foto_perfil") private String foto;
-	 */
+	@Column(name = "foto", nullable = true)
+	private String foto;
 
 	public PerfilUsuario() {
 
+	}
+
+	public PerfilUsuario(String presentacion, String foto) {
+		this.presentacion = presentacion;
+		this.foto = foto;
 	}
 
 	public Integer getId() {
@@ -50,9 +54,17 @@ public class PerfilUsuario implements Serializable {
 		this.presentacion = presentacion;
 	}
 
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
 	@Override
 	public String toString() {
-		return "PerfilUsuario [id=" + id + ", presentacion=" + presentacion + "]";
+		return "PerfilUsuario [id=" + id + ", presentacion=" + presentacion + ", foto=" + foto + "]";
 	}
 
 }
