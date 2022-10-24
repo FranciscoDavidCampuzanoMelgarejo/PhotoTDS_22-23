@@ -20,13 +20,8 @@ public class Album extends Publicacion {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/*
-	 * TODO -> Establecer la relacion OneToMany con la clase Foto
-	 */
-
-	// Las fotos no se recuperan instantanemente al obtener un album. Al eliminar un
-	// album se eliminan las fotos (hay que ver lo que dice el PDF)
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	// Al eliminar un album se eliminan las fotos (hay que ver lo que dice el PDF)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "album_id")
 	private List<Foto> fotos = new LinkedList<Foto>();
 

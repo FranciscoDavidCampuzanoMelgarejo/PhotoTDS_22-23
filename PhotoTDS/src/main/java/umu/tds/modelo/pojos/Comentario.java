@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,11 +29,7 @@ public class Comentario implements Serializable {
 	@Column(name = "texto")
 	private String texto;
 
-	/*
-	 * TODO -> Establecer la relacion ManyToOne con Usuario
-	 */
-
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 

@@ -51,17 +51,24 @@ public class Controlador {
 
 			PerfilUsuario perfil = new PerfilUsuario(presentacion, foto);
 			Usuario usuario = new Usuario(nombre, email, nombreUsuario, password, fechaNacimiento, perfil);
-			catalogoUsuarios.add(usuario);
+
+			/*
+			 * IMPORTANTE: Guardar primero el usuario en la base de datos. De esta forma, se
+			 * genera el id de la entidad automaticamente y podemos guardarlo en el
+			 * catalogo.
+			 */
 			usuarioDAO.save(usuario);
+			catalogoUsuarios.add(usuario);
 			return true;
 		}
 		return false;
 	}
 
 	public boolean loginUsuario(String usuario, String password) {
-		return catalogoUsuarios
-				.existeUsuario((Usuario u) -> (u.getEmail().equals(usuario) || u.getUsuario().equals(usuario))
-						&& u.getPassword().equals(password));
+		return catalogoUsuarios.existeUsuario((Usuario u) -> {
+			System.out.println(u);
+			return ((u.getEmail().equals(usuario) || u.getUsuario().equals(usuario)) && u.getPassword().equals(password));
+		});
 	}
 
 }

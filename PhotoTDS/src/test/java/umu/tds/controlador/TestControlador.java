@@ -31,13 +31,15 @@ public class TestControlador {
 		assertTrue(controlador.registrarUsuario("Gema Mengual Alcolea", "gema@um.es", "G3m1t4", "1234", LocalDate.now(),
 				null, null));
 	}
-	
+
 	@Test
 	public void testLoginUsuarios() {
 		assertTrue(controlador.loginUsuario("pepe@um.es", "1234"));
 		assertTrue(controlador.loginUsuario("pepit0-99", "1234"));
 		assertFalse(controlador.loginUsuario("pepe@um.es", "password"));
 		assertFalse(controlador.loginUsuario("anonim0", "anonimus"));
+		assertTrue(controlador.loginUsuario("gema@um.es", "1234"));
+		assertFalse(controlador.loginUsuario("G3m1t4", "#GEMA#"));
 	}
 
 }

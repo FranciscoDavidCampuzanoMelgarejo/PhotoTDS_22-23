@@ -2,8 +2,10 @@ package umu.tds.modelo.pojos;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -54,14 +58,20 @@ public class Usuario implements Serializable {
 	@JoinColumn(name = "perfil")
 	private PerfilUsuario perfil;
 
-	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private List<Publicacion> publicaciones = new LinkedList<Publicacion>();
 
 	/*
-	 * TODO -> Establecer la relacion relfexiva (ManyToMany). Es decir, la lista de
-	 * seguidores y la lista de personas a las que sigue un usuario
-	 * 
+	 * Relacion reflexiva muchos a muchos bidireccional. NO SE SI ESTA BIEN
 	 */
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "SEGUIDORES_SEGUIDOS", joinColumns = {
+			@JoinColumn(referencedColumnName = "id_seguidor") }, inverseJoinColumns = {
+					@JoinColumn(referencedColumnName = "seguidos") })
+	private Set<Usuario> seguidores = new HashSet<Usuario>();
+
+	@ManyToMany(mappedBy = "seguidores", fetch = FetchType.EAGER)
+	private Set<Usuario> seguidos = new HashSet<Usuario>();
 
 	// Constructor por defecto obligatorio para que la clase sea Serializable
 	public Usuario() {

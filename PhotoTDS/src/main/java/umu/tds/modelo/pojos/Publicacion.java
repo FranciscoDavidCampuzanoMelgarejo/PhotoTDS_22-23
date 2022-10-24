@@ -58,9 +58,7 @@ public abstract class Publicacion implements Serializable {
 	private Usuario usuario;
 
 	// Al eliminar una publicacion se eliminan los comentarios
-	// Al recuperar una publicacion, los comentarios no se recuperados hasta que se
-	// recuperen explicitamente (llamando a un get)
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "publicacion_id")
 	private List<Comentario> comentarios = new LinkedList<Comentario>();
 
