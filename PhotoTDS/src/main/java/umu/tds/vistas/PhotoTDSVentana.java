@@ -1,5 +1,6 @@
 package umu.tds.vistas;
 
+import java.awt.CardLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -11,10 +12,13 @@ import com.formdev.flatlaf.FlatDarculaLaf;
  * - VENTANA PRINCIPAL DE PHOTOTDS -
  * */
 
-public class PhotoTDSVentana {
+public class PhotoTDSVentana extends JFrame {
+	
+	public final static String PANEL_LOGIN = "Panel de Loging";
+	public final static String PANEL_REGISTRO = "Panel de Registro";
 
-	private JFrame frame;
-	private LoginRegistroVentana loginRegistroVentana;
+	private CardLayout c;
+	private PanelLogin panelLogin;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -22,7 +26,7 @@ public class PhotoTDSVentana {
 				try {
 					UIManager.setLookAndFeel(new FlatDarculaLaf());
 					PhotoTDSVentana window = new PhotoTDSVentana();
-					//window.frame.setVisible(true);
+					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -31,15 +35,22 @@ public class PhotoTDSVentana {
 	}
 
 	public PhotoTDSVentana() {
+		super();
 		initialize();
-		loginRegistroVentana = new LoginRegistroVentana();
-		loginRegistroVentana.mostrar();
+		panelLogin = new PanelLogin(this);
+		getContentPane().add(panelLogin, PANEL_LOGIN);
+		cambiarPanel(PANEL_LOGIN);
 	}
 
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 640, 480);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 640, 480);
+		c = new CardLayout();
+		getContentPane().setLayout(c);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	public void cambiarPanel(String nombrePanel) {
+		c.show(getContentPane(), nombrePanel);
 	}
 
 }
