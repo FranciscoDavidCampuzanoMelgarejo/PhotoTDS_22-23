@@ -33,7 +33,7 @@ public class PhotoTDSVentana {
 	public PhotoTDSVentana() {
 		initialize();
 		loginRegistroVentana = new LoginRegistroVentana();
-		loginRegistroVentana.mostrar();
+			loginRegistroVentana.mostrar();
 	}
 
 	private void initialize() {

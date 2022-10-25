@@ -88,7 +88,7 @@ public class LoginRegistroVentana {
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 440, 740);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
 		c = (CardLayout)frame.getContentPane().getLayout();
