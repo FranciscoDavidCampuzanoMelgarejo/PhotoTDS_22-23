@@ -2,6 +2,7 @@ package umu.tds.vistas;
 
 import java.awt.EventQueue;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -11,10 +12,10 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import umu.tds.modelo.pojos.Usuario;
 
 import java.awt.GridBagLayout;
+import java.awt.Image;
+
 import javax.swing.JPanel;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Window;
 import java.awt.Color;
 import java.awt.CardLayout;
 import java.awt.BorderLayout;
@@ -22,6 +23,8 @@ import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingConstants;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 /* 
  * - VENTANA PRINCIPAL DE PHOTOTDS -
@@ -44,7 +47,7 @@ public class PhotoTDSVentana {
 	private ImageIcon dockPrincipal2;
 	private ImageIcon dockUsuario1;
 	private ImageIcon dockUsuario2;
-	private ImageIcon bordenImagen;
+	private Image bordeImagen;
 
 	public PhotoTDSVentana() {
 		loadResources();
@@ -66,7 +69,7 @@ public class PhotoTDSVentana {
 			}
 		});
 	}
-
+	
 	public void loadResources() {
 		try {
 			dockBusqueda1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
@@ -77,12 +80,11 @@ public class PhotoTDSVentana {
 			dockPrincipal2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
 			dockUsuario1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
 			dockUsuario2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
+			bordeImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/bordeImagen.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
 			
-			/* Su tamaño variará entre  260 y 800 */
-			bordenImagen = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+			terminatePhotoTDS();
 		}
 	}
 	
@@ -98,7 +100,6 @@ public class PhotoTDSVentana {
 		frame = new JFrame();
 		frame.setTitle("PhotoTDS");
 		frame.setBounds(100, 100, 840, 720);
-		//frame.setBounds(100, 100, 1920, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
@@ -130,7 +131,7 @@ public class PhotoTDSVentana {
 		bordeIzq.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel bordeIzqIconLabel = new JLabel("");
-		bordeIzqIconLabel.setIcon(bordenImagen);
+		bordeIzqIconLabel.setIcon(new ImageIcon(bordeImagen));
 		bordeIzqIconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		bordeIzq.add(bordeIzqIconLabel, BorderLayout.CENTER);
 		
@@ -210,7 +211,7 @@ public class PhotoTDSVentana {
 		bordeDrc.setLayout(new BorderLayout(0, 0));
 		
 		JLabel bordeDrcIconLabel = new JLabel("");
-		bordeDrcIconLabel.setIcon(bordenImagen);
+		bordeDrcIconLabel.setIcon(new ImageIcon(bordeImagen));
 		bordeDrcIconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		bordeDrc.add(bordeDrcIconLabel, BorderLayout.CENTER);
 		
@@ -264,7 +265,15 @@ public class PhotoTDSVentana {
 			}
 		});
 		
-		
+		frame.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				int anchoBorde = (frame.getWidth()-320)/2;
+				bordeImagen = bordeImagen.getScaledInstance(300, 80, Image.SCALE_SMOOTH);
+				//System.out.println("Ancho de borde: " + anchoBorde + ", ancho de imagen: " + bordeImagen.getWidth(frame));
+				
+			}
+		});
 	}
 
 }
