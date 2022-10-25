@@ -77,16 +77,19 @@ public class LoginRegistroVentana {
 	public void mostrar() { frame.setVisible(true); }
 	public void ocultar() { frame.setVisible(false); }
 
+	/* Constructor de ventana */
 	public LoginRegistroVentana() {
 		initialize();
 		limpiaLogin();
 		limpiaRegistro();
 	}
 
+	/* Hacemos la ventanica */
 	private void initialize() {
 		noPicture = true;	
 		
 		frame = new JFrame();
+		frame.setTitle("PhotoTDS: Inicio de sesión");
 		frame.setBounds(100, 100, 440, 740);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
@@ -203,6 +206,7 @@ public class LoginRegistroVentana {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				limpiaLogin();
+				frame.setTitle("PhotoTDS: Crear cuenta");
 				c.show(frame.getContentPane(), "panelRegistro");
 			}
 		});
@@ -295,6 +299,7 @@ public class LoginRegistroVentana {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				limpiaRegistro();
+				frame.setTitle("PhotoTDS: Inicio de sesión");
 				c.show(frame.getContentPane(), "panelLogin");
 			}
 		});
