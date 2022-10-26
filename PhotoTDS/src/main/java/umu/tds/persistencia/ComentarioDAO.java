@@ -14,7 +14,7 @@ public class ComentarioDAO implements IComentarioDAO {
 	private EntityManagerFactory emf;
 
 	private ComentarioDAO() {
-		this.emf = FactoriaEMF.getEntityManagerFactory();
+		this.emf = FactoriaEMF.getFactoriaEMF().getEntityManagerFactory();
 	}
 
 	public static ComentarioDAO getComentarioDAO() {

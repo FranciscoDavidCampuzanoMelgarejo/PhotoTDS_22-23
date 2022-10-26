@@ -2,8 +2,10 @@ package umu.tds.modelo.pojos;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -60,7 +62,7 @@ public abstract class Publicacion implements Serializable {
 	// Al eliminar una publicacion se eliminan los comentarios
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "publicacion_id")
-	private List<Comentario> comentarios = new LinkedList<Comentario>();
+	private Set<Comentario> comentarios = new HashSet<Comentario>();
 
 	public Publicacion() {
 
@@ -129,11 +131,11 @@ public abstract class Publicacion implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public List<Comentario> getComentarios() {
+	public Set<Comentario> getComentarios() {
 		return comentarios;
 	}
 
-	public void setComentarios(List<Comentario> comentarios) {
+	public void setComentarios(Set<Comentario> comentarios) {
 		this.comentarios = comentarios;
 	}
 

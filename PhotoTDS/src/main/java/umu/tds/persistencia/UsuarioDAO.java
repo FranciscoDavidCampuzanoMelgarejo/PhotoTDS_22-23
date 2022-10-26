@@ -14,7 +14,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 	private EntityManagerFactory emf;
 
 	private UsuarioDAO() {
-		this.emf = FactoriaEMF.getEntityManagerFactory();
+		this.emf = FactoriaEMF.getFactoriaEMF().getEntityManagerFactory();
 	}
 
 	public static UsuarioDAO getUsuarioDAO() {

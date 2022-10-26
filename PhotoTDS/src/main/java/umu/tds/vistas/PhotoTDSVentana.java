@@ -13,12 +13,14 @@ import com.formdev.flatlaf.FlatDarculaLaf;
  * */
 
 public class PhotoTDSVentana extends JFrame {
-	
+
 	public final static String PANEL_LOGIN = "Panel de Loging";
 	public final static String PANEL_REGISTRO = "Panel de Registro";
+	public final static String PANEL_APLICACION = "Panel Aplicacion";
 
 	private CardLayout c;
 	private PanelLogin panelLogin;
+	private PanelRegistro panelRegistro;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -38,7 +40,10 @@ public class PhotoTDSVentana extends JFrame {
 		super();
 		initialize();
 		panelLogin = new PanelLogin(this);
+		panelRegistro = new PanelRegistro(this);
+		
 		getContentPane().add(panelLogin, PANEL_LOGIN);
+		getContentPane().add(panelRegistro, PANEL_REGISTRO);
 		cambiarPanel(PANEL_LOGIN);
 	}
 
@@ -48,7 +53,7 @@ public class PhotoTDSVentana extends JFrame {
 		getContentPane().setLayout(c);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+
 	public void cambiarPanel(String nombrePanel) {
 		c.show(getContentPane(), nombrePanel);
 	}

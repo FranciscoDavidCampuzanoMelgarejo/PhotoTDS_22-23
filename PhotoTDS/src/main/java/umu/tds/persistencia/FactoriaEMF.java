@@ -5,13 +5,24 @@ import javax.persistence.Persistence;
 
 public class FactoriaEMF {
 
-	private static EntityManagerFactory emf;
+	private static FactoriaEMF factoria;
+	private EntityManagerFactory emf;
+	
+	private FactoriaEMF() {
+		this.emf = Persistence.createEntityManagerFactory("PhotoTDS");
+	}
 
-	public static EntityManagerFactory getEntityManagerFactory() {
-		if (emf == null) {
-			emf = Persistence.createEntityManagerFactory("PhotoTDS");
+	public static FactoriaEMF getFactoriaEMF() {
+		if (factoria == null) {
+			factoria = new FactoriaEMF();
 		}
+		return factoria;
+	}
+	
+	public EntityManagerFactory getEntityManagerFactory() {
 		return emf;
 	}
+	
+	
 
 }

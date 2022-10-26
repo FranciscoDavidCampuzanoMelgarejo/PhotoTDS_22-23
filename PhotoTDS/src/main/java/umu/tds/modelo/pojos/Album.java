@@ -1,8 +1,8 @@
 package umu.tds.modelo.pojos;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ public class Album extends Publicacion {
 	// Al eliminar un album se eliminan las fotos (hay que ver lo que dice el PDF)
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "album_id")
-	private List<Foto> fotos = new LinkedList<Foto>();
+	private Set<Foto> fotos = new HashSet<Foto>();
 
 	public Album() {
 		super();
@@ -33,11 +33,11 @@ public class Album extends Publicacion {
 		super(titulo, descripcion, likes, fecha);
 	}
 
-	public List<Foto> getFotos() {
+	public Set<Foto> getFotos() {
 		return fotos;
 	}
 
-	public void setFotos(List<Foto> fotos) {
+	public void setFotos(Set<Foto> fotos) {
 		this.fotos = fotos;
 	}
 

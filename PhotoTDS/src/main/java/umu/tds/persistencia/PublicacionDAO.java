@@ -14,7 +14,7 @@ public class PublicacionDAO implements IPublicacionDAO {
 	private EntityManagerFactory emf;
 
 	private PublicacionDAO() {
-		this.emf = FactoriaEMF.getEntityManagerFactory();
+		this.emf = FactoriaEMF.getFactoriaEMF().getEntityManagerFactory();
 	}
 
 	public static PublicacionDAO getPublicacionDAO() {

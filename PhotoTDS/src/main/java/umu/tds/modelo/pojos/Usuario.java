@@ -64,17 +64,15 @@ public class Usuario implements Serializable {
 	/*
 	 * Relacion reflexiva muchos a muchos bidireccional. NO SE SI ESTA BIEN
 	 */
-	
-	/*
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "SEGUIDORES_SEGUIDOS", joinColumns = {
-			@JoinColumn(referencedColumnName = "id_seguidor") }, inverseJoinColumns = {
-					@JoinColumn(referencedColumnName = "seguidos") })
+			@JoinColumn(name = "id_seguidor") }, inverseJoinColumns = {
+					@JoinColumn(name = "id_usuario_seguido") })
 	private Set<Usuario> seguidores = new HashSet<Usuario>();
 
 	@ManyToMany(mappedBy = "seguidores", fetch = FetchType.EAGER)
 	private Set<Usuario> seguidos = new HashSet<Usuario>();
-	*/
 
 	// Constructor por defecto obligatorio para que la clase sea Serializable
 	public Usuario() {
