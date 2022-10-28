@@ -31,15 +31,9 @@ import java.awt.event.ComponentEvent;
  * - VENTANA PRINCIPAL DE PHOTOTDS -
  * */
 
-public class PhotoTDSVentana extends JFrame {
-
-	public final static String PANEL_LOGIN = "Panel de Loging";
-	public final static String PANEL_REGISTRO = "Panel de Registro";
-	public final static String PANEL_APLICACION = "Panel Aplicacion";
+public class PhotoTDSVentana {
 
 	private CardLayout c;
-	private PanelLogin panelLogin;
-	private PanelRegistro panelRegistro;
 	private Usuario usuario;
 
 	private JFrame frame;
@@ -56,33 +50,12 @@ public class PhotoTDSVentana extends JFrame {
 	private Image bordeImagen;
 
 	public PhotoTDSVentana() {
-		super();
-		loadResources();
+		cargarRecursos();
 		initialize();
-		panelLogin = new PanelLogin(this);
-		panelRegistro = new PanelRegistro(this);
-
-		getContentPane().add(panelLogin, PANEL_LOGIN);
-		getContentPane().add(panelRegistro, PANEL_REGISTRO);
-		cambiarPanel(PANEL_LOGIN);
 	}
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(new FlatDarculaLaf());
-
-					PhotoTDSVentana phototdswin = new PhotoTDSVentana();
-					phototdswin.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	public void loadResources() {
+	/* Carga los recursos gráficos asociados a la ventana */
+	public void cargarRecursos() {
 		try {
 			dockBusqueda1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
 			dockBusqueda2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
@@ -92,8 +65,7 @@ public class PhotoTDSVentana extends JFrame {
 			dockPrincipal2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
 			dockUsuario1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
 			dockUsuario2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			bordeImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/bordeImagen.png"))
-					.getScaledInstance(260, 80, Image.SCALE_SMOOTH);
+			bordeImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/bordeImagen.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,22 +75,13 @@ public class PhotoTDSVentana extends JFrame {
 
 	/* Destruye la ventana y libera recursos */
 	public void terminatePhotoTDS() {
-		this.frame.dispose();
+		this.frame.dispose();		// Cuando movamos todo a un main, destruir la ventana no terminaría la aplicación
 		// ¿Añadir más cosas?
 	}
-
-	private void initialize() {
-		setBounds(100, 100, 640, 480);
-		c = new CardLayout();
-		getContentPane().setLayout(c);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
-	public void cambiarPanel(String nombrePanel) {
-		c.show(getContentPane(), nombrePanel);
-	}
 	
-	/*
+
+	/* Inicializa la ventana */
+	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("PhotoTDS");
 		frame.setBounds(100, 100, 840, 720);
@@ -286,17 +249,21 @@ public class PhotoTDSVentana extends JFrame {
 				c.show(photoTDSRenderPanel, "panelPubli");
 			}
 		});
-		
-		frame.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				int anchoBorde = (frame.getWidth()-320)/2;
-				bordeImagen = bordeImagen.getScaledInstance(300, 80, Image.SCALE_SMOOTH);
-				//System.out.println("Ancho de borde: " + anchoBorde + ", ancho de imagen: " + bordeImagen.getWidth(frame));
-				
+	}
+
+	/* Main de la ventana. Borrar cuando se añada a clase main principal de la aplicación */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UIManager.setLookAndFeel(new FlatDarculaLaf());
+					PhotoTDSVentana phototdswin = new PhotoTDSVentana();
+					phototdswin.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
-	*/
-
+	
 }

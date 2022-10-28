@@ -28,10 +28,10 @@ public class PanelLogin extends JPanel {
 	private JLabel lblErrorPassword;
 	private JPasswordField campoPassword;
 
-	private PhotoTDSVentana frame;
+	private LoginRegistroVentana ventanaPadre;
 
-	public PanelLogin(PhotoTDSVentana frame) {
-		this.frame = frame;
+	public PanelLogin(LoginRegistroVentana frame) {
+		this.ventanaPadre = frame;
 		this.crearPanel();
 	}
 
@@ -226,14 +226,14 @@ public class PanelLogin extends JPanel {
 		lblRegstrate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				frame.cambiarPanel(PhotoTDSVentana.PANEL_REGISTRO);
+				ventanaPadre.cambiarPanel("panelRegistro");
 			}
 		});
 		panelCrearCuenta.add(lblRegstrate);
 
 	}
 
-	private void limpiarPanel() {
+	public void limpiarPanel() {
 		lblErrorUsuario.setText("");
 		lblErrorUsuario.setVisible(false);
 		lblErrorPassword.setText("");

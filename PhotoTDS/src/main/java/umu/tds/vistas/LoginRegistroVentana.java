@@ -33,60 +33,28 @@ import javax.swing.ScrollPaneConstants;
 public class LoginRegistroVentana {
 
 	private JFrame frame;
-	private JTextField loginUser;
-	private JPasswordField loginPasswd;
-	private boolean noPicture;
-	private File profilePic; 
-	private JTextField registroNombreApellidos;
-	private JTextField registroUserName;
-	private JTextField registroCorreo;
-	private JPasswordField registroPasswd;
-	private JDateChooser fecha;
-	private JTextArea presentacion;
 	private CardLayout c;
+	private PanelLogin panelLogin;
+	private PanelRegistro panelRegistro;
 
-	/* Limpia los contenidos de login */
-	public void limpiaLogin() {
-		loginUser.setText("");
-		loginPasswd.setText("");
+	/* Constructor de ventana */
+	public LoginRegistroVentana() {
+		initialize();
+		panelLogin.limpiarPanel();
+		panelRegistro.limpiarPanel();
 	}
-	
-	/* Limpia los contenidos de registro */
-	public void limpiaRegistro() {
-		noPicture = true;
-		registroNombreApellidos.setText("");
-		registroUserName.setText("");
-		registroCorreo.setText("");
-		registroPasswd.setText("");
-		presentacion.setText("");
-		
-		fecha.setDate(null);
-	}
-	
-	/* Getters */
-	public String getLogin() { return loginUser.getText(); }
-	public String getPasswd() { return new String(loginPasswd.getPassword()); }
-	public String getRegNombre() { return registroNombreApellidos.getText(); }
-	public String getRegLogin() { return registroUserName.getText(); }
-	public String getRegCorreo() { return registroCorreo.getText(); }
-	public String getRegPasswd() { return new String(registroPasswd.getPassword()); }
-	public Date getFecha() { return fecha.getDate(); }
-	public String getPresentacion() { return presentacion.getText(); }
 	
 	/* Mostrar u ocultar la ventana */
 	public void mostrar() { frame.setVisible(true); }
 	public void ocultar() { frame.setVisible(false); }
 
-	/* Constructor de ventana */
-	public LoginRegistroVentana() {
-		initialize();
-		limpiaLogin();
-		limpiaRegistro();
+	/* Destruye la ventanica y libera recursos manualmente */
+	public void terminate() {
+		this.frame.dispose();
 	}
 
 	/* Hacemos la ventanica */
-	private void initialize() {
-		noPicture = true;	
+	private void initialize() {	
 		
 		frame = new JFrame();
 		frame.setTitle("PhotoTDS: Inicio de sesión");
@@ -95,7 +63,13 @@ public class LoginRegistroVentana {
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
 		c = (CardLayout)frame.getContentPane().getLayout();
+		panelLogin = new PanelLogin(this);
+		panelRegistro = new PanelRegistro(this);
 		
+		frame.getContentPane().add(panelLogin);
+		frame.getContentPane().add(panelRegistro);
+		
+		/*
 		JPanel panelLogin = new JPanel();
 		frame.getContentPane().add(panelLogin, "panelLogin");
 		panelLogin.setLayout(new BorderLayout(0, 0));
@@ -214,8 +188,6 @@ public class LoginRegistroVentana {
 		lblRegstrate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelCrearCuenta.add(lblRegstrate);
 		
-		
-		/* Ventana registro de usuario */
 		
 		JScrollPane panelRegistroScroll = new JScrollPane();
 		panelRegistroScroll.setViewportBorder(null);
@@ -455,7 +427,6 @@ public class LoginRegistroVentana {
 		JSeparator separator_1 = new JSeparator();
 		panel_1.add(separator_1);
 		
-		/* Crear cuenta */
 		JButton botonRegistro = new JButton("Crear cuenta");
 		botonRegistro.addMouseListener(new MouseAdapter() {
 			@Override
@@ -472,8 +443,20 @@ public class LoginRegistroVentana {
 		gbc_botonRegistro.gridx = 1;
 		gbc_botonRegistro.gridy = 15;
 		panelRegistro.add(botonRegistro, gbc_botonRegistro);
-		
-		
+		*/
+
 	}
 
+	/* Cambio de panel del cardlayout */
+	public void cambiarPanel(String panel) {
+		c.show(frame, panel);
+	}
+	
+	/* Mostrar popup de error de tamaño de fichero */
+	public void mostrarErrorTamaño() {
+		JOptionPane.showMessageDialog(frame, "Solo se admiten imágenes de hasta 100x100 píxeles",
+				"Error al cargar imagen de perfil", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/* Mostrar popup de error de  */
 }

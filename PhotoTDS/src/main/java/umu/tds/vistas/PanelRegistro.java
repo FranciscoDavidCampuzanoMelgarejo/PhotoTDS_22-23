@@ -39,10 +39,10 @@ public class PanelRegistro extends JScrollPane {
 	private JDateChooser fecha;
 	private JTextArea presentacion;
 
-	private PhotoTDSVentana frame;
+	private LoginRegistroVentana ventanaPadre;
 
-	public PanelRegistro(PhotoTDSVentana frame) {
-		this.frame = frame;
+	public PanelRegistro(LoginRegistroVentana frame) {
+		this.ventanaPadre = frame;
 		this.noPicture = true;
 		this.crearPanel();
 	}
@@ -114,8 +114,7 @@ public class PanelRegistro extends JScrollPane {
 					ImageIcon pp = new ImageIcon(profilePic.toString());
 					int h = pp.getIconHeight(), w = pp.getIconWidth();
 					if (h > 100 || w > 100) { // Si la imagen es demasiado grande, cancelamos la operación
-						JOptionPane.showMessageDialog(frame, "Solo se admiten imágenes de hasta 100x100 píxeles",
-								"Error al cargar imagen de perfil", JOptionPane.ERROR_MESSAGE);
+						ventanaPadre.mostrarErrorTamaño();
 						profilePicLabel.setIcon(noPicture1);
 						noPicture = true;
 					} else {
@@ -136,7 +135,7 @@ public class PanelRegistro extends JScrollPane {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				limpiarPanel();
-				frame.cambiarPanel(PhotoTDSVentana.PANEL_LOGIN);
+				ventanaPadre.cambiarPanel("panelLogin");
 			}
 		});
 		lblNewLabel_7.setForeground(new Color(0, 126, 255));
@@ -312,7 +311,7 @@ public class PanelRegistro extends JScrollPane {
 
 	}
 
-	private void limpiarPanel() {
+	public void limpiarPanel() {
 		noPicture = true;
 		registroNombreApellidos.setText("");
 		registroUserName.setText("");
