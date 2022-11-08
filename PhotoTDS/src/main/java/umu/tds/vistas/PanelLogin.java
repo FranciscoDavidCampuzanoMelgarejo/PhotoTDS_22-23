@@ -1,6 +1,7 @@
 package umu.tds.vistas;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
@@ -11,12 +12,15 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import umu.tds.controlador.Controlador;
 
@@ -27,11 +31,12 @@ public class PanelLogin extends JPanel {
 
 	private JLabel lblErrorPassword;
 	private JPasswordField campoPassword;
+	
+	private JFrame frmLoginRegistro;
 
-	private LoginRegistroVentana ventanaPadre;
 
-	public PanelLogin(LoginRegistroVentana frame) {
-		this.ventanaPadre = frame;
+	public PanelLogin(JFrame frame) {
+		this.frmLoginRegistro = frame;
 		this.crearPanel();
 	}
 
@@ -156,32 +161,28 @@ public class PanelLogin extends JPanel {
 		btnIniciarSesion.addActionListener((ActionEvent e) -> {
 			String usuario = campoUsuario.getText().trim();
 			String password = String.valueOf(campoPassword.getPassword()).trim();
-			System.out.println("Usuario: " + usuario);
-			System.out.println("Contraseña: " + password);
 			boolean noVacios = true;
 
-			if (usuario.isEmpty()) {
-				noVacios = false;
-				System.out.println("Campo del usuario vacio");
-				// Indicar al usuario que este campo no puede estar vacio
-				lblErrorUsuario.setText(" - Este campo es obligatorio ");
-				lblErrorUsuario.setVisible(true);
-
-			} else {
+			// Comprobar que el campo de login no este vacio
+			try {
+				Utils.campoVacio(campoUsuario);
 				lblErrorUsuario.setText("");
 				lblErrorUsuario.setVisible(false);
+			} catch (CampoVacioException ex) {
+				lblErrorUsuario.setText(" - Este campo es obligatorio");
+				lblErrorUsuario.setVisible(true);
+				noVacios = false;
 			}
 
-			if (password.isEmpty()) {
-				noVacios = false;
-				System.out.println("Campo de la contraseña vacio");
-				// Inciar al usuario que este campo no puede estar vacio
-				lblErrorPassword.setText(" - Este campo es oblligatorio ");
-				lblErrorPassword.setVisible(true);
-
-			} else {
+			// Comprobar que el campo de la contraseña no este vacio
+			try {
+				Utils.campoVacio(campoPassword);
 				lblErrorPassword.setText("");
 				lblErrorPassword.setVisible(false);
+			} catch (CampoVacioException ex) {
+				lblErrorPassword.setText(" - Este campo es obligatorio");
+				lblErrorPassword.setVisible(true);
+				noVacios = false;
 			}
 
 			if (noVacios) {
@@ -200,7 +201,10 @@ public class PanelLogin extends JPanel {
 					// de transicion
 					// para indicar al usuario que el inicio de sesion ha ido correctamente
 					
-					//this.frame.cambiarPanel(PhotoTDSVentana.PANEL_APLICACION);
+					// this.frame.cambiarPanel(PhotoTDSVentana.PANEL_APLICACION);
+					PhotoTDSVentana ventana = new PhotoTDSVentana();
+					ventana.mostrarVentana();
+					frmLoginRegistro.dispose();
 				}
 			}
 
@@ -223,17 +227,45 @@ public class PanelLogin extends JPanel {
 		JLabel lblRegstrate = new JLabel("Regístrate");
 		lblRegstrate.setForeground(new Color(0, 128, 255));
 		lblRegstrate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblRegstrate.addMouseListener(new MouseAdapter() {
+		lblRegstrate.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ventanaPadre.cambiarPanel("panelRegistro");
+				limpiarPanel();
+				CardLayout c = (CardLayout) frmLoginRegistro.getContentPane().getLayout();
+				c.show(frmLoginRegistro.getContentPane(), VentanaLoginRegistro.PANEL_REGISTRO);
+				
 			}
 		});
 		panelCrearCuenta.add(lblRegstrate);
 
 	}
 
-	public void limpiarPanel() {
+	private void limpiarPanel() {
 		lblErrorUsuario.setText("");
 		lblErrorUsuario.setVisible(false);
 		lblErrorPassword.setText("");

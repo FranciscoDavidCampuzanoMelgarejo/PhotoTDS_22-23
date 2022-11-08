@@ -72,6 +72,11 @@ public class PhotoTDSVentana {
 			terminatePhotoTDS();
 		}
 	}
+	
+	public void mostrarVentana() {
+		this.frame.setLocationRelativeTo(null);
+		this.frame.setVisible(true);
+	}
 
 	/* Destruye la ventana y libera recursos */
 	public void terminatePhotoTDS() {

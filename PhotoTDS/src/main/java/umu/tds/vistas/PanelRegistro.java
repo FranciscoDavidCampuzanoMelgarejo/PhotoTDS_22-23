@@ -1,6 +1,7 @@
 package umu.tds.vistas;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -14,6 +15,7 @@ import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,26 +26,33 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
 
 import com.toedter.calendar.JDateChooser;
+import java.awt.FlowLayout;
+import com.toedter.calendar.JCalendar;
 
 public class PanelRegistro extends JScrollPane {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean noPicture;
 	private File profilePic;
+	
+	private JFrame frmLoginRegistro;
+	private JTextField campoNombreApellidos;
+	private JTextField campoUsuario;
+	private JTextField campoCorreo;
+	private JPasswordField campoPassword;
 
-	private JTextField registroNombreApellidos;
-	private JTextField registroUserName;
-	private JTextField registroCorreo;
-	private JTextField registroPasswd;
-	private JDateChooser fecha;
-	private JTextArea presentacion;
 
-	private LoginRegistroVentana ventanaPadre;
-
-	public PanelRegistro(LoginRegistroVentana frame) {
-		this.ventanaPadre = frame;
+	public PanelRegistro(JFrame frame) {
 		this.noPicture = true;
+		this.frmLoginRegistro = frame;
 		this.crearPanel();
 	}
 
@@ -51,266 +60,356 @@ public class PanelRegistro extends JScrollPane {
 		setViewportBorder(null);
 		setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		JPanel panelRegistro = new JPanel();
-		setViewportView(panelRegistro);
-
-		GridBagLayout gbl_panelRegistro = new GridBagLayout();
-		gbl_panelRegistro.columnWidths = new int[] { 0, 300, 0, 0 };
-		gbl_panelRegistro.rowHeights = new int[] { 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 150, 0, 0, 0, 0 };
-		gbl_panelRegistro.columnWeights = new double[] { 1.0, 0.0, 1.0, Double.MIN_VALUE };
-		gbl_panelRegistro.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-				0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		panelRegistro.setLayout(gbl_panelRegistro);
-
 		final ImageIcon noPicture1 = new ImageIcon(
-				LoginRegistroVentana.class.getResource("/imagenes/noPicture-user-1.png"));
+				VentanaLoginRegistro.class.getResource("/imagenes/noPicture-user-1.png"));
 		final ImageIcon noPicture2 = new ImageIcon(
-				LoginRegistroVentana.class.getResource("/imagenes/noPicture-user-2.png"));
-
-		JPanel panelInfoRegistro = new JPanel();
-		GridBagConstraints gbc_panelInfoRegistro = new GridBagConstraints();
-		gbc_panelInfoRegistro.insets = new Insets(0, 0, 5, 5);
-		gbc_panelInfoRegistro.fill = GridBagConstraints.BOTH;
-		gbc_panelInfoRegistro.gridx = 1;
-		gbc_panelInfoRegistro.gridy = 0;
-		panelRegistro.add(panelInfoRegistro, gbc_panelInfoRegistro);
-		GridBagLayout gbl_panelInfoRegistro = new GridBagLayout();
-		gbl_panelInfoRegistro.columnWidths = new int[] { 0, 0 };
-		gbl_panelInfoRegistro.rowHeights = new int[] { 0, 0, 0 };
-		gbl_panelInfoRegistro.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gbl_panelInfoRegistro.rowWeights = new double[] { 1.0, 0.0, Double.MIN_VALUE };
-		panelInfoRegistro.setLayout(gbl_panelInfoRegistro);
-
-		JPanel penalProfilePic = new JPanel();
-		GridBagConstraints gbc_penalProfilePic = new GridBagConstraints();
-		gbc_penalProfilePic.fill = GridBagConstraints.BOTH;
-		gbc_penalProfilePic.gridx = 0;
-		gbc_penalProfilePic.gridy = 0;
-		panelInfoRegistro.add(penalProfilePic, gbc_penalProfilePic);
-		penalProfilePic.setLayout(new BorderLayout(0, 0));
-
-		final JLabel profilePicLabel = new JLabel("");
-		profilePicLabel.addMouseListener(new MouseAdapter() {
+				VentanaLoginRegistro.class.getResource("/imagenes/noPicture-user-2.png"));
+		
+		JPanel panelExterno = new JPanel();
+		setViewportView(panelExterno);
+		GridBagLayout gbl_panelExterno = new GridBagLayout();
+		gbl_panelExterno.columnWidths = new int[]{40, 410, 40, 0};
+		gbl_panelExterno.rowHeights = new int[]{40, 650, 40, 0};
+		gbl_panelExterno.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_panelExterno.rowWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		panelExterno.setLayout(gbl_panelExterno);
+		
+		JPanel panelRegistro = new JPanel();
+		GridBagConstraints gbc_panelRegistro = new GridBagConstraints();
+		gbc_panelRegistro.gridheight = 2;
+		gbc_panelRegistro.anchor = GridBagConstraints.NORTH;
+		gbc_panelRegistro.insets = new Insets(0, 0, 5, 5);
+		gbc_panelRegistro.gridx = 1;
+		gbc_panelRegistro.gridy = 1;
+		panelExterno.add(panelRegistro, gbc_panelRegistro);
+		panelRegistro.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panelCentro = new JPanel();
+		panelRegistro.add(panelCentro, BorderLayout.CENTER);
+		GridBagLayout gbl_panelCentro = new GridBagLayout();
+		gbl_panelCentro.columnWidths = new int[]{320, 40, 0};
+		gbl_panelCentro.rowHeights = new int[]{60, 30, 25, 0, 25, 0, 25, 0, 25, 0, 25, 0, 0, 25, 0, 0, 0, 0, 0};
+		gbl_panelCentro.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelCentro.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panelCentro.setLayout(gbl_panelCentro);
+		
+		JLabel lblFoto = new JLabel("");
+		lblFoto.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFoto.setIcon(noPicture1);
+		GridBagConstraints gbc_lblFoto = new GridBagConstraints();
+		gbc_lblFoto.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFoto.anchor = GridBagConstraints.NORTH;
+		gbc_lblFoto.gridx = 0;
+		gbc_lblFoto.gridy = 0;
+		panelCentro.add(lblFoto, gbc_lblFoto);
+		
+		lblFoto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (noPicture) { // Si no tiene foto, alternamos la imagen de noPicture1 con noPicture2
-					profilePicLabel.setIcon(noPicture2);
+				if(noPicture) {
+					// Si no tiene foto, alternamos la imagen de noPicture1 con noPicture2
+					lblFoto.setIcon(noPicture2);
 				}
 			}
-
+			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				if (noPicture) { // Si no tiene foto, alternamos la imagen de noPicture2 con noPicture1
-					profilePicLabel.setIcon(noPicture1);
+				if(noPicture) {
+					//Si no tiene foto, alternamos la imagen de noPicture2 con noPicture1
+					lblFoto.setIcon(noPicture1);
 				}
 			}
-
+			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				JFileChooser chooser = new JFileChooser();
-				chooser.showOpenDialog(profilePicLabel);
+				chooser.showOpenDialog(lblFoto);
 				profilePic = chooser.getSelectedFile();
-				if (profilePic != null) {
+				if(profilePic != null) {
 					ImageIcon pp = new ImageIcon(profilePic.toString());
-					int h = pp.getIconHeight(), w = pp.getIconWidth();
-					if (h > 100 || w > 100) { // Si la imagen es demasiado grande, cancelamos la operación
-						ventanaPadre.mostrarErrorTamaño();
-						profilePicLabel.setIcon(noPicture1);
+					int h = pp.getIconHeight();
+					int w = pp.getIconWidth();
+					if(h > 100 || w > 100) {
+						// Si la imagen es demasiado grande, cancelamos la operacion
+						//ventanaPadre.mostrarErrorTamaño()
+						lblFoto.setIcon(noPicture1);
 						noPicture = true;
 					} else {
-						profilePicLabel.setIcon(pp);
-						profilePicLabel.setToolTipText("Cambiar imagen");
+						lblFoto.setIcon(pp);
+						lblFoto.setToolTipText("Cambiar imagen");
 						noPicture = false;
 					}
 				}
 			}
 		});
-		profilePicLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		profilePicLabel.setIcon(noPicture1);
-		penalProfilePic.add(profilePicLabel, BorderLayout.CENTER);
-
-		JLabel lblNewLabel_7 = new JLabel("Volver");
-		lblNewLabel_7.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblNewLabel_7.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				limpiarPanel();
-				ventanaPadre.cambiarPanel("panelLogin");
-			}
-		});
-		lblNewLabel_7.setForeground(new Color(0, 126, 255));
-		lblNewLabel_7.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		GridBagConstraints gbc_lblNewLabel_7 = new GridBagConstraints();
-		gbc_lblNewLabel_7.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_7.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_7.gridx = 1;
-		gbc_lblNewLabel_7.gridy = 16;
-		panelRegistro.add(lblNewLabel_7, gbc_lblNewLabel_7);
-
-		JLabel lblNewLabel_6 = new JLabel("Presentación (opcional)");
-		lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
-		gbc_lblNewLabel_6.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_6.gridx = 1;
-		gbc_lblNewLabel_6.gridy = 12;
-		panelRegistro.add(lblNewLabel_6, gbc_lblNewLabel_6);
-
-		JLabel lblNewLabel_1 = new JLabel("Nombre y apellidos");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_1.gridx = 1;
-		gbc_lblNewLabel_1.gridy = 1;
-		panelRegistro.add(lblNewLabel_1, gbc_lblNewLabel_1);
-
-		registroNombreApellidos = new JTextField();
-		registroNombreApellidos.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_registroNombreApellidos = new GridBagConstraints();
-		gbc_registroNombreApellidos.insets = new Insets(0, 0, 15, 0);
-		gbc_registroNombreApellidos.fill = GridBagConstraints.HORIZONTAL;
-		gbc_registroNombreApellidos.gridx = 1;
-		gbc_registroNombreApellidos.gridy = 2;
-		panelRegistro.add(registroNombreApellidos, gbc_registroNombreApellidos);
-		registroNombreApellidos.setColumns(30);
-
-		JLabel lblNewLabel_2 = new JLabel("Nombre de usuario");
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_2.gridx = 1;
-		gbc_lblNewLabel_2.gridy = 3;
-		panelRegistro.add(lblNewLabel_2, gbc_lblNewLabel_2);
-
-		registroUserName = new JTextField();
-		registroUserName.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_registroUserName = new GridBagConstraints();
-		gbc_registroUserName.insets = new Insets(0, 0, 15, 0);
-		gbc_registroUserName.fill = GridBagConstraints.HORIZONTAL;
-		gbc_registroUserName.gridx = 1;
-		gbc_registroUserName.gridy = 4;
-		panelRegistro.add(registroUserName, gbc_registroUserName);
-		registroUserName.setColumns(30);
-
-		JLabel lblNewLabel_3 = new JLabel("Correo electrónico");
-		lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3.gridx = 1;
-		gbc_lblNewLabel_3.gridy = 5;
-		panelRegistro.add(lblNewLabel_3, gbc_lblNewLabel_3);
-
-		registroCorreo = new JTextField();
-		registroCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_registroCorreo = new GridBagConstraints();
-		gbc_registroCorreo.insets = new Insets(0, 0, 15, 0);
-		gbc_registroCorreo.fill = GridBagConstraints.HORIZONTAL;
-		gbc_registroCorreo.gridx = 1;
-		gbc_registroCorreo.gridy = 6;
-		panelRegistro.add(registroCorreo, gbc_registroCorreo);
-		registroCorreo.setColumns(30);
-
-		JLabel lblNewLabel_4 = new JLabel("Contraseña");
-		lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-		gbc_lblNewLabel_4.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_4.gridx = 1;
-		gbc_lblNewLabel_4.gridy = 7;
-		panelRegistro.add(lblNewLabel_4, gbc_lblNewLabel_4);
-
-		registroPasswd = new JPasswordField();
-		registroPasswd.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_registroPasswd = new GridBagConstraints();
-		gbc_registroPasswd.insets = new Insets(0, 0, 15, 0);
-		gbc_registroPasswd.fill = GridBagConstraints.HORIZONTAL;
-		gbc_registroPasswd.gridx = 1;
-		gbc_registroPasswd.gridy = 8;
-		panelRegistro.add(registroPasswd, gbc_registroPasswd);
-
-		JLabel lblNewLabel_5 = new JLabel("Fecha de nacimiento");
-		lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_5.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel_5.gridx = 1;
-		gbc_lblNewLabel_5.gridy = 9;
-		panelRegistro.add(lblNewLabel_5, gbc_lblNewLabel_5);
-
-		fecha = new JDateChooser();
-		fecha.setDateFormatString("d MMM YY");
-		fecha.setForeground(Color.WHITE);
-		fecha.setToolTipText("Introduce tu fecha de nacimiento");
-		GridBagConstraints gbc_fecha = new GridBagConstraints();
-		gbc_fecha.insets = new Insets(0, 0, 5, 5);
-		gbc_fecha.anchor = GridBagConstraints.WEST;
-		gbc_fecha.gridy = 10;
-		gbc_fecha.gridx = 1;
-		panelRegistro.add(fecha, gbc_fecha);
-
-		JPanel panel = new JPanel();
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.insets = new Insets(15, 0, 15, 5);
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 1;
-		gbc_panel.gridy = 11;
-		panelRegistro.add(panel, gbc_panel);
-		panel.setLayout(new BorderLayout(0, 0));
-
-		JSeparator separator = new JSeparator();
-		panel.add(separator, BorderLayout.NORTH);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.insets = new Insets(0, 0, 5, 0);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 1;
-		gbc_scrollPane.gridy = 13;
-		panelRegistro.add(scrollPane, gbc_scrollPane);
-
-		presentacion = new JTextArea();
-		presentacion.setLineWrap(true);
-		presentacion.setFont(new Font("Tahoma", Font.ITALIC, 12));
-		scrollPane.setViewportView(presentacion);
-
-		JPanel panel_1 = new JPanel();
-		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-		gbc_panel_1.insets = new Insets(15, 0, 15, 5);
-		gbc_panel_1.fill = GridBagConstraints.BOTH;
-		gbc_panel_1.gridx = 1;
-		gbc_panel_1.gridy = 14;
-		panelRegistro.add(panel_1, gbc_panel_1);
-		panel_1.setLayout(new BorderLayout(0, 0));
-
-		JSeparator separator_1 = new JSeparator();
-		panel_1.add(separator_1);
-
-		/* Crear cuenta */
-		JButton botonRegistro = new JButton("Crear cuenta");
-		botonRegistro.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				// limpiaRegistro();
-			}
-		});
-		botonRegistro.setForeground(new Color(233, 233, 233));
-		botonRegistro.setBackground(new Color(0, 126, 187));
-		botonRegistro.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		GridBagConstraints gbc_botonRegistro = new GridBagConstraints();
-		gbc_botonRegistro.fill = GridBagConstraints.HORIZONTAL;
-		gbc_botonRegistro.insets = new Insets(0, 0, 5, 0);
-		gbc_botonRegistro.gridx = 1;
-		gbc_botonRegistro.gridy = 15;
-		panelRegistro.add(botonRegistro, gbc_botonRegistro);
+		
+		
+		
+		JPanel panelNombreApellidos = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panelNombreApellidos.getLayout();
+		flowLayout.setVgap(0);
+		flowLayout.setHgap(0);
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		GridBagConstraints gbc_panelNombreApellidos = new GridBagConstraints();
+		gbc_panelNombreApellidos.insets = new Insets(0, 0, 5, 8);
+		gbc_panelNombreApellidos.fill = GridBagConstraints.BOTH;
+		gbc_panelNombreApellidos.gridx = 0;
+		gbc_panelNombreApellidos.gridy = 2;
+		panelCentro.add(panelNombreApellidos, gbc_panelNombreApellidos);
+		
+		JLabel lblNombApell = new JLabel("Nombre y Apellidos");
+		lblNombApell.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelNombreApellidos.add(lblNombApell);
+		
+		JLabel lblErrorNombrApell = new JLabel("");
+		lblErrorNombrApell.setVisible(false);
+		lblErrorNombrApell.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelNombreApellidos.add(lblErrorNombrApell);
+		
+		campoNombreApellidos = new JTextField();
+		campoNombreApellidos.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_campoNombreApellidos = new GridBagConstraints();
+		gbc_campoNombreApellidos.ipady = 3;
+		gbc_campoNombreApellidos.insets = new Insets(0, 0, 20, 8);
+		gbc_campoNombreApellidos.fill = GridBagConstraints.HORIZONTAL;
+		gbc_campoNombreApellidos.gridx = 0;
+		gbc_campoNombreApellidos.gridy = 3;
+		panelCentro.add(campoNombreApellidos, gbc_campoNombreApellidos);
+		campoNombreApellidos.setColumns(20);
+		
+		JLabel lblIconoNombApell = new JLabel("X");
+		lblIconoNombApell.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_lblIconoNombApell = new GridBagConstraints();
+		gbc_lblIconoNombApell.insets = new Insets(0, 0, 20, 0);
+		gbc_lblIconoNombApell.anchor = GridBagConstraints.WEST;
+		gbc_lblIconoNombApell.gridx = 1;
+		gbc_lblIconoNombApell.gridy = 3;
+		panelCentro.add(lblIconoNombApell, gbc_lblIconoNombApell);
+		
+		JPanel panelUsuario = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panelUsuario.getLayout();
+		flowLayout_1.setVgap(0);
+		flowLayout_1.setHgap(0);
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		GridBagConstraints gbc_panelUsuario = new GridBagConstraints();
+		gbc_panelUsuario.insets = new Insets(0, 0, 5, 8);
+		gbc_panelUsuario.fill = GridBagConstraints.BOTH;
+		gbc_panelUsuario.gridx = 0;
+		gbc_panelUsuario.gridy = 4;
+		panelCentro.add(panelUsuario, gbc_panelUsuario);
+		
+		JLabel lblNombreDeUsuario = new JLabel("Nombre de Usuario");
+		lblNombreDeUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelUsuario.add(lblNombreDeUsuario);
+		
+		JLabel lblErrorUsuario = new JLabel("");
+		lblErrorUsuario.setVisible(false);
+		lblErrorUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelUsuario.add(lblErrorUsuario);
+		
+		campoUsuario = new JTextField();
+		campoUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_campoUsuario = new GridBagConstraints();
+		gbc_campoUsuario.ipady = 3;
+		gbc_campoUsuario.insets = new Insets(0, 0, 20, 8);
+		gbc_campoUsuario.fill = GridBagConstraints.HORIZONTAL;
+		gbc_campoUsuario.gridx = 0;
+		gbc_campoUsuario.gridy = 5;
+		panelCentro.add(campoUsuario, gbc_campoUsuario);
+		campoUsuario.setColumns(20);
+		
+		JLabel lblIconoUsuario = new JLabel("X");
+		lblIconoUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_lblIconoUsuario = new GridBagConstraints();
+		gbc_lblIconoUsuario.insets = new Insets(0, 0, 20, 0);
+		gbc_lblIconoUsuario.anchor = GridBagConstraints.WEST;
+		gbc_lblIconoUsuario.gridx = 1;
+		gbc_lblIconoUsuario.gridy = 5;
+		panelCentro.add(lblIconoUsuario, gbc_lblIconoUsuario);
+		
+		JPanel panelCorreo = new JPanel();
+		FlowLayout flowLayout_2 = (FlowLayout) panelCorreo.getLayout();
+		flowLayout_2.setVgap(0);
+		flowLayout_2.setHgap(0);
+		flowLayout_2.setAlignment(FlowLayout.LEFT);
+		GridBagConstraints gbc_panelCorreo = new GridBagConstraints();
+		gbc_panelCorreo.insets = new Insets(0, 0, 5, 8);
+		gbc_panelCorreo.fill = GridBagConstraints.BOTH;
+		gbc_panelCorreo.gridx = 0;
+		gbc_panelCorreo.gridy = 6;
+		panelCentro.add(panelCorreo, gbc_panelCorreo);
+		
+		JLabel lblCorreo = new JLabel("Correo Electrónico");
+		lblCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelCorreo.add(lblCorreo);
+		
+		JLabel lblErrorCorreo = new JLabel("");
+		lblErrorCorreo.setVisible(false);
+		lblErrorCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelCorreo.add(lblErrorCorreo);
+		
+		campoCorreo = new JTextField();
+		campoCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_campoCorreo = new GridBagConstraints();
+		gbc_campoCorreo.ipady = 3;
+		gbc_campoCorreo.insets = new Insets(0, 0, 20, 8);
+		gbc_campoCorreo.fill = GridBagConstraints.HORIZONTAL;
+		gbc_campoCorreo.gridx = 0;
+		gbc_campoCorreo.gridy = 7;
+		panelCentro.add(campoCorreo, gbc_campoCorreo);
+		campoCorreo.setColumns(20);
+		
+		JLabel lblIconoCorreo = new JLabel("X");
+		lblIconoCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_lblIconoCorreo = new GridBagConstraints();
+		gbc_lblIconoCorreo.anchor = GridBagConstraints.WEST;
+		gbc_lblIconoCorreo.insets = new Insets(0, 0, 20, 0);
+		gbc_lblIconoCorreo.gridx = 1;
+		gbc_lblIconoCorreo.gridy = 7;
+		panelCentro.add(lblIconoCorreo, gbc_lblIconoCorreo);
+		
+		JPanel panelPassword = new JPanel();
+		FlowLayout flowLayout_3 = (FlowLayout) panelPassword.getLayout();
+		flowLayout_3.setVgap(0);
+		flowLayout_3.setHgap(0);
+		flowLayout_3.setAlignment(FlowLayout.LEFT);
+		GridBagConstraints gbc_panelPassword = new GridBagConstraints();
+		gbc_panelPassword.insets = new Insets(0, 0, 5, 8);
+		gbc_panelPassword.fill = GridBagConstraints.BOTH;
+		gbc_panelPassword.gridx = 0;
+		gbc_panelPassword.gridy = 8;
+		panelCentro.add(panelPassword, gbc_panelPassword);
+		
+		JLabel lblPassword = new JLabel("Contraseña");
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelPassword.add(lblPassword);
+		
+		JLabel lblErrorPassword = new JLabel("");
+		lblErrorPassword.setVisible(false);
+		lblErrorPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelPassword.add(lblErrorPassword);
+		
+		campoPassword = new JPasswordField();
+		campoPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_campoPassword = new GridBagConstraints();
+		gbc_campoPassword.ipady = 3;
+		gbc_campoPassword.insets = new Insets(0, 0, 20, 8);
+		gbc_campoPassword.fill = GridBagConstraints.HORIZONTAL;
+		gbc_campoPassword.gridx = 0;
+		gbc_campoPassword.gridy = 9;
+		panelCentro.add(campoPassword, gbc_campoPassword);
+		
+		JLabel lblIconoPassword = new JLabel("X");
+		lblIconoPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		GridBagConstraints gbc_lblIconoPassword = new GridBagConstraints();
+		gbc_lblIconoPassword.insets = new Insets(0, 0, 20, 0);
+		gbc_lblIconoPassword.anchor = GridBagConstraints.WEST;
+		gbc_lblIconoPassword.gridx = 1;
+		gbc_lblIconoPassword.gridy = 9;
+		panelCentro.add(lblIconoPassword, gbc_lblIconoPassword);
+		
+		JPanel panelFecha = new JPanel();
+		FlowLayout flowLayout_4 = (FlowLayout) panelFecha.getLayout();
+		flowLayout_4.setVgap(0);
+		flowLayout_4.setHgap(0);
+		flowLayout_4.setAlignment(FlowLayout.LEFT);
+		GridBagConstraints gbc_panelFecha = new GridBagConstraints();
+		gbc_panelFecha.insets = new Insets(0, 0, 5, 8);
+		gbc_panelFecha.fill = GridBagConstraints.BOTH;
+		gbc_panelFecha.gridx = 0;
+		gbc_panelFecha.gridy = 10;
+		panelCentro.add(panelFecha, gbc_panelFecha);
+		
+		JLabel lblFechaNacimiento = new JLabel("Fecha de Nacimiento");
+		lblFechaNacimiento.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelFecha.add(lblFechaNacimiento);
+		
+		JLabel lblErrorFecha = new JLabel("");
+		lblErrorFecha.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblErrorFecha.setVisible(false);
+		panelFecha.add(lblErrorFecha);
+		
+		JDateChooser dateChooser = new JDateChooser();
+		GridBagConstraints gbc_dateChooser = new GridBagConstraints();
+		gbc_dateChooser.insets = new Insets(0, 0, 10, 8);
+		gbc_dateChooser.fill = GridBagConstraints.HORIZONTAL;
+		gbc_dateChooser.gridx = 0;
+		gbc_dateChooser.gridy = 11;
+		panelCentro.add(dateChooser, gbc_dateChooser);
+		
+		JSeparator seperadorPresentacion = new JSeparator();
+		GridBagConstraints gbc_seperadorPresentacion = new GridBagConstraints();
+		gbc_seperadorPresentacion.ipady = 1;
+		gbc_seperadorPresentacion.fill = GridBagConstraints.BOTH;
+		gbc_seperadorPresentacion.insets = new Insets(0, 0, 10, 8);
+		gbc_seperadorPresentacion.gridx = 0;
+		gbc_seperadorPresentacion.gridy = 12;
+		panelCentro.add(seperadorPresentacion, gbc_seperadorPresentacion);
+		
+		JPanel panelPresentacion = new JPanel();
+		FlowLayout flowLayout_5 = (FlowLayout) panelPresentacion.getLayout();
+		flowLayout_5.setVgap(0);
+		flowLayout_5.setHgap(0);
+		flowLayout_5.setAlignment(FlowLayout.LEFT);
+		GridBagConstraints gbc_panelPresentacion = new GridBagConstraints();
+		gbc_panelPresentacion.insets = new Insets(0, 0, 5, 8);
+		gbc_panelPresentacion.fill = GridBagConstraints.BOTH;
+		gbc_panelPresentacion.gridx = 0;
+		gbc_panelPresentacion.gridy = 13;
+		panelCentro.add(panelPresentacion, gbc_panelPresentacion);
+		
+		JLabel lblPresentacion = new JLabel("Presentación (opcional)");
+		lblPresentacion.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		panelPresentacion.add(lblPresentacion);
+		
+		JTextArea textoPresentacion = new JTextArea();
+		textoPresentacion.setLineWrap(true);
+		textoPresentacion.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		textoPresentacion.setRows(5);
+		textoPresentacion.setColumns(20);
+		GridBagConstraints gbc_textoPresentacion = new GridBagConstraints();
+		gbc_textoPresentacion.insets = new Insets(0, 0, 10, 8);
+		gbc_textoPresentacion.fill = GridBagConstraints.BOTH;
+		gbc_textoPresentacion.gridx = 0;
+		gbc_textoPresentacion.gridy = 14;
+		panelCentro.add(textoPresentacion, gbc_textoPresentacion);
+		
+		JSeparator seperadorCrearCuenta = new JSeparator();
+		GridBagConstraints gbc_seperadorCrearCuenta = new GridBagConstraints();
+		gbc_seperadorCrearCuenta.fill = GridBagConstraints.BOTH;
+		gbc_seperadorCrearCuenta.ipady = 1;
+		gbc_seperadorCrearCuenta.insets = new Insets(0, 0, 10, 8);
+		gbc_seperadorCrearCuenta.gridx = 0;
+		gbc_seperadorCrearCuenta.gridy = 15;
+		panelCentro.add(seperadorCrearCuenta, gbc_seperadorCrearCuenta);
+		
+		JButton btnCrearCuenta = new JButton("Crear Cuenta");
+		btnCrearCuenta.setBackground(new Color(240, 240, 240));
+		btnCrearCuenta.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnCrearCuenta.setBackground(new Color(28, 84, 215));
+		btnCrearCuenta.setForeground(new Color(200, 200, 200));
+		GridBagConstraints gbc_btnCrearCuenta = new GridBagConstraints();
+		gbc_btnCrearCuenta.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnCrearCuenta.ipady = 4;
+		gbc_btnCrearCuenta.insets = new Insets(0, 0, 5, 8);
+		gbc_btnCrearCuenta.gridx = 0;
+		gbc_btnCrearCuenta.gridy = 16;
+		panelCentro.add(btnCrearCuenta, gbc_btnCrearCuenta);
+		
+		JLabel lblInicioSesion = new JLabel("¿Ya tienes una cuenta?");
+		lblInicioSesion.setForeground(new Color(0, 128, 255));
+		lblInicioSesion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		GridBagConstraints gbc_lblInicioSesion = new GridBagConstraints();
+		gbc_lblInicioSesion.ipady = 1;
+		gbc_lblInicioSesion.anchor = GridBagConstraints.WEST;
+		gbc_lblInicioSesion.insets = new Insets(0, 0, 0, 8);
+		gbc_lblInicioSesion.gridx = 0;
+		gbc_lblInicioSesion.gridy = 17;
+		panelCentro.add(lblInicioSesion, gbc_lblInicioSesion);
 
 	}
 
+	/*
 	public void limpiarPanel() {
 		noPicture = true;
 		registroNombreApellidos.setText("");
@@ -321,5 +420,6 @@ public class PanelRegistro extends JScrollPane {
 
 		fecha.setDate(null);
 	}
+	*/
 
 }
