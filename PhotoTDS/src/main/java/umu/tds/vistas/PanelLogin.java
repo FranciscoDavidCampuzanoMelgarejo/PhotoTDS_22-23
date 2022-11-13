@@ -165,7 +165,7 @@ public class PanelLogin extends JPanel {
 
 			// Comprobar que el campo de login no este vacio
 			try {
-				Utils.campoVacio(campoUsuario);
+				Utils.campoVacio(usuario);
 				lblErrorUsuario.setText("");
 				lblErrorUsuario.setVisible(false);
 			} catch (CampoVacioException ex) {
@@ -176,7 +176,7 @@ public class PanelLogin extends JPanel {
 
 			// Comprobar que el campo de la contraseña no este vacio
 			try {
-				Utils.campoVacio(campoPassword);
+				Utils.campoVacio(password);
 				lblErrorPassword.setText("");
 				lblErrorPassword.setVisible(false);
 			} catch (CampoVacioException ex) {
