@@ -263,7 +263,10 @@ public class PhotoTDSVentana {
 				try {
 					UIManager.setLookAndFeel(new FlatDarculaLaf());
 					PhotoTDSVentana phototdswin = new PhotoTDSVentana();
-					phototdswin.frame.setVisible(true);
+					VentanaLoginRegistro loginregistro = new VentanaLoginRegistro();
+					VentanaSubirFoto v = new VentanaSubirFoto();
+					v.mostrar();
+;					phototdswin.frame.setVisible(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
