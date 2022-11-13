@@ -187,7 +187,7 @@ public class VentanaSubirFoto {
 		if(archivo!=null) {
 			try{
 				Image i = ImageIO.read(archivo);
-				fotoElegida.setIcon();
+				//fotoElegida.setIcon();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
