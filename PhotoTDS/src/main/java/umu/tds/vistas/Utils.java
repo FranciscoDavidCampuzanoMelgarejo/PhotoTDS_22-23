@@ -12,20 +12,17 @@ public class Utils {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static void campoVacio(JTextComponent componente) {
-		String campo = componente.getText().trim();
-		if (campo.isEmpty()) {
-			throw new CampoVacioException("El componente" + componente.getName() + " esta vacio");
+	public static void campoVacio(String texto) {
+		if (texto.isEmpty()) {
+			throw new CampoVacioException("Excepcion: Campo Vacio");
 		}
 	}
 
-	public static void formatoErroneo(JTextComponent componente, String patron) {
-		String campo = componente.getText().trim();
+	public static void formatoErroneo(String texto, String patron) {
 		Pattern p = Pattern.compile(patron);
-		Matcher matcher = p.matcher(campo);
+		Matcher matcher = p.matcher(texto);
 		if (!matcher.matches()) {
-			throw new FormatoNoAdecuadoException(
-					"El componente " + componente.getName() + "no tiene el formato adecuado");
+			throw new FormatoNoAdecuadoException("Excepcion: No cumple el formato");
 		}
 
 	}

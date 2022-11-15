@@ -266,6 +266,7 @@ public class PhotoTDSVentana {
 					VentanaLoginRegistro loginregistro = new VentanaLoginRegistro();
 					VentanaSubirFoto v = new VentanaSubirFoto();
 					v.mostrar();
+					//loginregistro.mostrar();
 ;					phototdswin.frame.setVisible(false);
 				} catch (Exception e) {
 					e.printStackTrace();

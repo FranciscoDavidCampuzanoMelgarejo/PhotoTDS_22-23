@@ -7,10 +7,21 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,8 +40,17 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 import com.toedter.calendar.JDateChooser;
+
+import umu.tds.controlador.Controlador;
+import umu.tds.filtros.DocumentFilterListener;
+import umu.tds.filtros.EstadosValidacion;
+import umu.tds.filtros.FiltroTextField;
+
 import java.awt.FlowLayout;
 import com.toedter.calendar.JCalendar;
 
@@ -40,18 +60,113 @@ public class PanelRegistro extends JScrollPane {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	private static final int MAX_CARACTERES = 200;
 	private boolean noPicture;
 	private File profilePic;
 
 	private JFrame frmLoginRegistro;
+
+	// Campos del registro
 	private JTextField campoNombreApellidos;
 	private JTextField campoUsuario;
 	private JTextField campoCorreo;
 	private JPasswordField campoPassword;
+	private JDateChooser dateChooser;
+	private JTextArea textoPresentacion;
+
+	// Etiquetas
+	private JLabel lblErrorNombApell, lblIconoNombApell;
+	private JLabel lblErrorUsuario, lblIconoUsuario;
+	private JLabel lblErrorCorreo, lblIconoCorreo;
+	private JLabel lblErrorPassword, lblIconoPassword;
+	private JLabel lblErrorFecha;
+
+	// Iconos
+	private ImageIcon iconoError; // X
+	private ImageIcon iconoAcierto; // V
+
+	// Variables booleanas para comprobar que los campos son correctos (cumple un
+	// patron y otras caracteristicas)
+	private boolean nombreApellidosValido;
+	private boolean usuarioValido;
+	private boolean correoValido;
+	private boolean passwordValido;
+	// private boolean fechaValido;
+	private boolean[] campoValido = new boolean[EstadosValidacion.values().length];
+
+	private void cambiarEtiquetas(JLabel lblSuperior, JLabel lblLateral, EstadosValidacion validacion) {
+		switch (validacion) {
+		case INICIAL:
+			lblSuperior.setText("");
+			lblSuperior.setVisible(false);
+			lblLateral.setVisible(false);
+			break;
+
+		case VALIDO:
+			lblSuperior.setText("");
+			lblSuperior.setVisible(false);
+			lblLateral.setIcon(iconoAcierto);
+			lblLateral.setVisible(true);
+			break;
+
+		case INVALIDO:
+			lblSuperior.setText(" - Formato incorrecto");
+			lblSuperior.setVisible(true);
+			lblLateral.setIcon(iconoError);
+			lblLateral.setVisible(true);
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void limpiarPanel() {
+
+		this.noPicture = true;
+
+		// Campos
+		this.campoNombreApellidos.setText(null);
+		this.campoUsuario.setText(null);
+		this.campoCorreo.setText(null);
+		this.campoPassword.setText(null);
+		this.textoPresentacion.setText(null);
+		this.dateChooser.setDate(null);
+
+		// Etiquetas de error
+		this.lblErrorNombApell.setVisible(false);
+		this.lblIconoNombApell.setVisible(false);
+
+		this.lblErrorUsuario.setVisible(false);
+		this.lblIconoUsuario.setVisible(false);
+
+		this.lblErrorCorreo.setVisible(false);
+		this.lblIconoCorreo.setVisible(false);
+
+		this.lblErrorPassword.setVisible(false);
+		this.lblIconoPassword.setVisible(false);
+
+		this.lblErrorFecha.setVisible(false);
+	}
+
+	private LocalDate fromDateToLocalDate(Date date) {
+		if (date != null) {
+			return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		}
+		return null;
+	}
 
 	public PanelRegistro(JFrame frame) {
 		this.noPicture = true;
 		this.frmLoginRegistro = frame;
+		this.iconoError = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/cross-icon.png")).getImage()
+				.getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+		this.iconoAcierto = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/tick-icon.png")).getImage()
+				.getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+
+		this.campoValido[EstadosValidacion.INICIAL.ordinal()] = false;
+		this.campoValido[EstadosValidacion.VALIDO.ordinal()] = true;
+		this.campoValido[EstadosValidacion.INVALIDO.ordinal()] = false;
 		this.crearPanel();
 	}
 
@@ -68,7 +183,7 @@ public class PanelRegistro extends JScrollPane {
 		setViewportView(panelExterno);
 		GridBagLayout gbl_panelExterno = new GridBagLayout();
 		gbl_panelExterno.columnWidths = new int[] { 40, 410, 40, 0 };
-		gbl_panelExterno.rowHeights = new int[] { 40, 650, 40, 0 };
+		gbl_panelExterno.rowHeights = new int[] { 40, 683, 40, 0 };
 		gbl_panelExterno.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		gbl_panelExterno.rowWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		panelExterno.setLayout(gbl_panelExterno);
@@ -136,7 +251,7 @@ public class PanelRegistro extends JScrollPane {
 						noPicture = true;
 					} else {
 						lblFoto.setIcon(pp);
-						lblFoto.setToolTipText("Cambiar imagen");
+						lblFoto.setToolTipText("Cambiar foto de perfil");
 						noPicture = false;
 					}
 				}
@@ -159,10 +274,11 @@ public class PanelRegistro extends JScrollPane {
 		lblNombApell.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		panelNombreApellidos.add(lblNombApell);
 
-		JLabel lblErrorNombrApell = new JLabel("");
-		lblErrorNombrApell.setVisible(false);
-		lblErrorNombrApell.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		panelNombreApellidos.add(lblErrorNombrApell);
+		lblErrorNombApell = new JLabel("");
+		lblErrorNombApell.setVisible(false);
+		lblErrorNombApell.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		lblErrorNombApell.setForeground(new Color(255, 106, 106));
+		panelNombreApellidos.add(lblErrorNombApell);
 
 		campoNombreApellidos = new JTextField();
 		campoNombreApellidos.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -175,9 +291,20 @@ public class PanelRegistro extends JScrollPane {
 		panelCentro.add(campoNombreApellidos, gbc_campoNombreApellidos);
 		campoNombreApellidos.setColumns(20);
 
-		JLabel lblIconoNombApell = new JLabel("X");
-		lblIconoNombApell.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		((AbstractDocument) campoNombreApellidos.getDocument()).setDocumentFilter(
+				new FiltroTextField("([A-Z][a-z]+)([\\s-][A-Z][a-z]+)*", new DocumentFilterListener() {
+
+					@Override
+					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
+						cambiarEtiquetas(lblErrorNombApell, lblIconoNombApell, estado);
+						nombreApellidosValido = campoValido[estado.ordinal()];
+					}
+				}));
+
+		lblIconoNombApell = new JLabel();
+		lblIconoNombApell.setVisible(false);
 		GridBagConstraints gbc_lblIconoNombApell = new GridBagConstraints();
+		gbc_lblIconoNombApell.ipady = 3;
 		gbc_lblIconoNombApell.insets = new Insets(0, 0, 20, 0);
 		gbc_lblIconoNombApell.anchor = GridBagConstraints.WEST;
 		gbc_lblIconoNombApell.gridx = 1;
@@ -200,9 +327,10 @@ public class PanelRegistro extends JScrollPane {
 		lblNombreDeUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		panelUsuario.add(lblNombreDeUsuario);
 
-		JLabel lblErrorUsuario = new JLabel("");
+		lblErrorUsuario = new JLabel("");
 		lblErrorUsuario.setVisible(false);
-		lblErrorUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblErrorUsuario.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		lblErrorUsuario.setForeground(new Color(255, 106, 106));
 		panelUsuario.add(lblErrorUsuario);
 
 		campoUsuario = new JTextField();
@@ -216,8 +344,18 @@ public class PanelRegistro extends JScrollPane {
 		panelCentro.add(campoUsuario, gbc_campoUsuario);
 		campoUsuario.setColumns(20);
 
-		JLabel lblIconoUsuario = new JLabel("X");
-		lblIconoUsuario.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		((AbstractDocument) campoUsuario.getDocument())
+				.setDocumentFilter(new FiltroTextField(".+", new DocumentFilterListener() {
+
+					@Override
+					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
+						cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario, estado);
+						usuarioValido = campoValido[estado.ordinal()];
+
+					}
+				}));
+
+		lblIconoUsuario = new JLabel();
 		GridBagConstraints gbc_lblIconoUsuario = new GridBagConstraints();
 		gbc_lblIconoUsuario.insets = new Insets(0, 0, 20, 0);
 		gbc_lblIconoUsuario.anchor = GridBagConstraints.WEST;
@@ -241,9 +379,10 @@ public class PanelRegistro extends JScrollPane {
 		lblCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		panelCorreo.add(lblCorreo);
 
-		JLabel lblErrorCorreo = new JLabel("");
+		lblErrorCorreo = new JLabel("");
 		lblErrorCorreo.setVisible(false);
-		lblErrorCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblErrorCorreo.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		lblErrorCorreo.setForeground(new Color(255, 106, 106));
 		panelCorreo.add(lblErrorCorreo);
 
 		campoCorreo = new JTextField();
@@ -257,8 +396,17 @@ public class PanelRegistro extends JScrollPane {
 		panelCentro.add(campoCorreo, gbc_campoCorreo);
 		campoCorreo.setColumns(20);
 
-		JLabel lblIconoCorreo = new JLabel("X");
-		lblIconoCorreo.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		((AbstractDocument) campoCorreo.getDocument()).setDocumentFilter(new FiltroTextField(
+				"([A-Za-z0-9-_.]+)@([A-Za-z0-9-_.]+[.]([A-Za-z]{2,5}))", new DocumentFilterListener() {
+
+					@Override
+					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
+						cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, estado);
+						correoValido = campoValido[estado.ordinal()];
+					}
+				}));
+
+		lblIconoCorreo = new JLabel();
 		GridBagConstraints gbc_lblIconoCorreo = new GridBagConstraints();
 		gbc_lblIconoCorreo.anchor = GridBagConstraints.WEST;
 		gbc_lblIconoCorreo.insets = new Insets(0, 0, 20, 0);
@@ -282,9 +430,10 @@ public class PanelRegistro extends JScrollPane {
 		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		panelPassword.add(lblPassword);
 
-		JLabel lblErrorPassword = new JLabel("");
+		lblErrorPassword = new JLabel("");
 		lblErrorPassword.setVisible(false);
-		lblErrorPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblErrorPassword.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		lblErrorPassword.setForeground(new Color(255, 106, 106));
 		panelPassword.add(lblErrorPassword);
 
 		campoPassword = new JPasswordField();
@@ -297,7 +446,18 @@ public class PanelRegistro extends JScrollPane {
 		gbc_campoPassword.gridy = 9;
 		panelCentro.add(campoPassword, gbc_campoPassword);
 
-		JLabel lblIconoPassword = new JLabel("X");
+		((AbstractDocument) campoPassword.getDocument()).setDocumentFilter(
+				new FiltroTextField("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[-_$?!%.]).*", new DocumentFilterListener() {
+
+					@Override
+					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
+						cambiarEtiquetas(lblErrorPassword, lblIconoPassword, estado);
+						passwordValido = campoValido[estado.ordinal()];
+
+					}
+				}));
+
+		lblIconoPassword = new JLabel();
 		lblIconoPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		GridBagConstraints gbc_lblIconoPassword = new GridBagConstraints();
 		gbc_lblIconoPassword.insets = new Insets(0, 0, 20, 0);
@@ -322,12 +482,13 @@ public class PanelRegistro extends JScrollPane {
 		lblFechaNacimiento.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		panelFecha.add(lblFechaNacimiento);
 
-		JLabel lblErrorFecha = new JLabel("");
-		lblErrorFecha.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblErrorFecha = new JLabel("");
+		lblErrorFecha.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		lblErrorFecha.setForeground(new Color(255, 106, 106));
 		lblErrorFecha.setVisible(false);
 		panelFecha.add(lblErrorFecha);
 
-		JDateChooser dateChooser = new JDateChooser();
+		dateChooser = new JDateChooser();
 		GridBagConstraints gbc_dateChooser = new GridBagConstraints();
 		gbc_dateChooser.insets = new Insets(0, 0, 10, 8);
 		gbc_dateChooser.fill = GridBagConstraints.HORIZONTAL;
@@ -360,11 +521,37 @@ public class PanelRegistro extends JScrollPane {
 		lblPresentacion.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		panelPresentacion.add(lblPresentacion);
 
-		JTextArea textoPresentacion = new JTextArea();
+		textoPresentacion = new JTextArea();
 		textoPresentacion.setLineWrap(true);
 		textoPresentacion.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		textoPresentacion.setRows(5);
 		textoPresentacion.setColumns(20);
+
+		// Escribir como maximo 200 caracteres
+		((AbstractDocument) textoPresentacion.getDocument()).setDocumentFilter(new DocumentFilter() {
+			@Override
+			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+					throws BadLocationException {
+
+				String subText = text;
+				if (text != null) {
+					int longitudActual = (fb.getDocument().getLength() - length);
+					// System.out.println(longitudActual);
+					if (longitudActual + text.length() > MAX_CARACTERES) {
+						int caracteresFaltantes = MAX_CARACTERES - longitudActual;
+						subText = new String(text.substring(0, caracteresFaltantes));
+					}
+				}
+
+				super.replace(fb, offset, length, subText, attrs);
+			}
+
+			@Override
+			public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+				super.remove(fb, offset, length);
+			}
+		});
+
 		GridBagConstraints gbc_textoPresentacion = new GridBagConstraints();
 		gbc_textoPresentacion.insets = new Insets(0, 0, 10, 8);
 		gbc_textoPresentacion.fill = GridBagConstraints.BOTH;
@@ -386,6 +573,89 @@ public class PanelRegistro extends JScrollPane {
 		btnCrearCuenta.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnCrearCuenta.setBackground(new Color(28, 84, 215));
 		btnCrearCuenta.setForeground(new Color(200, 200, 200));
+
+		btnCrearCuenta.addActionListener((ActionEvent e) -> {
+			String nombreApellidos = campoNombreApellidos.getText();
+			String usuario = campoUsuario.getText();
+			String correo = campoCorreo.getText();
+			String password = String.valueOf(campoPassword.getPassword());
+			String fecha = dateChooser.getDate() == null ? ""
+					: new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate());
+			System.out.println(fecha);
+			String presentacion = textoPresentacion.getText();
+
+			boolean noVacios = true;
+
+			try {
+				Utils.campoVacio(nombreApellidos);
+			} catch (CampoVacioException ex) {
+				noVacios = false;
+				lblErrorNombApell.setText(" - Este campo es obligatorio");
+				lblErrorNombApell.setVisible(true);
+			}
+
+			try {
+				Utils.campoVacio(usuario);
+			} catch (CampoVacioException ex) {
+				noVacios = false;
+				lblErrorUsuario.setText(" - Este campo es obligatorio");
+				lblErrorUsuario.setVisible(true);
+			}
+
+			try {
+				Utils.campoVacio(correo);
+			} catch (CampoVacioException ex) {
+				noVacios = false;
+				lblErrorCorreo.setText(" - Este campo es obligatorio");
+				lblErrorCorreo.setVisible(true);
+			}
+
+			try {
+				Utils.campoVacio(password);
+			} catch (CampoVacioException ex) {
+				noVacios = false;
+				lblErrorPassword.setText(" - Este campo es obligatorio");
+				lblErrorPassword.setVisible(true);
+			}
+
+			try {
+				Utils.campoVacio(fecha);
+				lblErrorFecha.setText("");
+				lblErrorFecha.setVisible(false);
+			} catch (CampoVacioException ex) {
+				noVacios = false;
+				lblErrorFecha.setText(" - Este campo es obligatorio");
+				lblErrorFecha.setVisible(true);
+			}
+
+			boolean camposCorrectos = nombreApellidosValido && usuarioValido && correoValido && passwordValido;
+			
+			if (noVacios && camposCorrectos) {
+				System.out.println("DENTRO");
+				
+				LocalDate fechaCambiada = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+				// Si ya existe un usuario con el mismo nombre de usuario o correo electronico
+				if (!Controlador.getControlador().registrarUsuario(nombreApellidos, correo, usuario, password,
+						fechaCambiada, presentacion, null)) {
+					lblErrorUsuario.setText(" - Ya existe un usuario con el mismo nombre o correo electrónico");
+					lblErrorUsuario.setVisible(true);
+					lblIconoUsuario.setIcon(iconoError);
+					lblIconoUsuario.setVisible(true);
+
+					lblErrorCorreo.setText(" - Ya existe un usuario con el mismo nombre o correo electrónico");
+					lblErrorCorreo.setVisible(true);
+					lblIconoCorreo.setIcon(iconoError);
+					lblIconoCorreo.setVisible(true);
+				} else {
+					System.out.println("Exito al registrarse");
+					limpiarPanel();
+					CardLayout c = (CardLayout) frmLoginRegistro.getContentPane().getLayout();
+					c.show(frmLoginRegistro.getContentPane(), VentanaLoginRegistro.PANEL_LOGIN);
+				}
+			}
+
+		});
+
 		GridBagConstraints gbc_btnCrearCuenta = new GridBagConstraints();
 		gbc_btnCrearCuenta.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnCrearCuenta.ipady = 4;
@@ -397,6 +667,42 @@ public class PanelRegistro extends JScrollPane {
 		JLabel lblInicioSesion = new JLabel("¿Ya tienes una cuenta?");
 		lblInicioSesion.setForeground(new Color(0, 128, 255));
 		lblInicioSesion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		lblInicioSesion.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				limpiarPanel();
+				CardLayout c = (CardLayout) frmLoginRegistro.getContentPane().getLayout();
+				c.show(frmLoginRegistro.getContentPane(), VentanaLoginRegistro.PANEL_LOGIN);
+
+			}
+		});
+
 		GridBagConstraints gbc_lblInicioSesion = new GridBagConstraints();
 		gbc_lblInicioSesion.ipady = 1;
 		gbc_lblInicioSesion.anchor = GridBagConstraints.WEST;
@@ -406,14 +712,5 @@ public class PanelRegistro extends JScrollPane {
 		panelCentro.add(lblInicioSesion, gbc_lblInicioSesion);
 
 	}
-
-	/*
-	 * public void limpiarPanel() { noPicture = true;
-	 * registroNombreApellidos.setText(""); registroUserName.setText("");
-	 * registroCorreo.setText(""); registroPasswd.setText("");
-	 * presentacion.setText("");
-	 * 
-	 * fecha.setDate(null); }
-	 */
 
 }

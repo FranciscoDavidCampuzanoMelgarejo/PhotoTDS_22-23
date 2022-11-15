@@ -36,7 +36,7 @@ public class VentanaSubirFoto {
 	private CardLayout c1;				// Cardlayout de toda la ventana
 	private CardLayout c2;				// Cardlayout del panel de selección de foto
 	private File archivo;
-	private ImageIcon archivoIcon;
+	private ImageIcon vistaPrevia;		// Vista previa de la foto de la publicación
 	private boolean fotoSubida;
 	
 	private ImageIcon nuevapubli;
@@ -81,6 +81,13 @@ public class VentanaSubirFoto {
 		}
 	}
 	
+	public void recargaVistaPrevia(JLabel j, Image i) {
+		try{
+			j.setIcon(new ImageIcon(i));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/* Dibujado de ventana */
 	private void initialize() {
@@ -140,7 +147,11 @@ public class VentanaSubirFoto {
 		paneldndfoto.add(dndFoto, "dndFoto");
 		dndFoto.setLayout(new BorderLayout(0, 0));
 		
-		// Podemos obtener la foto por FileChooser o por el drag'n'drop
+		// Al seleccionar una nueva foto, se actualiza la vista previa
+		JLabel fotoElegida = new JLabel();
+		fotoElegida.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		// Podemos obtener la foto por FileChooser o por el drag and drop
 		dndFoto.setDropTarget(new DropTarget() {
 			public synchronized void drop(DropTargetDropEvent devent) {
 				try {
@@ -148,8 +159,8 @@ public class VentanaSubirFoto {
 					@SuppressWarnings("unchecked")
 					List<File> archivos = (List<File>) devent.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					archivo = archivos.get(0);
+					fotoElegida.setIcon(new ImageIcon(archivo.toString()));
 					c2.show(paneldndfoto, "fotoElegida");
-					System.out.println(archivo.toString());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -161,6 +172,8 @@ public class VentanaSubirFoto {
 				JFileChooser chooser = new JFileChooser();
 				chooser.showOpenDialog(botonFilechooser);
 				archivo = chooser.getSelectedFile();
+				vistaPrevia = new ImageIcon(archivo.toString());
+				fotoElegida.setIcon(new ImageIcon(archivo.toString()));
 				c2.show(paneldndfoto, "fotoElegida");
 			}
 		});
@@ -175,27 +188,17 @@ public class VentanaSubirFoto {
 					@SuppressWarnings("unchecked")
 					List<File> archivos = (List<File>) devent.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					archivo = archivos.get(0);
-					panelfotoElegida.revalidate();
+					fotoElegida.setIcon(new ImageIcon(archivo.toString()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 		
-		JLabel fotoElegida = new JLabel("Debería haber una puta foto");
-		fotoElegida.setHorizontalAlignment(SwingConstants.CENTER);
-		if(archivo!=null) {
-			try{
-				
-				Image i = ImageIO.read(archivo);
-				fotoElegida.setIcon(new ImageIcon(i));
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
+		// Añadimos la foto una vez ya se ha elegido
 		panelfotoElegida.add(fotoElegida, BorderLayout.CENTER);
+		
+		
 			
 		JPanel panelBotonContinuar = new JPanel();
 		panelfotoElegida.add(panelBotonContinuar, BorderLayout.SOUTH);
