@@ -48,11 +48,14 @@ import com.toedter.calendar.JDateChooser;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.filtros.DocumentFilterListener;
-import umu.tds.filtros.EstadosValidacion;
+import umu.tds.filtros.FiltroPassword;
 import umu.tds.filtros.FiltroTextField;
 
 import java.awt.FlowLayout;
 import com.toedter.calendar.JCalendar;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.Dimension;
 
 public class PanelRegistro extends JScrollPane {
 
@@ -62,6 +65,8 @@ public class PanelRegistro extends JScrollPane {
 	private static final long serialVersionUID = 1L;
 
 	private static final int MAX_CARACTERES = 200;
+	private static final String CAMPO_OBLIGATORIO_VACIO = " Este campo es obligatorio ";
+	private static final String USUARIO_EXISTENTE = " Ya existe un usuario con nombre o correo ";
 	private boolean noPicture;
 	private File profilePic;
 
@@ -93,32 +98,30 @@ public class PanelRegistro extends JScrollPane {
 	private boolean correoValido;
 	private boolean passwordValido;
 	// private boolean fechaValido;
-	private boolean[] campoValido = new boolean[EstadosValidacion.values().length];
 
-	private void cambiarEtiquetas(JLabel lblSuperior, JLabel lblLateral, EstadosValidacion validacion) {
-		switch (validacion) {
-		case INICIAL:
-			lblSuperior.setText("");
+	private void cambiarEtiquetas(JLabel lblSuperior, JLabel lblLateral, String mensaje, ImageIcon icono) {
+		lblSuperior.setText(mensaje);
+		lblLateral.setIcon(icono);
+
+		if (mensaje == null)
 			lblSuperior.setVisible(false);
-			lblLateral.setVisible(false);
-			break;
-
-		case VALIDO:
-			lblSuperior.setText("");
-			lblSuperior.setVisible(false);
-			lblLateral.setIcon(iconoAcierto);
-			lblLateral.setVisible(true);
-			break;
-
-		case INVALIDO:
-			lblSuperior.setText(" - Formato incorrecto");
+		else
 			lblSuperior.setVisible(true);
-			lblLateral.setIcon(iconoError);
+
+		if (icono == null)
+			lblLateral.setVisible(false);
+		else
 			lblLateral.setVisible(true);
-			break;
-		default:
-			break;
-		}
+	}
+
+	// Sobrecarga del metodo original
+	private void cambiarEtiquetas(JLabel lblSuperior, JLabel lblLateral, ImageIcon icono) {
+		cambiarEtiquetas(lblSuperior, lblLateral, null, icono);
+	}
+
+	// Sobrecarga del metodo original
+	private void cambiarEtiquetas(JLabel lblSuperior, JLabel lblLateral) {
+		cambiarEtiquetas(lblSuperior, lblLateral, null, null);
 	}
 
 	private void limpiarPanel() {
@@ -149,11 +152,8 @@ public class PanelRegistro extends JScrollPane {
 		this.lblErrorFecha.setVisible(false);
 	}
 
-	private LocalDate fromDateToLocalDate(Date date) {
-		if (date != null) {
-			return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		}
-		return null;
+	private boolean campoCorrecto(String mensaje, boolean ponerIcono) {
+		return (mensaje == null && ponerIcono);
 	}
 
 	public PanelRegistro(JFrame frame) {
@@ -164,9 +164,6 @@ public class PanelRegistro extends JScrollPane {
 		this.iconoAcierto = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/tick-icon.png")).getImage()
 				.getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 
-		this.campoValido[EstadosValidacion.INICIAL.ordinal()] = false;
-		this.campoValido[EstadosValidacion.VALIDO.ordinal()] = true;
-		this.campoValido[EstadosValidacion.INVALIDO.ordinal()] = false;
 		this.crearPanel();
 	}
 
@@ -264,8 +261,8 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout.setHgap(0);
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelNombreApellidos = new GridBagConstraints();
+		gbc_panelNombreApellidos.anchor = GridBagConstraints.WEST;
 		gbc_panelNombreApellidos.insets = new Insets(0, 0, 5, 8);
-		gbc_panelNombreApellidos.fill = GridBagConstraints.BOTH;
 		gbc_panelNombreApellidos.gridx = 0;
 		gbc_panelNombreApellidos.gridy = 2;
 		panelCentro.add(panelNombreApellidos, gbc_panelNombreApellidos);
@@ -276,6 +273,9 @@ public class PanelRegistro extends JScrollPane {
 
 		lblErrorNombApell = new JLabel("");
 		lblErrorNombApell.setVisible(false);
+
+		Component rigidArea = Box.createRigidArea(new Dimension(10, 20));
+		panelNombreApellidos.add(rigidArea);
 		lblErrorNombApell.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorNombApell.setForeground(new Color(255, 106, 106));
 		panelNombreApellidos.add(lblErrorNombApell);
@@ -295,9 +295,28 @@ public class PanelRegistro extends JScrollPane {
 				new FiltroTextField("([A-Z][a-z]+)([\\s-][A-Z][a-z]+)*", new DocumentFilterListener() {
 
 					@Override
-					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
-						cambiarEtiquetas(lblErrorNombApell, lblIconoNombApell, estado);
-						nombreApellidosValido = campoValido[estado.ordinal()];
+					public void notificarRobustezPassword(String mensaje, Color color) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void notificarFormatoErroneo(String mensaje) {
+						cambiarEtiquetas(lblErrorNombApell, lblIconoNombApell, mensaje, iconoError);
+
+					}
+
+					@Override
+					public void notificarFormatoCorrecto() {
+						cambiarEtiquetas(lblErrorNombApell, lblIconoNombApell, iconoAcierto);
+						nombreApellidosValido = true;
+
+					}
+
+					@Override
+					public void notificarCampoVacio() {
+						cambiarEtiquetas(lblErrorNombApell, lblIconoNombApell);
+
 					}
 				}));
 
@@ -317,8 +336,8 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_1.setHgap(0);
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelUsuario = new GridBagConstraints();
+		gbc_panelUsuario.anchor = GridBagConstraints.WEST;
 		gbc_panelUsuario.insets = new Insets(0, 0, 5, 8);
-		gbc_panelUsuario.fill = GridBagConstraints.BOTH;
 		gbc_panelUsuario.gridx = 0;
 		gbc_panelUsuario.gridy = 4;
 		panelCentro.add(panelUsuario, gbc_panelUsuario);
@@ -329,6 +348,9 @@ public class PanelRegistro extends JScrollPane {
 
 		lblErrorUsuario = new JLabel("");
 		lblErrorUsuario.setVisible(false);
+
+		Component rigidArea_1 = Box.createRigidArea(new Dimension(10, 20));
+		panelUsuario.add(rigidArea_1);
 		lblErrorUsuario.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorUsuario.setForeground(new Color(255, 106, 106));
 		panelUsuario.add(lblErrorUsuario);
@@ -348,9 +370,27 @@ public class PanelRegistro extends JScrollPane {
 				.setDocumentFilter(new FiltroTextField(".+", new DocumentFilterListener() {
 
 					@Override
-					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
-						cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario, estado);
-						usuarioValido = campoValido[estado.ordinal()];
+					public void notificarRobustezPassword(String mensaje, Color color) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void notificarFormatoErroneo(String mensaje) {
+						cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario, mensaje, iconoError);
+
+					}
+
+					@Override
+					public void notificarFormatoCorrecto() {
+						cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario, iconoAcierto);
+						usuarioValido = true;
+
+					}
+
+					@Override
+					public void notificarCampoVacio() {
+						cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario);
 
 					}
 				}));
@@ -369,8 +409,8 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_2.setHgap(0);
 		flowLayout_2.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelCorreo = new GridBagConstraints();
+		gbc_panelCorreo.anchor = GridBagConstraints.WEST;
 		gbc_panelCorreo.insets = new Insets(0, 0, 5, 8);
-		gbc_panelCorreo.fill = GridBagConstraints.BOTH;
 		gbc_panelCorreo.gridx = 0;
 		gbc_panelCorreo.gridy = 6;
 		panelCentro.add(panelCorreo, gbc_panelCorreo);
@@ -381,6 +421,9 @@ public class PanelRegistro extends JScrollPane {
 
 		lblErrorCorreo = new JLabel("");
 		lblErrorCorreo.setVisible(false);
+
+		Component rigidArea_2 = Box.createRigidArea(new Dimension(10, 20));
+		panelCorreo.add(rigidArea_2);
 		lblErrorCorreo.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorCorreo.setForeground(new Color(255, 106, 106));
 		panelCorreo.add(lblErrorCorreo);
@@ -400,9 +443,28 @@ public class PanelRegistro extends JScrollPane {
 				"([A-Za-z0-9-_.]+)@([A-Za-z0-9-_.]+[.]([A-Za-z]{2,5}))", new DocumentFilterListener() {
 
 					@Override
-					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
-						cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, estado);
-						correoValido = campoValido[estado.ordinal()];
+					public void notificarRobustezPassword(String mensaje, Color color) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void notificarFormatoErroneo(String mensaje) {
+						cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, mensaje, iconoError);
+
+					}
+
+					@Override
+					public void notificarFormatoCorrecto() {
+						cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, iconoAcierto);
+						correoValido = true;
+
+					}
+
+					@Override
+					public void notificarCampoVacio() {
+						cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo);
+
 					}
 				}));
 
@@ -420,8 +482,8 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_3.setHgap(0);
 		flowLayout_3.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelPassword = new GridBagConstraints();
+		gbc_panelPassword.anchor = GridBagConstraints.WEST;
 		gbc_panelPassword.insets = new Insets(0, 0, 5, 8);
-		gbc_panelPassword.fill = GridBagConstraints.BOTH;
 		gbc_panelPassword.gridx = 0;
 		gbc_panelPassword.gridy = 8;
 		panelCentro.add(panelPassword, gbc_panelPassword);
@@ -431,7 +493,11 @@ public class PanelRegistro extends JScrollPane {
 		panelPassword.add(lblPassword);
 
 		lblErrorPassword = new JLabel("");
+		lblErrorPassword.setBackground(Color.YELLOW);
 		lblErrorPassword.setVisible(false);
+
+		Component rigidArea_3 = Box.createRigidArea(new Dimension(10, 20));
+		panelPassword.add(rigidArea_3);
 		lblErrorPassword.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorPassword.setForeground(new Color(255, 106, 106));
 		panelPassword.add(lblErrorPassword);
@@ -447,12 +513,36 @@ public class PanelRegistro extends JScrollPane {
 		panelCentro.add(campoPassword, gbc_campoPassword);
 
 		((AbstractDocument) campoPassword.getDocument()).setDocumentFilter(
-				new FiltroTextField("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[-_$?!%.]).*", new DocumentFilterListener() {
+				new FiltroPassword("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[-_$?!%.]).*", new DocumentFilterListener() {
 
 					@Override
-					public void notificarCambioFormatoErroneo(EstadosValidacion estado) {
-						cambiarEtiquetas(lblErrorPassword, lblIconoPassword, estado);
-						passwordValido = campoValido[estado.ordinal()];
+					public void notificarRobustezPassword(String mensaje, Color color) {
+						cambiarEtiquetas(lblErrorPassword, lblIconoPassword, mensaje, iconoAcierto);
+						lblErrorPassword.setForeground(new Color(0, 0, 0));
+						lblErrorPassword.setBackground(color);
+						lblErrorPassword.setOpaque(true);
+						passwordValido = true;
+
+					}
+
+					@Override
+					public void notificarFormatoErroneo(String mensaje) {
+						cambiarEtiquetas(lblErrorPassword, lblIconoPassword, mensaje, iconoError);
+						lblErrorPassword.setForeground(new Color(255, 106, 106));
+						lblErrorPassword.setOpaque(false);
+
+					}
+
+					@Override
+					public void notificarFormatoCorrecto() {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void notificarCampoVacio() {
+						cambiarEtiquetas(lblErrorPassword, lblIconoPassword);
+						lblErrorPassword.setOpaque(false);
 
 					}
 				}));
@@ -472,8 +562,8 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_4.setHgap(0);
 		flowLayout_4.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelFecha = new GridBagConstraints();
+		gbc_panelFecha.anchor = GridBagConstraints.WEST;
 		gbc_panelFecha.insets = new Insets(0, 0, 5, 8);
-		gbc_panelFecha.fill = GridBagConstraints.BOTH;
 		gbc_panelFecha.gridx = 0;
 		gbc_panelFecha.gridy = 10;
 		panelCentro.add(panelFecha, gbc_panelFecha);
@@ -486,6 +576,9 @@ public class PanelRegistro extends JScrollPane {
 		lblErrorFecha.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorFecha.setForeground(new Color(255, 106, 106));
 		lblErrorFecha.setVisible(false);
+
+		Component rigidArea_4 = Box.createRigidArea(new Dimension(10, 20));
+		panelFecha.add(rigidArea_4);
 		panelFecha.add(lblErrorFecha);
 
 		dateChooser = new JDateChooser();
@@ -511,8 +604,8 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_5.setHgap(0);
 		flowLayout_5.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelPresentacion = new GridBagConstraints();
+		gbc_panelPresentacion.anchor = GridBagConstraints.WEST;
 		gbc_panelPresentacion.insets = new Insets(0, 0, 5, 8);
-		gbc_panelPresentacion.fill = GridBagConstraints.BOTH;
 		gbc_panelPresentacion.gridx = 0;
 		gbc_panelPresentacion.gridy = 13;
 		panelCentro.add(panelPresentacion, gbc_panelPresentacion);
@@ -581,7 +674,6 @@ public class PanelRegistro extends JScrollPane {
 			String password = String.valueOf(campoPassword.getPassword());
 			String fecha = dateChooser.getDate() == null ? ""
 					: new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getDate());
-			System.out.println(fecha);
 			String presentacion = textoPresentacion.getText();
 
 			boolean noVacios = true;
@@ -590,62 +682,56 @@ public class PanelRegistro extends JScrollPane {
 				Utils.campoVacio(nombreApellidos);
 			} catch (CampoVacioException ex) {
 				noVacios = false;
-				lblErrorNombApell.setText(" - Este campo es obligatorio");
-				lblErrorNombApell.setVisible(true);
+				cambiarEtiquetas(lblErrorNombApell, lblIconoNombApell, CAMPO_OBLIGATORIO_VACIO, iconoError);
 			}
 
 			try {
 				Utils.campoVacio(usuario);
 			} catch (CampoVacioException ex) {
 				noVacios = false;
-				lblErrorUsuario.setText(" - Este campo es obligatorio");
-				lblErrorUsuario.setVisible(true);
+				cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario, CAMPO_OBLIGATORIO_VACIO, iconoError);
 			}
 
 			try {
 				Utils.campoVacio(correo);
 			} catch (CampoVacioException ex) {
 				noVacios = false;
-				lblErrorCorreo.setText(" - Este campo es obligatorio");
-				lblErrorCorreo.setVisible(true);
+				cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, CAMPO_OBLIGATORIO_VACIO, iconoError);
 			}
 
 			try {
 				Utils.campoVacio(password);
 			} catch (CampoVacioException ex) {
 				noVacios = false;
-				lblErrorPassword.setText(" - Este campo es obligatorio");
-				lblErrorPassword.setVisible(true);
+				cambiarEtiquetas(lblErrorPassword, lblIconoPassword, CAMPO_OBLIGATORIO_VACIO, iconoError);
+				lblErrorPassword.setForeground(new Color(255, 106, 106));
 			}
 
 			try {
 				Utils.campoVacio(fecha);
 				lblErrorFecha.setText("");
 				lblErrorFecha.setVisible(false);
+				// cambiarEtiquetas(lblErrorFecha, null, true, null);
 			} catch (CampoVacioException ex) {
 				noVacios = false;
-				lblErrorFecha.setText(" - Este campo es obligatorio");
+				lblErrorFecha.setText(CAMPO_OBLIGATORIO_VACIO);
 				lblErrorFecha.setVisible(true);
+				// cambiarEtiquetas(lblErrorFecha, null, true, " - Este campo es obligatorio");
 			}
 
 			boolean camposCorrectos = nombreApellidosValido && usuarioValido && correoValido && passwordValido;
-			
+
 			if (noVacios && camposCorrectos) {
 				System.out.println("DENTRO");
-				
+
 				LocalDate fechaCambiada = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 				// Si ya existe un usuario con el mismo nombre de usuario o correo electronico
 				if (!Controlador.getControlador().registrarUsuario(nombreApellidos, correo, usuario, password,
 						fechaCambiada, presentacion, null)) {
-					lblErrorUsuario.setText(" - Ya existe un usuario con el mismo nombre o correo electrónico");
-					lblErrorUsuario.setVisible(true);
-					lblIconoUsuario.setIcon(iconoError);
-					lblIconoUsuario.setVisible(true);
 
-					lblErrorCorreo.setText(" - Ya existe un usuario con el mismo nombre o correo electrónico");
-					lblErrorCorreo.setVisible(true);
-					lblIconoCorreo.setIcon(iconoError);
-					lblIconoCorreo.setVisible(true);
+					cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario, USUARIO_EXISTENTE, iconoError);
+					cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, USUARIO_EXISTENTE, iconoError);
+
 				} else {
 					System.out.println("Exito al registrarse");
 					limpiarPanel();

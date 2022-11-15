@@ -9,6 +9,7 @@ import umu.tds.vistas.Utils;
 
 public class FiltroTextField extends DocumentFilter {
 
+	private static final String MENSAJE = " Formato incorrecto ";
 	private Boolean estado; // Variable para saber si se debe notificar el cambio o no
 	private String patron;
 	private DocumentFilterListener filterListener;
@@ -31,13 +32,13 @@ public class FiltroTextField extends DocumentFilter {
 				if (estado == null || (!estado)) {
 					// System.out.println("Formato correcto: cambio de estado");
 					estado = true;
-					filterListener.notificarCambioFormatoErroneo(EstadosValidacion.VALIDO);
+					filterListener.notificarFormatoCorrecto();
 				}
 			} catch (FormatoNoAdecuadoException e) {
 				if (estado == null || estado) {
 					// System.out.println("Formato incorreco: cambio de estado");
 					estado = false;
-					filterListener.notificarCambioFormatoErroneo(EstadosValidacion.INVALIDO);
+					filterListener.notificarFormatoErroneo(MENSAJE);
 				}
 			}
 
@@ -59,19 +60,19 @@ public class FiltroTextField extends DocumentFilter {
 				if (!estado) {
 					// System.out.println("Formato correcto: cambio de estado");
 					estado = true;
-					filterListener.notificarCambioFormatoErroneo(EstadosValidacion.VALIDO);
+					filterListener.notificarFormatoCorrecto();
 				}
 			} catch (FormatoNoAdecuadoException e) {
 				if (estado) {
 					// System.out.println("Formato incorrecto: cambio de estado");
 					estado = false;
-					filterListener.notificarCambioFormatoErroneo(EstadosValidacion.INVALIDO);
+					filterListener.notificarFormatoErroneo(MENSAJE);
 				}
 			}
 		} else {
 			// System.out.println("Estado Inicial");
 			estado = null;
-			filterListener.notificarCambioFormatoErroneo(EstadosValidacion.INICIAL);
+			filterListener.notificarCampoVacio();
 		}
 		super.remove(fb, offset, length);
 	}
