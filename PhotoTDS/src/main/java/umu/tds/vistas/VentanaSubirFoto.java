@@ -29,37 +29,22 @@ import javax.swing.JFileChooser;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.FlowLayout;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 public class VentanaSubirFoto {
 
 	private JFrame frame;
 	private CardLayout c1;				// Cardlayout de toda la ventana
 	private CardLayout c2;				// Cardlayout del panel de selección de foto
-	private File archivo;
-	private ImageIcon vistaPrevia;		// Vista previa de la foto de la publicación
-	private boolean fotoSubida;
+	private File archivo;				// Archivo seleccionado
+	JTextArea comentarioTextArea;		// Comentario de la foto
 	
-	private ImageIcon nuevapubli;
-
-	/* ELIMINAR AL TERMINAR VENTANA */
-	/*
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaSubirFoto window = new VentanaSubirFoto();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	*/
+	private ImageIcon nuevapubli;		
 
 	/* Constructor */
 	public VentanaSubirFoto() {
-		fotoSubida = false;
 		cargarRecursos();
 		initialize();
 	}
@@ -80,15 +65,11 @@ public class VentanaSubirFoto {
 			e.printStackTrace();
 		}
 	}
-	
-	public void recargaVistaPrevia(JLabel j, Image i) {
-		try{
-			j.setIcon(new ImageIcon(i));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
+	public String getComentario() {
+		return comentarioTextArea.getText();
+	}
+	
 	/* Dibujado de ventana */
 	private void initialize() {
 		frame = new JFrame();
@@ -172,7 +153,6 @@ public class VentanaSubirFoto {
 				JFileChooser chooser = new JFileChooser();
 				chooser.showOpenDialog(botonFilechooser);
 				archivo = chooser.getSelectedFile();
-				vistaPrevia = new ImageIcon(archivo.toString());
 				fotoElegida.setIcon(new ImageIcon(archivo.toString()));
 				c2.show(paneldndfoto, "fotoElegida");
 			}
@@ -197,20 +177,80 @@ public class VentanaSubirFoto {
 		
 		// Añadimos la foto una vez ya se ha elegido
 		panelfotoElegida.add(fotoElegida, BorderLayout.CENTER);
-		
-		
 			
 		JPanel panelBotonContinuar = new JPanel();
 		panelfotoElegida.add(panelBotonContinuar, BorderLayout.SOUTH);
 		
-		JButton btnNewButton = new JButton("Continuar con esta foto");
-		btnNewButton.setFont(new Font("Tahoma", Font.ITALIC, 10));
-		btnNewButton.setBackground(new Color(24, 84, 215));
-		panelBotonContinuar.add(btnNewButton);
+		// Donde se muestra la vista previa
+		JLabel vistaPreviaLabel = new JLabel("");
+		vistaPreviaLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JButton botonContinuar = new JButton("Continuar con esta foto");
+		botonContinuar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				frame.setBounds(frame.getX(), frame.getY(), frame.getWidth(), 640);
+				vistaPreviaLabel.setIcon((ImageIcon) fotoElegida.getIcon());
+				c1.show(frame.getContentPane(), "panelNuevaPublicacion");
+			}
+		});
+		botonContinuar.setFont(new Font("Tahoma", Font.ITALIC, 10));
+		botonContinuar.setBackground(new Color(24, 84, 215));
+		panelBotonContinuar.add(botonContinuar);
 		
 		
 		JPanel panelNuevaPublicacion = new JPanel();
 		frame.getContentPane().add(panelNuevaPublicacion, "panelNuevaPublicacion");
+		panelNuevaPublicacion.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panelBotonPublicar = new JPanel();
+		panelNuevaPublicacion.add(panelBotonPublicar, BorderLayout.SOUTH);
+		panelBotonPublicar.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JButton botonPublicacion = new JButton("Publicar");
+		botonPublicacion.setBackground(new Color(24, 84, 215));
+		botonPublicacion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
+		panelBotonPublicar.add(botonPublicacion);
+		
+		JPanel panelPublicacion = new JPanel();
+		panelNuevaPublicacion.add(panelPublicacion, BorderLayout.CENTER);
+		GridBagLayout gbl_panelPublicacion = new GridBagLayout();
+		gbl_panelPublicacion.columnWidths = new int[]{0, 0};
+		gbl_panelPublicacion.rowHeights = new int[]{1, 0, 0, 0};
+		gbl_panelPublicacion.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panelPublicacion.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		panelPublicacion.setLayout(gbl_panelPublicacion);
+		
+		
+		GridBagConstraints gbc_vistaPreviaLabel = new GridBagConstraints();
+		gbc_vistaPreviaLabel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_vistaPreviaLabel.insets = new Insets(0, 0, 10, 0);
+		gbc_vistaPreviaLabel.gridx = 0;
+		gbc_vistaPreviaLabel.gridy = 0;
+		panelPublicacion.add(vistaPreviaLabel, gbc_vistaPreviaLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Añade un comentario a tu foto");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.ITALIC, 16));
+		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+		gbc_lblNewLabel_1.insets = new Insets(0, 10, 5, 0);
+		gbc_lblNewLabel_1.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblNewLabel_1.gridx = 0;
+		gbc_lblNewLabel_1.gridy = 1;
+		panelPublicacion.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.insets = new Insets(0, 10, 0, 10);
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 2;
+		panelPublicacion.add(scrollPane, gbc_scrollPane);
+		
+		comentarioTextArea = new JTextArea();
+		comentarioTextArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
+		scrollPane.setViewportView(comentarioTextArea);
 		
 	}
 
