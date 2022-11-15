@@ -182,12 +182,14 @@ public class VentanaSubirFoto {
 			}
 		});
 		
-		JLabel fotoElegida = new JLabel("");
+		JLabel fotoElegida = new JLabel("Debería haber una puta foto");
 		fotoElegida.setHorizontalAlignment(SwingConstants.CENTER);
 		if(archivo!=null) {
 			try{
+				
 				Image i = ImageIO.read(archivo);
-				fotoElegida.setIcon();
+				fotoElegida.setIcon(new ImageIcon(i));
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
