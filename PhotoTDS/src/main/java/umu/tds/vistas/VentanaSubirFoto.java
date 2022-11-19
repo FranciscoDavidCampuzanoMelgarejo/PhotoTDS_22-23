@@ -1,7 +1,5 @@
 package umu.tds.vistas;
 
-import java.awt.EventQueue;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -15,6 +13,7 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JTextArea;
@@ -33,6 +32,8 @@ import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import java.util.regex.*;
+
 public class VentanaSubirFoto {
 
 	private JFrame frame;
@@ -41,7 +42,9 @@ public class VentanaSubirFoto {
 	private File archivo;				// Archivo seleccionado
 	JTextArea comentarioTextArea;		// Comentario de la foto
 	
-	private ImageIcon nuevapubli;		
+	private ImageIcon nuevapubli;	
+	
+	private Pattern patronEtiqueta;
 
 	/* Constructor */
 	public VentanaSubirFoto() {
@@ -49,14 +52,17 @@ public class VentanaSubirFoto {
 		initialize();
 	}
 	
+	/* Mostrar ventana */
 	public void mostrar() {
 		frame.setVisible(true);
 	}
 	
+	/* Ocultar ventana */
 	public void ocultar() {
 		frame.setVisible(false);
 	}
 	
+	/* Cargar recursos de la ventana */
 	public void cargarRecursos() {
 		try {
 			Image i = ImageIO.read(VentanaSubirFoto.class.getResource("/imagenes/nuevapubli.png")).getScaledInstance(80, 80, Image.SCALE_SMOOTH);
@@ -66,9 +72,11 @@ public class VentanaSubirFoto {
 		}
 	}
 
+	/* Getter del comentario de la publicación */
 	public String getComentario() {
 		return comentarioTextArea.getText();
 	}
+
 	
 	/* Dibujado de ventana */
 	private void initialize() {
@@ -208,6 +216,11 @@ public class VentanaSubirFoto {
 		panelBotonPublicar.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JButton botonPublicacion = new JButton("Publicar");
+		botonPublicacion.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 		botonPublicacion.setBackground(new Color(24, 84, 215));
 		botonPublicacion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		panelBotonPublicar.add(botonPublicacion);

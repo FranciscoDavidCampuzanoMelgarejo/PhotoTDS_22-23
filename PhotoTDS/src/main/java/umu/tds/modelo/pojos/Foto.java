@@ -1,10 +1,14 @@
 package umu.tds.modelo.pojos;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import java.util.regex.*;
 
 @Entity
 @Table(name = "FOTO")
@@ -33,6 +37,16 @@ public class Foto extends Publicacion {
 
 	public void setRuta(String ruta) {
 		this.ruta = ruta;
+	}
+	
+	public List<String> getEtiquetas() {
+		LinkedList<String> l = new LinkedList<String>();
+		Pattern patronEtiqueta = Pattern.compile("#[^ ]*");
+		Matcher m = patronEtiqueta.matcher(this.getDescripcion());
+		while(m.find()) {
+			l.add(m.group());
+		}
+		return l;
 	}
 
 }
