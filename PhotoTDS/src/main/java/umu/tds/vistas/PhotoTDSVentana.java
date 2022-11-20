@@ -18,14 +18,13 @@ import java.awt.Image;
 import javax.swing.JPanel;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
-import java.awt.CardLayout;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.SwingConstants;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.Insets;
 
 /* 
  * - VENTANA PRINCIPAL DE PHOTOTDS -
@@ -38,16 +37,17 @@ public class PhotoTDSVentana {
 
 	private JFrame frame;
 	private String defaultPanel = "panelPrincipal";
-
-	private ImageIcon dockBusqueda1;
-	private ImageIcon dockBusqueda2;
-	private ImageIcon dockPubli1;
-	private ImageIcon dockPubli2;
-	private ImageIcon dockPrincipal1;
-	private ImageIcon dockPrincipal2;
-	private ImageIcon dockUsuario1;
-	private ImageIcon dockUsuario2;
-	private Image bordeImagen;
+	
+	private Image dockPubli1, dockPubli2;
+	private Image dockBusqueda1, dockBusqueda2;
+	private Image dockHome1, dockHome2;
+	private Image dockUser1, dockUser2;
+	private Image errImage, glass;
+	private Image bordeIzqImagen, bordeDrcImagen;
+	
+	private int borderWidth;
+	
+	
 
 	public PhotoTDSVentana() {
 		cargarRecursos();
@@ -57,15 +57,18 @@ public class PhotoTDSVentana {
 	/* Carga los recursos gráficos asociados a la ventana */
 	public void cargarRecursos() {
 		try {
-			dockBusqueda1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			dockBusqueda2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			dockPubli1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			dockPubli2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			dockPrincipal1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			dockPrincipal2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			dockUsuario1 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			dockUsuario2 = new ImageIcon(PhotoTDSVentana.class.getResource("/imagenes/error.png"));
-			bordeImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/bordeImagen.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
+			dockPubli1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			dockPubli2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			dockBusqueda1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			dockBusqueda2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			dockHome1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			dockHome2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			dockUser1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			dockUser2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			errImage = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/error.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			glass = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/glass.png"));
+			bordeIzqImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordeizq.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
+			bordeDrcImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordedrc.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,14 +91,18 @@ public class PhotoTDSVentana {
 	/* Inicializa la ventana */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(240, 240, 240));
 		frame.setTitle("PhotoTDS");
 		frame.setBounds(100, 100, 840, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		borderWidth = (frame.getWidth()-(64*4))/2;
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
-		gridBagLayout.rowHeights = new int[]{80, 0, 0};
+		gridBagLayout.rowHeights = new int[]{64, 0, 32, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 		
 		JPanel photoTDSDock = new JPanel();
@@ -105,14 +112,13 @@ public class PhotoTDSVentana {
 		gbc_photoTDSDock.gridy = 0;
 		frame.getContentPane().add(photoTDSDock, gbc_photoTDSDock);
 		GridBagLayout gbl_photoTDSDock = new GridBagLayout();
-		gbl_photoTDSDock.columnWidths = new int[]{260, 320, 260, 0};
+		gbl_photoTDSDock.columnWidths = new int[]{292, 256, 292, 0};
 		gbl_photoTDSDock.rowHeights = new int[]{0, 0};
 		gbl_photoTDSDock.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
-		gbl_photoTDSDock.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_photoTDSDock.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		photoTDSDock.setLayout(gbl_photoTDSDock);
 		
 		JPanel bordeIzq = new JPanel();
-		bordeIzq.setBackground(Color.CYAN);
 		GridBagConstraints gbc_bordeIzq = new GridBagConstraints();
 		gbc_bordeIzq.fill = GridBagConstraints.BOTH;
 		gbc_bordeIzq.gridx = 0;
@@ -120,27 +126,27 @@ public class PhotoTDSVentana {
 		photoTDSDock.add(bordeIzq, gbc_bordeIzq);
 		bordeIzq.setLayout(new BorderLayout(0, 0));
 		
-		final JLabel bordeIzqIconLabel = new JLabel("");
-		bordeIzqIconLabel.setIcon(new ImageIcon(bordeImagen));
-		bordeIzqIconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		bordeIzq.add(bordeIzqIconLabel, BorderLayout.CENTER);
+		JLabel bordeIzqGlass = new JLabel("");
+		bordeIzqGlass.setIcon(new ImageIcon(bordeIzqImagen));
+		bordeIzq.add(bordeIzqGlass, BorderLayout.CENTER);
 		
 		JPanel panelDOCK = new JPanel();
-		panelDOCK.setBackground(Color.WHITE);
+		//panelDOCK.setBackground(Color.WHITE);
 		GridBagConstraints gbc_panelDOCK = new GridBagConstraints();
 		gbc_panelDOCK.fill = GridBagConstraints.BOTH;
 		gbc_panelDOCK.gridx = 1;
 		gbc_panelDOCK.gridy = 0;
 		photoTDSDock.add(panelDOCK, gbc_panelDOCK);
 		GridBagLayout gbl_panelDOCK = new GridBagLayout();
-		gbl_panelDOCK.columnWidths = new int[]{80, 80, 80, 80, 0};
+		gbl_panelDOCK.columnWidths = new int[]{64, 64, 64, 64, 0};
 		gbl_panelDOCK.rowHeights = new int[]{0, 0};
 		gbl_panelDOCK.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panelDOCK.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panelDOCK.setLayout(gbl_panelDOCK);
 		
 		JPanel dockBusqueda = new JPanel();
-		dockBusqueda.setBackground(Color.MAGENTA);
+		dockBusqueda.setToolTipText("Búsqueda");
+		//dockBusqueda.setBackground(Color.MAGENTA);
 		GridBagConstraints gbc_dockBusqueda = new GridBagConstraints();
 		gbc_dockBusqueda.fill = GridBagConstraints.BOTH;
 		gbc_dockBusqueda.gridx = 0;
@@ -148,12 +154,13 @@ public class PhotoTDSVentana {
 		panelDOCK.add(dockBusqueda, gbc_dockBusqueda);
 		dockBusqueda.setLayout(new BorderLayout(0, 0));
 		
-		final JLabel busquedaIconLabel = new JLabel("");
-		busquedaIconLabel.setIcon(dockBusqueda1);
-		dockBusqueda.add(busquedaIconLabel, BorderLayout.CENTER);
+		final JLabel busquedaIcon = new JLabel("");
+		busquedaIcon.setIcon(new ImageIcon(dockBusqueda1));
+		dockBusqueda.add(busquedaIcon, BorderLayout.CENTER);
 		
 		JPanel dockPubli = new JPanel();
-		dockPubli.setBackground(Color.YELLOW);
+		dockPubli.setToolTipText("Nueva publicación");
+		//dockPubli.setBackground(Color.YELLOW);
 		GridBagConstraints gbc_dockPubli = new GridBagConstraints();
 		gbc_dockPubli.fill = GridBagConstraints.BOTH;
 		gbc_dockPubli.gridx = 1;
@@ -161,12 +168,13 @@ public class PhotoTDSVentana {
 		panelDOCK.add(dockPubli, gbc_dockPubli);
 		dockPubli.setLayout(new BorderLayout(0, 0));
 		
-		final JLabel publiIconLabel = new JLabel("");
-		publiIconLabel.setIcon(dockPubli1);
-		dockPubli.add(publiIconLabel, BorderLayout.CENTER);
+		final JLabel publiIcon = new JLabel("");
+		publiIcon.setIcon(new ImageIcon(dockPubli1));
+		dockPubli.add(publiIcon, BorderLayout.CENTER);
 		
 		JPanel dockPrincipal = new JPanel();
-		dockPrincipal.setBackground(Color.RED);
+		dockPrincipal.setToolTipText("Inicio");
+		//dockPrincipal.setBackground(Color.RED);
 		GridBagConstraints gbc_dockPrincipal = new GridBagConstraints();
 		gbc_dockPrincipal.fill = GridBagConstraints.BOTH;
 		gbc_dockPrincipal.gridx = 2;
@@ -174,12 +182,13 @@ public class PhotoTDSVentana {
 		panelDOCK.add(dockPrincipal, gbc_dockPrincipal);
 		dockPrincipal.setLayout(new BorderLayout(0, 0));
 		
-		final JLabel principalIconLabel = new JLabel("");
-		principalIconLabel.setIcon(dockPrincipal1);
-		dockPrincipal.add(principalIconLabel, BorderLayout.CENTER);
+		final JLabel homeIcon = new JLabel("");
+		homeIcon.setIcon(new ImageIcon(dockHome1));
+		dockPrincipal.add(homeIcon, BorderLayout.CENTER);
 		
 		JPanel dockUsuario = new JPanel();
-		dockUsuario.setBackground(Color.GREEN);
+		dockUsuario.setToolTipText("Usuario");
+		//dockUsuario.setBackground(Color.GREEN);
 		GridBagConstraints gbc_dockUsuario = new GridBagConstraints();
 		gbc_dockUsuario.fill = GridBagConstraints.BOTH;
 		gbc_dockUsuario.gridx = 3;
@@ -187,12 +196,11 @@ public class PhotoTDSVentana {
 		panelDOCK.add(dockUsuario, gbc_dockUsuario);
 		dockUsuario.setLayout(new BorderLayout(0, 0));
 		
-		final JLabel usuarioIconLabel = new JLabel("");
-		usuarioIconLabel.setIcon(dockUsuario1);
-		dockUsuario.add(usuarioIconLabel, BorderLayout.CENTER);
+		final JLabel usuarioIcon = new JLabel("");
+		usuarioIcon.setIcon(new ImageIcon(dockUser1));
+		dockUsuario.add(usuarioIcon, BorderLayout.CENTER);
 		
 		JPanel bordeDrc = new JPanel();
-		bordeDrc.setBackground(Color.CYAN);
 		GridBagConstraints gbc_bordeDrc = new GridBagConstraints();
 		gbc_bordeDrc.fill = GridBagConstraints.BOTH;
 		gbc_bordeDrc.gridx = 2;
@@ -200,10 +208,18 @@ public class PhotoTDSVentana {
 		photoTDSDock.add(bordeDrc, gbc_bordeDrc);
 		bordeDrc.setLayout(new BorderLayout(0, 0));
 		
-		JLabel bordeDrcIconLabel = new JLabel("");
-		bordeDrcIconLabel.setIcon(new ImageIcon(bordeImagen));
-		bordeDrcIconLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		bordeDrc.add(bordeDrcIconLabel, BorderLayout.CENTER);
+		JLabel bordeDrcGlass = new JLabel("");
+		bordeDrcGlass.setIcon(new ImageIcon(bordeDrcImagen));
+		bordeDrc.add(bordeDrcGlass, BorderLayout.CENTER);
+		
+		frame.getContentPane().addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				borderWidth = (frame.getWidth()-(64*4))/2;
+				bordeIzqGlass.setIcon(new ImageIcon(bordeIzqImagen.getScaledInstance(borderWidth, 64, Image.SCALE_SMOOTH)));
+				bordeDrcGlass.setIcon(new ImageIcon(bordeDrcImagen.getScaledInstance(borderWidth, 64, Image.SCALE_SMOOTH)));
+			}
+		});
 		
 		JPanel photoTDSRenderPanel = new JPanel();
 		GridBagConstraints gbc_photoTDSRenderPanel = new GridBagConstraints();
@@ -220,6 +236,14 @@ public class PhotoTDSVentana {
 		photoTDSRenderPanel.add(panelPrincipal, "panelPrincipal");
 		dockPrincipal.addMouseListener(new MouseAdapter() {
 			@Override
+			public void mouseEntered(MouseEvent e) {
+				homeIcon.setIcon(new ImageIcon(dockHome2));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				homeIcon.setIcon(new ImageIcon(dockHome1));
+			}
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				c.show(photoTDSRenderPanel, "panelPrincipal");
 			}
@@ -229,6 +253,15 @@ public class PhotoTDSVentana {
 		panelUsuario.setBackground(Color.GREEN);
 		photoTDSRenderPanel.add(panelUsuario, "panelUsuario");
 		dockUsuario.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				usuarioIcon.setIcon(new ImageIcon(dockUser2));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				usuarioIcon.setIcon(new ImageIcon(dockUser1));
+			}
+			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				c.show(photoTDSRenderPanel, "panelUsuario");
@@ -240,6 +273,14 @@ public class PhotoTDSVentana {
 		photoTDSRenderPanel.add(panelBusqueda, "panelBusqueda");
 		dockBusqueda.addMouseListener(new MouseAdapter() {
 			@Override
+			public void mouseEntered(MouseEvent e) {
+				busquedaIcon.setIcon(new ImageIcon(dockBusqueda2));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				busquedaIcon.setIcon(new ImageIcon(dockBusqueda1));
+			}
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				c.show(photoTDSRenderPanel, "panelBusqueda");
 			}
@@ -248,7 +289,22 @@ public class PhotoTDSVentana {
 		JPanel panelPubli = new JPanel();
 		panelPubli.setBackground(Color.YELLOW);
 		photoTDSRenderPanel.add(panelPubli, "panelPubli");
+		
+		JPanel photoTDSLogoPanel = new JPanel();
+		GridBagConstraints gbc_photoTDSLogoPanel = new GridBagConstraints();
+		gbc_photoTDSLogoPanel.fill = GridBagConstraints.BOTH;
+		gbc_photoTDSLogoPanel.gridx = 0;
+		gbc_photoTDSLogoPanel.gridy = 2;
+		frame.getContentPane().add(photoTDSLogoPanel, gbc_photoTDSLogoPanel);
 		dockPubli.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				publiIcon.setIcon(new ImageIcon(dockPubli2));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				publiIcon.setIcon(new ImageIcon(dockPubli1));
+			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				c.show(photoTDSRenderPanel, "panelPubli");
@@ -265,8 +321,8 @@ public class PhotoTDSVentana {
 					PhotoTDSVentana phototdswin = new PhotoTDSVentana();
 					VentanaLoginRegistro loginregistro = new VentanaLoginRegistro();
 					VentanaSubirFoto v = new VentanaSubirFoto();
-					v.mostrar();
-					phototdswin.frame.setVisible(false);
+					//v.mostrar();
+					phototdswin.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
