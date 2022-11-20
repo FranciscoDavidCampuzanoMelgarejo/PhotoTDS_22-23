@@ -24,7 +24,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.Insets;
 
 /* 
  * - VENTANA PRINCIPAL DE PHOTOTDS -
@@ -38,15 +37,13 @@ public class PhotoTDSVentana {
 	private JFrame frame;
 	private String defaultPanel = "panelPrincipal";
 	
-	private Image dockPubli1, dockPubli2;
-	private Image dockBusqueda1, dockBusqueda2;
-	private Image dockHome1, dockHome2;
-	private Image dockUser1, dockUser2;
+	private Image publi1, publi2;
+	private Image busqueda1, busqueda2;
+	private Image home1, home2;
+	private Image user1, user2;
 	private Image errImage, glass;
-	private Image bordeIzqImagen, bordeDrcImagen;
-	
-	private int borderWidth;
-	
+	private Image dockizq, dockdrc;
+	private Image logoizq, logodrc, logoCentro;
 	
 
 	public PhotoTDSVentana() {
@@ -57,18 +54,21 @@ public class PhotoTDSVentana {
 	/* Carga los recursos gráficos asociados a la ventana */
 	public void cargarRecursos() {
 		try {
-			dockPubli1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			dockPubli2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			dockBusqueda1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			dockBusqueda2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			dockHome1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			dockHome2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			dockUser1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			dockUser2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			publi1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			publi2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			busqueda1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			busqueda2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			home1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			home2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			user1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			user2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
 			errImage = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/error.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
 			glass = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/glass.png"));
-			bordeIzqImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordeizq.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
-			bordeDrcImagen = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordedrc.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
+			dockizq = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordeizq.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
+			dockdrc = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordedrc.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
+			logoizq = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-bordeizq.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
+			logodrc = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-bordedrc.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
+			logoCentro = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-centro.png")).getScaledInstance(168, 32, Image.SCALE_SMOOTH);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,8 +95,6 @@ public class PhotoTDSVentana {
 		frame.setTitle("PhotoTDS");
 		frame.setBounds(100, 100, 840, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		borderWidth = (frame.getWidth()-(64*4))/2;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
@@ -127,7 +125,7 @@ public class PhotoTDSVentana {
 		bordeIzq.setLayout(new BorderLayout(0, 0));
 		
 		JLabel bordeIzqGlass = new JLabel("");
-		bordeIzqGlass.setIcon(new ImageIcon(bordeIzqImagen));
+		bordeIzqGlass.setIcon(new ImageIcon(dockizq));
 		bordeIzq.add(bordeIzqGlass, BorderLayout.CENTER);
 		
 		JPanel panelDOCK = new JPanel();
@@ -155,7 +153,7 @@ public class PhotoTDSVentana {
 		dockBusqueda.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel busquedaIcon = new JLabel("");
-		busquedaIcon.setIcon(new ImageIcon(dockBusqueda1));
+		busquedaIcon.setIcon(new ImageIcon(busqueda1));
 		dockBusqueda.add(busquedaIcon, BorderLayout.CENTER);
 		
 		JPanel dockPubli = new JPanel();
@@ -169,7 +167,7 @@ public class PhotoTDSVentana {
 		dockPubli.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel publiIcon = new JLabel("");
-		publiIcon.setIcon(new ImageIcon(dockPubli1));
+		publiIcon.setIcon(new ImageIcon(publi1));
 		dockPubli.add(publiIcon, BorderLayout.CENTER);
 		
 		JPanel dockPrincipal = new JPanel();
@@ -183,7 +181,7 @@ public class PhotoTDSVentana {
 		dockPrincipal.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel homeIcon = new JLabel("");
-		homeIcon.setIcon(new ImageIcon(dockHome1));
+		homeIcon.setIcon(new ImageIcon(home1));
 		dockPrincipal.add(homeIcon, BorderLayout.CENTER);
 		
 		JPanel dockUsuario = new JPanel();
@@ -197,7 +195,7 @@ public class PhotoTDSVentana {
 		dockUsuario.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel usuarioIcon = new JLabel("");
-		usuarioIcon.setIcon(new ImageIcon(dockUser1));
+		usuarioIcon.setIcon(new ImageIcon(user1));
 		dockUsuario.add(usuarioIcon, BorderLayout.CENTER);
 		
 		JPanel bordeDrc = new JPanel();
@@ -209,17 +207,9 @@ public class PhotoTDSVentana {
 		bordeDrc.setLayout(new BorderLayout(0, 0));
 		
 		JLabel bordeDrcGlass = new JLabel("");
-		bordeDrcGlass.setIcon(new ImageIcon(bordeDrcImagen));
+		bordeDrcGlass.setIcon(new ImageIcon(dockdrc));
 		bordeDrc.add(bordeDrcGlass, BorderLayout.CENTER);
 		
-		frame.getContentPane().addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				borderWidth = (frame.getWidth()-(64*4))/2;
-				bordeIzqGlass.setIcon(new ImageIcon(bordeIzqImagen.getScaledInstance(borderWidth, 64, Image.SCALE_SMOOTH)));
-				bordeDrcGlass.setIcon(new ImageIcon(bordeDrcImagen.getScaledInstance(borderWidth, 64, Image.SCALE_SMOOTH)));
-			}
-		});
 		
 		JPanel photoTDSRenderPanel = new JPanel();
 		GridBagConstraints gbc_photoTDSRenderPanel = new GridBagConstraints();
@@ -237,11 +227,11 @@ public class PhotoTDSVentana {
 		dockPrincipal.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				homeIcon.setIcon(new ImageIcon(dockHome2));
+				homeIcon.setIcon(new ImageIcon(home2));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				homeIcon.setIcon(new ImageIcon(dockHome1));
+				homeIcon.setIcon(new ImageIcon(home1));
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -255,11 +245,11 @@ public class PhotoTDSVentana {
 		dockUsuario.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				usuarioIcon.setIcon(new ImageIcon(dockUser2));
+				usuarioIcon.setIcon(new ImageIcon(user2));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				usuarioIcon.setIcon(new ImageIcon(dockUser1));
+				usuarioIcon.setIcon(new ImageIcon(user1));
 			}
 			
 			@Override
@@ -274,11 +264,11 @@ public class PhotoTDSVentana {
 		dockBusqueda.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				busquedaIcon.setIcon(new ImageIcon(dockBusqueda2));
+				busquedaIcon.setIcon(new ImageIcon(busqueda2));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				busquedaIcon.setIcon(new ImageIcon(dockBusqueda1));
+				busquedaIcon.setIcon(new ImageIcon(busqueda1));
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -296,18 +286,73 @@ public class PhotoTDSVentana {
 		gbc_photoTDSLogoPanel.gridx = 0;
 		gbc_photoTDSLogoPanel.gridy = 2;
 		frame.getContentPane().add(photoTDSLogoPanel, gbc_photoTDSLogoPanel);
+		GridBagLayout gbl_photoTDSLogoPanel = new GridBagLayout();
+		gbl_photoTDSLogoPanel.columnWidths = new int[]{93, 168, -128, 0};
+		gbl_photoTDSLogoPanel.rowHeights = new int[]{0, 0};
+		gbl_photoTDSLogoPanel.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_photoTDSLogoPanel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		photoTDSLogoPanel.setLayout(gbl_photoTDSLogoPanel);
+		
+		JPanel logobordeizq = new JPanel();
+		GridBagConstraints gbc_logobordeizq = new GridBagConstraints();
+		gbc_logobordeizq.fill = GridBagConstraints.BOTH;
+		gbc_logobordeizq.gridx = 0;
+		gbc_logobordeizq.gridy = 0;
+		photoTDSLogoPanel.add(logobordeizq, gbc_logobordeizq);
+		logobordeizq.setLayout(new BorderLayout(0, 0));
+		
+		JLabel logobordeizqglass = new JLabel("");
+			logobordeizqglass.setIcon(new ImageIcon(logoizq));
+		logobordeizq.add(logobordeizqglass);
+		
+		JPanel logocentro = new JPanel();
+		GridBagConstraints gbc_logocentro = new GridBagConstraints();
+		gbc_logocentro.fill = GridBagConstraints.VERTICAL;
+		gbc_logocentro.gridx = 1;
+		gbc_logocentro.gridy = 0;
+		photoTDSLogoPanel.add(logocentro, gbc_logocentro);
+		logocentro.setLayout(new BorderLayout(0, 0));
+		
+		JLabel logocentroglass = new JLabel("");
+			logocentroglass.setIcon(new ImageIcon(logoCentro));
+		logocentro.add(logocentroglass, BorderLayout.CENTER);
+		
+		JPanel logobordedrc = new JPanel();
+		GridBagConstraints gbc_logobordedrc = new GridBagConstraints();
+		gbc_logobordedrc.fill = GridBagConstraints.BOTH;
+		gbc_logobordedrc.gridx = 2;
+		gbc_logobordedrc.gridy = 0;
+		photoTDSLogoPanel.add(logobordedrc, gbc_logobordedrc);
+		logobordedrc.setLayout(new BorderLayout(0, 0));
+		
+		JLabel logobordedrcglass = new JLabel("");
+			logobordedrcglass.setIcon(new ImageIcon(logodrc));
+		logobordedrc.add(logobordedrcglass, BorderLayout.CENTER);
+		
+		
 		dockPubli.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				publiIcon.setIcon(new ImageIcon(dockPubli2));
+				publiIcon.setIcon(new ImageIcon(publi2));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				publiIcon.setIcon(new ImageIcon(dockPubli1));
+				publiIcon.setIcon(new ImageIcon(publi1));
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				c.show(photoTDSRenderPanel, "panelPubli");
+			}
+		});
+		
+		
+		frame.getContentPane().addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				bordeIzqGlass.setIcon(new ImageIcon(dockizq.getScaledInstance((frame.getWidth()-(64*4))/2, 64, Image.SCALE_SMOOTH)));
+				bordeDrcGlass.setIcon(new ImageIcon(dockdrc.getScaledInstance((frame.getWidth()-(64*4))/2, 64, Image.SCALE_SMOOTH)));
+				logobordeizqglass.setIcon(new ImageIcon(logoizq.getScaledInstance((frame.getWidth()-168)/2, 32, Image.SCALE_SMOOTH)));
+				logobordedrcglass.setIcon(new ImageIcon(logodrc.getScaledInstance((frame.getWidth()-168)/2, 32, Image.SCALE_SMOOTH)));
 			}
 		});
 	}
