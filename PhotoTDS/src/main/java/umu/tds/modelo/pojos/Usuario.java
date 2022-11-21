@@ -162,6 +162,7 @@ public class Usuario implements Serializable {
 	}
 
 	// METODOS AUXILIARES
+	
 
 	public void addPublicacion(Publicacion publicacion) {
 		this.publicaciones.add(publicacion);
