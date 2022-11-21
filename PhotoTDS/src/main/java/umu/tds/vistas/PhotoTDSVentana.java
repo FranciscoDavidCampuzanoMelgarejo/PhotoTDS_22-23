@@ -24,6 +24,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import javax.swing.border.EtchedBorder;
 
 /* 
  * - VENTANA PRINCIPAL DE PHOTOTDS -
@@ -64,8 +65,8 @@ public class PhotoTDSVentana {
 			user2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
 			errImage = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/error.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
 			glass = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/glass.png"));
-			dockizq = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordeizq.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
-			dockdrc = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordedrc.png")).getScaledInstance(260, 80, Image.SCALE_SMOOTH);
+			dockizq = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordeizq.png")).getScaledInstance(292, 80, Image.SCALE_SMOOTH);
+			dockdrc = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordedrc.png")).getScaledInstance(292, 80, Image.SCALE_SMOOTH);
 			logoizq = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-bordeizq.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
 			logodrc = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-bordedrc.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
 			logoCentro = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-centro.png")).getScaledInstance(168, 32, Image.SCALE_SMOOTH);
@@ -110,7 +111,7 @@ public class PhotoTDSVentana {
 		gbc_photoTDSDock.gridy = 0;
 		frame.getContentPane().add(photoTDSDock, gbc_photoTDSDock);
 		GridBagLayout gbl_photoTDSDock = new GridBagLayout();
-		gbl_photoTDSDock.columnWidths = new int[]{292, 256, 292, 0};
+		gbl_photoTDSDock.columnWidths = new int[]{0, 256, 0, 0};
 		gbl_photoTDSDock.rowHeights = new int[]{0, 0};
 		gbl_photoTDSDock.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_photoTDSDock.rowWeights = new double[]{0.0, Double.MIN_VALUE};
@@ -287,7 +288,7 @@ public class PhotoTDSVentana {
 		gbc_photoTDSLogoPanel.gridy = 2;
 		frame.getContentPane().add(photoTDSLogoPanel, gbc_photoTDSLogoPanel);
 		GridBagLayout gbl_photoTDSLogoPanel = new GridBagLayout();
-		gbl_photoTDSLogoPanel.columnWidths = new int[]{93, 168, -128, 0};
+		gbl_photoTDSLogoPanel.columnWidths = new int[]{0, 168, -128, 0};
 		gbl_photoTDSLogoPanel.rowHeights = new int[]{0, 0};
 		gbl_photoTDSLogoPanel.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_photoTDSLogoPanel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
