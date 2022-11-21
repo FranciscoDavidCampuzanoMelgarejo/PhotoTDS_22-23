@@ -55,7 +55,7 @@ public abstract class Publicacion implements Serializable {
 	@Column(name = "texto")
 	private List<String> hashtags = new LinkedList<String>();
 
-	@ManyToOne(fetch = FetchType.EAGER) // Al recuperar una publicacion, tambien recuperamos al usuario
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) // Al recuperar una publicacion, tambien recuperamos al usuario
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 

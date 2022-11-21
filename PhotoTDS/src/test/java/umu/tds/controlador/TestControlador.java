@@ -8,6 +8,8 @@ import java.time.Month;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import umu.tds.modelo.pojos.Usuario;
+
 public class TestControlador {
 
 	private static Controlador controlador;
@@ -40,6 +42,11 @@ public class TestControlador {
 		assertFalse(controlador.loginUsuario("anonim0", "anonimus"));
 		assertTrue(controlador.loginUsuario("gema@um.es", "1234"));
 		assertFalse(controlador.loginUsuario("G3m1t4", "#GEMA#"));
+	}
+	
+	@Test
+	public void testEditarPerfil() {
+		controlador.editarPerfil(null, "Editar presentacion", "4321");
 	}
 
 }

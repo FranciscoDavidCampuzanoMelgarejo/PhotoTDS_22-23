@@ -43,9 +43,23 @@ public class CatalogoUsuarios {
 		usuarios.put(usuario.getId(), usuario);
 	}
 
-	// Obtener un usuario del catalogo
+	// Obtener un usuario del catalogo (a partir del id)
 	public Usuario get(Integer id) {
 		return usuarios.get(id);
+	}
+	
+	public Usuario get(String nombreUsuario) {
+		return usuarios.values().stream()
+				.filter((Usuario u) -> u.getUsuario().equals(nombreUsuario))
+				.findFirst()
+				.orElse(null);
+	}
+	
+	public Usuario get(Predicate<Usuario> filtro) {
+		return usuarios.values().stream()
+				.filter(filtro)
+				.findFirst()
+				.orElse(null);
 	}
 
 	// Eliminar un usuario del catalogo

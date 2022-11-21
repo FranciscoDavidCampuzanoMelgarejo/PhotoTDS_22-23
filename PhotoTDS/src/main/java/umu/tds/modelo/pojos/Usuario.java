@@ -66,9 +66,8 @@ public class Usuario implements Serializable {
 	 */
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "SEGUIDORES_SEGUIDOS", joinColumns = {
-			@JoinColumn(name = "id_seguidor") }, inverseJoinColumns = {
-					@JoinColumn(name = "id_usuario_seguido") })
+	@JoinTable(name = "SEGUIDORES_SEGUIDOS", joinColumns = { @JoinColumn(name = "id_seguidor") }, inverseJoinColumns = {
+			@JoinColumn(name = "id_usuario_seguido") })
 	private Set<Usuario> seguidores = new HashSet<Usuario>();
 
 	@ManyToMany(mappedBy = "seguidores", fetch = FetchType.EAGER)
@@ -160,6 +159,20 @@ public class Usuario implements Serializable {
 
 	public void setPublicaciones(List<Publicacion> publicaciones) {
 		this.publicaciones = publicaciones;
+	}
+
+	// METODOS AUXILIARES
+
+	public void addPublicacion(Publicacion publicacion) {
+		this.publicaciones.add(publicacion);
+	}
+
+	public void addSeguidor(Usuario usuario) {
+		this.seguidores.add(usuario);
+	}
+
+	public void removeSeguidor(Usuario usuario) {
+		this.seguidores.remove(usuario);
 	}
 
 	@Override

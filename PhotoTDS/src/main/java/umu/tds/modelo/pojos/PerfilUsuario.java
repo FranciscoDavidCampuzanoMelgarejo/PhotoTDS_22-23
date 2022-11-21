@@ -51,7 +51,8 @@ public class PerfilUsuario implements Serializable {
 	}
 
 	public void setPresentacion(String presentacion) {
-		this.presentacion = presentacion;
+		if (presentacion != null)
+			this.presentacion = presentacion;
 	}
 
 	public String getFoto() {
@@ -59,7 +60,8 @@ public class PerfilUsuario implements Serializable {
 	}
 
 	public void setFoto(String foto) {
-		this.foto = foto;
+		if (foto != null)
+			this.foto = foto;
 	}
 
 	@Override
