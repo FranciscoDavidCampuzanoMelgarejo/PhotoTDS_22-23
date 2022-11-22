@@ -535,7 +535,8 @@ public class PanelRegistro extends JScrollPane {
 
 					@Override
 					public void notificarFormatoCorrecto() {
-						// TODO Auto-generated method stub
+						cambiarEtiquetas(lblPassword, lblIconoPassword, iconoAcierto);
+						passwordValido = true;
 
 					}
 

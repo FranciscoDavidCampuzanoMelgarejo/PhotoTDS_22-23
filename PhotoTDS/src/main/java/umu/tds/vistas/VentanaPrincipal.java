@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 
+import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Usuario;
 
 import java.awt.GridBagLayout;
@@ -30,11 +31,9 @@ import javax.swing.border.EtchedBorder;
  * - VENTANA PRINCIPAL DE PHOTOTDS -
  * */
 
-public class PhotoTDSVentana {
+public class VentanaPrincipal {
 
 	private CardLayout c;
-	private Usuario usuario;
-
 	private JFrame frame;
 	private String defaultPanel = "panelPrincipal";
 	
@@ -47,7 +46,7 @@ public class PhotoTDSVentana {
 	private Image logoizq, logodrc, logoCentro;
 	
 
-	public PhotoTDSVentana() {
+	public VentanaPrincipal() {
 		cargarRecursos();
 		initialize();
 	}
@@ -55,37 +54,40 @@ public class PhotoTDSVentana {
 	/* Carga los recursos gráficos asociados a la ventana */
 	public void cargarRecursos() {
 		try {
-			publi1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			publi2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/publi2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			busqueda1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			busqueda2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/busqueda2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			home1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			home2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/home2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			user1 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			user2 = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/user2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			errImage = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/error.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-			glass = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/glass.png"));
-			dockizq = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordeizq.png")).getScaledInstance(292, 80, Image.SCALE_SMOOTH);
-			dockdrc = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/dock-images/bordedrc.png")).getScaledInstance(292, 80, Image.SCALE_SMOOTH);
-			logoizq = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-bordeizq.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
-			logodrc = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-bordedrc.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
-			logoCentro = ImageIO.read(PhotoTDSVentana.class.getResource("/imagenes/logo-images/logo-centro.png")).getScaledInstance(168, 32, Image.SCALE_SMOOTH);
+			publi1 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/publi1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			publi2 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/publi2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			busqueda1 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/busqueda1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			busqueda2 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/busqueda2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			home1 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/home1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			home2 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/home2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			user1 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/user1.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			user2 = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/user2.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			errImage = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/error.png")).getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+			glass = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/glass.png"));
+			dockizq = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/bordeizq.png")).getScaledInstance(292, 80, Image.SCALE_SMOOTH);
+			dockdrc = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock-images/bordedrc.png")).getScaledInstance(292, 80, Image.SCALE_SMOOTH);
+			logoizq = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/logo-images/logo-bordeizq.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
+			logodrc = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/logo-images/logo-bordedrc.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
+			logoCentro = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/logo-images/logo-centro.png")).getScaledInstance(168, 32, Image.SCALE_SMOOTH);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			terminatePhotoTDS();
+			destruir();
 		}
 	}
 	
-	public void mostrarVentana() {
+	public void mostrar() {
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);
 	}
 
+	public void ocultar() {
+		frame.setVisible(false);
+	}
+	
 	/* Destruye la ventana y libera recursos */
-	public void terminatePhotoTDS() {
-		this.frame.dispose();		// Cuando movamos todo a un main, destruir la ventana no terminaría la aplicación
-		// ¿Añadir más cosas?
+	public void destruir() {
+		this.frame.dispose();
 	}
 	
 
@@ -359,11 +361,12 @@ public class PhotoTDSVentana {
 	}
 
 	/* Main de la ventana. Borrar cuando se añada a clase main principal de la aplicación */
+	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(new FlatDarculaLaf());
+					//UIManager.setLookAndFeel(new FlatDarculaLaf());
 					PhotoTDSVentana phototdswin = new PhotoTDSVentana();
 					VentanaLoginRegistro loginregistro = new VentanaLoginRegistro();
 					VentanaSubirFoto v = new VentanaSubirFoto();
@@ -375,5 +378,6 @@ public class PhotoTDSVentana {
 			}
 		});
 	}
+	*/
 	
 }

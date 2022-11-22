@@ -197,13 +197,8 @@ public class PanelLogin extends JPanel {
 				} else {
 					System.out.println("Exito al loguearse");
 					limpiarPanel();
-					// Antes de pasar al panel principal de la aplicacion, hay que hacer algun tipo
-					// de transicion
-					// para indicar al usuario que el inicio de sesion ha ido correctamente
-					
-					// this.frame.cambiarPanel(PhotoTDSVentana.PANEL_APLICACION);
-					PhotoTDSVentana ventana = new PhotoTDSVentana();
-					ventana.mostrarVentana();
+					VentanaPrincipal ventana = new VentanaPrincipal();
+						ventana.mostrar();
 					frmLoginRegistro.dispose();
 				}
 			}

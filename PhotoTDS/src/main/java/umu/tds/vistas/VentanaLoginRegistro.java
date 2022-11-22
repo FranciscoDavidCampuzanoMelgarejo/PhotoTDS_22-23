@@ -57,7 +57,7 @@ public class VentanaLoginRegistro {
 	}
 
 	/* Destruye la ventanica y libera recursos manualmente */
-	public void terminate() {
+	public void destruir() {
 		this.frame.dispose();
 	}
 
