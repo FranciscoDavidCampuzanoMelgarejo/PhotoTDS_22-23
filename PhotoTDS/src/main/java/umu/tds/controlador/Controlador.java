@@ -52,8 +52,26 @@ public class Controlador {
 		return controlador;
 	}
 
+	public String getUsername() {
+		return usuario.getUsuario();
+	}
+	
+	public String getUserNombre() {
+		return usuario.getNombre();
+	}
+	
+	public String getUserPresentacion() {
+		return usuario.getPerfil().getPresentacion();
+	}
+	
+	public String getUserPicture() {
+		return usuario.getPerfil().getFoto();
+	}
+	
 	public boolean registrarUsuario(String nombre, String email, String nombreUsuario, String password,
 			LocalDate fechaNacimiento, String presentacion, String foto) {
+		
+		System.out.println(foto);
 
 		if (!catalogoUsuarios
 				.existeUsuario((Usuario u) -> u.getEmail().equals(email) || u.getUsuario().equals(nombreUsuario))) {

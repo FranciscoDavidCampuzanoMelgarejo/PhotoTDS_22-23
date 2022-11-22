@@ -140,6 +140,7 @@ public class Usuario implements Serializable {
 	public Boolean getPremium() {
 		return premium;
 	}
+	
 
 	public void setPremium(Boolean premium) {
 		this.premium = premium;
