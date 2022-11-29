@@ -66,12 +66,8 @@ public class Usuario implements Serializable {
 	 */
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "SEGUIDORES_SEGUIDOS", joinColumns = { @JoinColumn(name = "id_seguidor") }, inverseJoinColumns = {
-			@JoinColumn(name = "id_usuario_seguido") })
+	@JoinTable(name = "SEGUIDOR_SEGUIDOS", joinColumns = @JoinColumn(name = "id_seguidor"), inverseJoinColumns = @JoinColumn(name = "id_seguido"))
 	private Set<Usuario> seguidores = new HashSet<Usuario>();
-
-	@ManyToMany(mappedBy = "seguidores", fetch = FetchType.EAGER)
-	private Set<Usuario> seguidos = new HashSet<Usuario>();
 
 	// Constructor por defecto obligatorio para que la clase sea Serializable
 	public Usuario() {
@@ -140,7 +136,6 @@ public class Usuario implements Serializable {
 	public Boolean getPremium() {
 		return premium;
 	}
-	
 
 	public void setPremium(Boolean premium) {
 		this.premium = premium;
@@ -162,8 +157,15 @@ public class Usuario implements Serializable {
 		this.publicaciones = publicaciones;
 	}
 
+	public Set<Usuario> getSeguidores() {
+		return seguidores;
+	}
+
+	public void setSeguidores(Set<Usuario> seguidores) {
+		this.seguidores = seguidores;
+	}
+
 	// METODOS AUXILIARES
-	
 
 	public void addPublicacion(Publicacion publicacion) {
 		this.publicaciones.add(publicacion);

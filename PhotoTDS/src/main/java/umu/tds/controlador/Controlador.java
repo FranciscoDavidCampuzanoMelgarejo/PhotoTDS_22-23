@@ -131,6 +131,7 @@ public class Controlador {
 
 		// Nos añadimos a la lista de seguidores del usuario seguido
 		usuarioSeguido.addSeguidor(this.usuario);
+		usuarioDAO.update(usuarioSeguido);
 	}
 
 	public void dejarSeguir(String nombreUsuario) {
@@ -140,6 +141,7 @@ public class Controlador {
 
 		// Nos elmininamos de la lista de seguidores del usuario seguido
 		usuarioSeguido.removeSeguidor(this.usuario);
+		usuarioDAO.update(usuarioSeguido);
 	}
 
 	public void publicarFoto(String ruta, String titulo, String descripcion, List<String> hashtags) {
