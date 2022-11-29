@@ -2,6 +2,7 @@ package umu.tds.modelo.pojos;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +54,7 @@ public abstract class Publicacion implements Serializable {
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "HASHTAGS", joinColumns = @JoinColumn(name = "publicacion_id"))
 	@Column(name = "texto")
-	private List<String> hashtags = new LinkedList<String>();
+	private List<String> hashtags = new ArrayList<String>(4);
 
 	@ManyToOne(fetch = FetchType.EAGER) // Al recuperar una publicacion, tambien recuperamos al usuario
 	@JoinColumn(name = "usuario")
@@ -62,17 +63,18 @@ public abstract class Publicacion implements Serializable {
 	// Al eliminar una publicacion se eliminan los comentarios
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	@JoinColumn(name = "publicacion_id")
-	private Set<Comentario> comentarios = new HashSet<Comentario>();
+	private List<Comentario> comentarios = new LinkedList<Comentario>();
 
 	public Publicacion() {
 
 	}
 
-	public Publicacion(String titulo, String descripcion, Integer likes, LocalDateTime fecha) {
+	public Publicacion(String titulo, String descripcion, Integer likes, LocalDateTime fecha, List<String> hashtags) {
 		this.titulo = titulo;
 		this.descripcion = descripcion;
 		this.likes = likes;
 		this.fecha = fecha;
+		addHashTags(hashtags);
 	}
 
 	public Integer getId() {
@@ -120,7 +122,7 @@ public abstract class Publicacion implements Serializable {
 	}
 
 	public void setHashtags(List<String> hashtags) {
-		this.hashtags = hashtags;
+		addHashTags(hashtags);
 	}
 
 	public Usuario getUsuario() {
@@ -131,18 +133,37 @@ public abstract class Publicacion implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public Set<Comentario> getComentarios() {
+	public List<Comentario> getComentarios() {
 		return comentarios;
 	}
 
-	public void setComentarios(Set<Comentario> comentarios) {
-		this.comentarios = comentarios;
+	public void setComentarios(List<Comentario> comentarios) {
+		addComentarios(comentarios);
 	}
 
 	@Override
 	public String toString() {
 		return "Publicacion [id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", likes=" + likes
 				+ ", fecha=" + fecha.toString() + ", hashtags=" + hashtags + ", usuario=" + usuario.getUsuario() + "]";
+	}
+
+	// METODOS AUXILIARES
+	public void addComentario(Comentario comentario) {
+		this.comentarios.add(comentario);
+	}
+
+	// METODOS PRIVADOS
+	private void addHashTags(List<String> hashtags) {
+		if (hashtags != null) {
+			hashtags.stream().forEach((String hashtag) -> this.hashtags.add(hashtag));
+		}
+
+	}
+
+	private void addComentarios(List<Comentario> comentarios) {
+		if (comentarios != null) {
+			comentarios.stream().forEach((Comentario c) -> this.comentarios.add(c));
+		}
 	}
 
 }

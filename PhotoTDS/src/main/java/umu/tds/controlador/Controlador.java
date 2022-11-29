@@ -2,15 +2,19 @@ package umu.tds.controlador;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.persistence.EntityManager;
 
 import umu.tds.modelo.catalogos.CatalogoPublicaciones;
 import umu.tds.modelo.catalogos.CatalogoUsuarios;
+import umu.tds.modelo.pojos.Album;
 import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.PerfilUsuario;
+import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
 import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.persistencia.FactoriaEMF;
@@ -36,6 +40,9 @@ public class Controlador {
 	// Usuario logueado
 	private Usuario usuario;
 
+	// Lista de usuarios a los que sigo
+	List<Usuario> usuariosSeguidos;
+
 	private Controlador() {
 		this.catalogoUsuarios = CatalogoUsuarios.getCatalogoUsuarios();
 		this.catalogoPublicaciones = CatalogoPublicaciones.getCatalogoPublicaciones();
@@ -47,6 +54,15 @@ public class Controlador {
 		this.comentarioDAO = factoria.getComentarioDAO();
 
 		this.usuario = null;
+		this.usuariosSeguidos = new LinkedList<Usuario>();
+	}
+	
+	private void publicar(Publicacion publicacion) {
+		publicacion.setUsuario(this.usuario);
+
+		publicacionDAO.save(publicacion);
+		catalogoPublicaciones.add(publicacion);
+		this.usuario.addPublicacion(publicacion);
 	}
 
 	public static Controlador getControlador() {
@@ -59,22 +75,22 @@ public class Controlador {
 	public String getUsername() {
 		return usuario.getUsuario();
 	}
-	
+
 	public String getUserNombre() {
 		return usuario.getNombre();
 	}
-	
+
 	public String getUserPresentacion() {
 		return usuario.getPerfil().getPresentacion();
 	}
-	
+
 	public String getUserPicture() {
 		return usuario.getPerfil().getFoto();
 	}
-	
+
 	public boolean registrarUsuario(String nombre, String email, String nombreUsuario, String password,
 			LocalDate fechaNacimiento, String presentacion, String foto) {
-		
+
 		System.out.println(foto);
 
 		if (!catalogoUsuarios
@@ -103,8 +119,15 @@ public class Controlador {
 		Usuario usuarioLogueado = catalogoUsuarios.get(predicado);
 		if (usuarioLogueado != null) {
 			// Necesito obtener el usuario de la base de datos para que este persistido
-			//this.usuario = usuarioDAO.findBy(usuarioLogueado.getId());
+			// this.usuario = usuarioDAO.findBy(usuarioLogueado.getId());
 			this.usuario = usuarioLogueado;
+
+			// Obtener los usuarios a los que sigue el usuario logueado
+			for (Usuario u : catalogoUsuarios.getAll()) {
+				if (u.isSeguido(usuarioLogueado)) {
+					usuariosSeguidos.add(u);
+				}
+			}
 			return true;
 		}
 		return false;
@@ -145,23 +168,38 @@ public class Controlador {
 	}
 
 	public void publicarFoto(String ruta, String titulo, String descripcion, List<String> hashtags) {
+
+		Foto foto = new Foto(titulo, descripcion, 0, LocalDateTime.now(), ruta, hashtags);
+		publicar(foto);
 		
-		Foto foto = new Foto(titulo, descripcion, 0, LocalDateTime.now(), ruta);
-		foto.setHashtags(hashtags);
+	}
 
-		foto.setUsuario(this.usuario);
+	public void publicarAlbum(String titulo, String descripcion, List<String> hashtags, Set<Foto> fotos) {
+		
+		Album album = new Album(titulo, descripcion, 0, LocalDateTime.now(), hashtags, fotos);
+		publicar(album);
+	}
 
-		publicacionDAO.save(foto);
-		catalogoPublicaciones.add(foto);
-		this.usuario.addPublicacion(foto);
+	public void elminarPublicacion(Integer id) {
+		Publicacion publicacion = catalogoPublicaciones.get(id);
+		catalogoPublicaciones.remove(publicacion);
+		publicacionDAO.delete(publicacion);
+	}
+
+	public int numeroSeguidores() {
+		return usuario.numeroSeguidores();
+	}
+
+	public int numeroUsuariosSeguidos() {
+		return usuariosSeguidos.size();
 	}
 
 	// Getters y Setters
-	public Usuario getUsuario() {
-		return usuario;
+	public Usuario getUsuarioLogueado() {
+		return this.usuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
+	public void setUsuarioLogueado(Usuario usuario) {
 		this.usuario = usuario;
 	}
 
