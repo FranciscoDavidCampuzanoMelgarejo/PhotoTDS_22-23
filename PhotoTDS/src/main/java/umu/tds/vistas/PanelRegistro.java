@@ -16,6 +16,7 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -54,6 +55,8 @@ import umu.tds.filtros.FiltroTextField;
 import java.awt.FlowLayout;
 import com.toedter.calendar.JCalendar;
 import java.awt.Component;
+
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import java.awt.Dimension;
 
@@ -68,7 +71,8 @@ public class PanelRegistro extends JScrollPane {
 	private static final String CAMPO_OBLIGATORIO_VACIO = " Este campo es obligatorio ";
 	private static final String USUARIO_EXISTENTE = " Ya existe un usuario con nombre o correo ";
 	private boolean noPicture;
-	private File profilePic;
+	
+	private String foto;
 
 	private JFrame frmLoginRegistro;
 
@@ -158,6 +162,7 @@ public class PanelRegistro extends JScrollPane {
 
 	public PanelRegistro(JFrame frame) {
 		this.noPicture = true;
+		foto = this.getClass().getResource("/imagenes/dock-images/user1.png").toString();		// Foto por defecto
 		this.frmLoginRegistro = frame;
 		this.iconoError = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/cross-icon.png")).getImage()
 				.getScaledInstance(20, 20, Image.SCALE_DEFAULT));
@@ -233,23 +238,25 @@ public class PanelRegistro extends JScrollPane {
 			}
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e){
 				JFileChooser chooser = new JFileChooser();
 				chooser.showOpenDialog(lblFoto);
-				profilePic = chooser.getSelectedFile();
-				if (profilePic != null) {
-					ImageIcon pp = new ImageIcon(profilePic.toString());
+				File archivo = chooser.getSelectedFile();
+				if (archivo != null) {
+					ImageIcon pp = new ImageIcon(archivo.toString());
 					int h = pp.getIconHeight();
 					int w = pp.getIconWidth();
 					if (h > 100 || w > 100) {
 						// Si la imagen es demasiado grande, cancelamos la operacion
-						// ventanaPadre.mostrarErrorTamaño()
+						JOptionPane.showMessageDialog(frmLoginRegistro, "Solo se admiten imágenes de hasta 100x100 píxeles",
+								"Error al cargar imagen de perfil", JOptionPane.ERROR_MESSAGE);
 						lblFoto.setIcon(noPicture1);
 						noPicture = true;
 					} else {
 						lblFoto.setIcon(pp);
 						lblFoto.setToolTipText("Cambiar foto de perfil");
 						noPicture = false;
+						foto = archivo.toString();
 					}
 				}
 			}
@@ -728,7 +735,7 @@ public class PanelRegistro extends JScrollPane {
 				LocalDate fechaCambiada = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 				// Si ya existe un usuario con el mismo nombre de usuario o correo electronico
 				if (!Controlador.getControlador().registrarUsuario(nombreApellidos, correo, usuario, password,
-						fechaCambiada, presentacion, null)) {
+						fechaCambiada, presentacion, foto)) {
 
 					cambiarEtiquetas(lblErrorUsuario, lblIconoUsuario, USUARIO_EXISTENTE, iconoError);
 					cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, USUARIO_EXISTENTE, iconoError);

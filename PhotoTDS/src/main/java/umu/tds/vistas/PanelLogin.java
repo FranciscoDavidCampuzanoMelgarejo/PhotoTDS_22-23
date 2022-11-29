@@ -42,7 +42,7 @@ public class PanelLogin extends JPanel {
 
 	private void crearPanel() {
 		setLayout(new BorderLayout());
-
+		
 		JPanel panelCentro = new JPanel();
 		add(panelCentro, BorderLayout.CENTER);
 

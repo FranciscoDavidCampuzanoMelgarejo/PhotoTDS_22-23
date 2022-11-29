@@ -89,6 +89,4 @@ public class VentanaLoginRegistro {
 		JOptionPane.showMessageDialog(frame, "Solo se admiten imágenes de hasta 100x100 píxeles",
 				"Error al cargar imagen de perfil", JOptionPane.ERROR_MESSAGE);
 	}
-
-	/* Mostrar popup de error de */
 }
