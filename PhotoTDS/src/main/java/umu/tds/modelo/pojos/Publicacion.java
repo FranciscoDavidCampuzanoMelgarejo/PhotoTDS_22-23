@@ -37,45 +37,52 @@ public abstract class Publicacion implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
-	private Integer id;
+	protected Integer id;
 
 	@Column(name = "titulo")
-	private String titulo;
+	protected String titulo;
 
 	@Column(name = "descripcion")
-	private String descripcion;
+	protected String descripcion;
 
 	@Column(name = "likes")
-	private Integer likes;
+	protected Integer likes;
 
 	@Column(name = "fecha_publicacion", columnDefinition = "TIMESTAMP")
-	private LocalDateTime fecha;
+	protected LocalDateTime fecha;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "HASHTAGS", joinColumns = @JoinColumn(name = "publicacion_id"))
 	@Column(name = "texto")
-	private List<String> hashtags = new ArrayList<String>(4);
+	protected List<String> hashtags = new ArrayList<String>(4);
 
 	@ManyToOne(fetch = FetchType.EAGER) // Al recuperar una publicacion, tambien recuperamos al usuario
 	@JoinColumn(name = "usuario")
-	private Usuario usuario;
+	protected Usuario usuario;
 
 	// Al eliminar una publicacion se eliminan los comentarios
-	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	// DEBE DE SER UN SET. SI NO ES UN SET NO FUNCIONA
+	@OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
 	@JoinColumn(name = "publicacion_id")
-	private List<Comentario> comentarios = new LinkedList<Comentario>();
+	protected Set<Comentario> comentarios = new HashSet<Comentario>();
 
-	public Publicacion() {
-
+	protected Publicacion() {
+		this.likes = 0;
+		this.fecha = LocalDateTime.now();
 	}
 
-	public Publicacion(String titulo, String descripcion, Integer likes, LocalDateTime fecha, List<String> hashtags) {
+	// Hacer una publicacion escribiendo hashtags en un comentario
+	protected Publicacion(String titulo, String descripcion, Comentario comentario, List<String> hashtags) {
+		this();
 		this.titulo = titulo;
 		this.descripcion = descripcion;
-		this.likes = likes;
-		this.fecha = fecha;
+
+		addComentario(comentario);
 		addHashTags(hashtags);
 	}
+	
+	// METODOS ABSTRACTOS
+	public abstract void darLike();
 
 	public Integer getId() {
 		return id;
@@ -133,11 +140,11 @@ public abstract class Publicacion implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public List<Comentario> getComentarios() {
+	public Set<Comentario> getComentarios() {
 		return comentarios;
 	}
 
-	public void setComentarios(List<Comentario> comentarios) {
+	public void setComentarios(Set<Comentario> comentarios) {
 		addComentarios(comentarios);
 	}
 
@@ -149,7 +156,8 @@ public abstract class Publicacion implements Serializable {
 
 	// METODOS AUXILIARES
 	public void addComentario(Comentario comentario) {
-		this.comentarios.add(comentario);
+		if (comentario != null)
+			this.comentarios.add(comentario);
 	}
 
 	// METODOS PRIVADOS
@@ -160,7 +168,7 @@ public abstract class Publicacion implements Serializable {
 
 	}
 
-	private void addComentarios(List<Comentario> comentarios) {
+	private void addComentarios(Set<Comentario> comentarios) {
 		if (comentarios != null) {
 			comentarios.stream().forEach((Comentario c) -> this.comentarios.add(c));
 		}

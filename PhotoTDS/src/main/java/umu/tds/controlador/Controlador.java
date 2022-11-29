@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import umu.tds.modelo.catalogos.CatalogoPublicaciones;
 import umu.tds.modelo.catalogos.CatalogoUsuarios;
 import umu.tds.modelo.pojos.Album;
+import umu.tds.modelo.pojos.Comentario;
 import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.PerfilUsuario;
 import umu.tds.modelo.pojos.Publicacion;
@@ -136,7 +137,6 @@ public class Controlador {
 	public void editarPerfil(String foto, String presentacion, String password) {
 		PerfilUsuario perfil = usuario.getPerfil();
 		perfil.setFoto(foto);
-
 		perfil.setPresentacion(presentacion);
 
 		if (password != null) {
@@ -153,6 +153,7 @@ public class Controlador {
 		Usuario usuarioSeguido = catalogoUsuarios.get(nombreUsuario);
 
 		// Nos añadimos a la lista de seguidores del usuario seguido
+		usuariosSeguidos.add(usuarioSeguido);
 		usuarioSeguido.addSeguidor(this.usuario);
 		usuarioDAO.update(usuarioSeguido);
 	}
@@ -163,20 +164,21 @@ public class Controlador {
 		Usuario usuarioSeguido = catalogoUsuarios.get(nombreUsuario);
 
 		// Nos elmininamos de la lista de seguidores del usuario seguido
+		usuariosSeguidos.remove(usuarioSeguido);
 		usuarioSeguido.removeSeguidor(this.usuario);
 		usuarioDAO.update(usuarioSeguido);
 	}
 
-	public void publicarFoto(String ruta, String titulo, String descripcion, List<String> hashtags) {
+	public void publicarFoto(String ruta, String titulo, String descripcion, String comentario, List<String> hashtags) {
 
-		Foto foto = new Foto(titulo, descripcion, 0, LocalDateTime.now(), ruta, hashtags);
+		Foto foto = new Foto(titulo, descripcion, ruta, new Comentario(comentario, usuario), hashtags);
 		publicar(foto);
 		
 	}
 
-	public void publicarAlbum(String titulo, String descripcion, List<String> hashtags, Set<Foto> fotos) {
+	public void publicarAlbum(String titulo, String descripcion, String comentario, List<String> hashtags, Set<Foto> fotos) {
 		
-		Album album = new Album(titulo, descripcion, 0, LocalDateTime.now(), hashtags, fotos);
+		Album album = new Album(titulo, descripcion, new Comentario(comentario, usuario), hashtags, fotos);
 		publicar(album);
 	}
 
@@ -184,6 +186,12 @@ public class Controlador {
 		Publicacion publicacion = catalogoPublicaciones.get(id);
 		catalogoPublicaciones.remove(publicacion);
 		publicacionDAO.delete(publicacion);
+	}
+	
+	public void darLike(Integer id) {
+		Publicacion publicacion = catalogoPublicaciones.get(id);
+		publicacion.darLike();
+		publicacionDAO.update(publicacion);
 	}
 
 	public int numeroSeguidores() {

@@ -1,6 +1,5 @@
 package umu.tds.modelo.pojos;
 
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class Foto extends Publicacion {
 		super();
 	}
 
-	public Foto(String titulo, String descripcion, Integer likes, LocalDateTime fecha, String ruta, List<String> hashtags) {
-		super(titulo, descripcion, likes, fecha, hashtags);
+	public Foto(String titulo, String descripcion, String ruta, Comentario comentario, List<String> hashtags) {
+		super(titulo, descripcion, comentario, hashtags);
 		this.ruta = ruta;
 	}
 
@@ -39,11 +38,16 @@ public class Foto extends Publicacion {
 		this.ruta = ruta;
 	}
 	
+	@Override
+	public void darLike() {
+		this.likes++;
+	}
+
 	public List<String> getEtiquetas() {
 		LinkedList<String> l = new LinkedList<String>();
 		Pattern patronEtiqueta = Pattern.compile("#[^ ]*");
 		Matcher m = patronEtiqueta.matcher(this.getDescripcion());
-		while(m.find()) {
+		while (m.find()) {
 			l.add(m.group());
 		}
 		return l;

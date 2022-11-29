@@ -39,11 +39,10 @@ public class PruebaPersistencia {
 		
 		System.out.println(u);
 
-		Publicacion p1 = new Foto("De chill", "foto en la playa con los amigos", 0, LocalDateTime.now(),
-				"ruta/to/invent");
-		p1.setHashtags(Arrays.asList("#chill", "#playa", "#chiringuito"));
-		Publicacion p2 = new Foto("Paisaje", "foto del valle de Ricote", 6, LocalDateTime.now(), "ruta/to/invent/2");
-		Publicacion p3 = new Album("Album playa", "Album para guardar las fotos de la playa", 0, LocalDateTime.now());
+		Publicacion p1 = new Foto("De chill", "foto en la playa con los amigos",
+				"ruta/to/invent", null, null);
+		Publicacion p2 = new Foto("Paisaje", "foto del valle de Ricote", "ruta/to/invent/2", null, null);
+		Publicacion p3 = new Album("Album playa", "Album para guardar las fotos de la playa", null, null, null);
 		((Album) p3).getFotos().add((Foto) p1);
 		((Album) p3).getFotos().add((Foto) p2);
 		p1.setUsuario(u);

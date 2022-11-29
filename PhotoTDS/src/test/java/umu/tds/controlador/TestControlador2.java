@@ -38,7 +38,7 @@ public class TestControlador2 {
 		assertTrue(controlador.loginUsuario("gema@um.es", "1234"));
 		
 		//Publicar foto
-		controlador.publicarFoto("ruta/inventada", "Foto inicial", "Foto del atardecer en Murcia", null);
+		//controlador.publicarFoto("ruta/inventada", "Foto inicial", "Foto del atardecer en Murcia", null);
 		
 		
 		Usuario usuario = usuarioDAO.findBy(2);

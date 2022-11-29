@@ -1,6 +1,5 @@
 package umu.tds.modelo.pojos;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,9 +29,8 @@ public class Album extends Publicacion {
 		super();
 	}
 
-	public Album(String titulo, String descripcion, Integer likes, LocalDateTime fecha, List<String> hashtags,
-			Set<Foto> fotos) {
-		super(titulo, descripcion, likes, fecha, hashtags);
+	public Album(String titulo, String descripcion, Comentario comentario, List<String> hashtags, Set<Foto> fotos) {
+		super(titulo, descripcion, comentario, hashtags);
 		addFotos(fotos);
 	}
 
@@ -44,6 +42,14 @@ public class Album extends Publicacion {
 		if (fotos != null) {
 			addFotos(fotos);
 		}
+	}
+	
+	@Override
+	public void darLike() {
+		this.likes++;
+		fotos.stream()
+			.forEach(f -> f.darLike());
+		
 	}
 
 	// Metodos privados
