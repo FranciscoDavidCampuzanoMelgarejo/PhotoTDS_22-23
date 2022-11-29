@@ -5,16 +5,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.persistence.EntityManager;
+
 import umu.tds.modelo.catalogos.CatalogoPublicaciones;
 import umu.tds.modelo.catalogos.CatalogoUsuarios;
 import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.PerfilUsuario;
 import umu.tds.modelo.pojos.Usuario;
 import umu.tds.persistencia.FactoriaDAO;
+import umu.tds.persistencia.FactoriaEMF;
 import umu.tds.persistencia.IComentarioDAO;
 import umu.tds.persistencia.IPublicacionDAO;
 import umu.tds.persistencia.IUsuarioDAO;
 import umu.tds.persistencia.PublicacionDAO;
+import umu.tds.persistencia.UsuarioDAO;
 
 public class Controlador {
 
@@ -80,6 +84,8 @@ public class Controlador {
 
 		Usuario usuarioLogueado = catalogoUsuarios.get(predicado);
 		if (usuarioLogueado != null) {
+			// Necesito obtener el usuario de la base de datos para que este persistido
+			//this.usuario = usuarioDAO.findBy(usuarioLogueado.getId());
 			this.usuario = usuarioLogueado;
 			return true;
 		}
@@ -119,12 +125,24 @@ public class Controlador {
 	}
 
 	public void publicarFoto(String ruta, String titulo, String descripcion, List<String> hashtags) {
+		
 		Foto foto = new Foto(titulo, descripcion, 0, LocalDateTime.now(), ruta);
 		foto.setHashtags(hashtags);
 
-		this.usuario.addPublicacion(foto);
+		foto.setUsuario(this.usuario);
+
 		publicacionDAO.save(foto);
 		catalogoPublicaciones.add(foto);
+		this.usuario.addPublicacion(foto);
+	}
+
+	// Getters y Setters
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

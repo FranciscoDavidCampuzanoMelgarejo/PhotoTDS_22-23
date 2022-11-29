@@ -58,6 +58,7 @@ public class UsuarioDAO implements IUsuarioDAO {
 			}
 			em.close();
 		}
+		
 		return usuario;
 	}
 

@@ -50,12 +50,12 @@ public abstract class Publicacion implements Serializable {
 	@Column(name = "fecha_publicacion", columnDefinition = "TIMESTAMP")
 	private LocalDateTime fecha;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "HASHTAGS", joinColumns = @JoinColumn(name = "publicacion_id"))
 	@Column(name = "texto")
 	private List<String> hashtags = new LinkedList<String>();
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST) // Al recuperar una publicacion, tambien recuperamos al usuario
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE) // Al recuperar una publicacion, tambien recuperamos al usuario
 	@JoinColumn(name = "usuario")
 	private Usuario usuario;
 
@@ -142,8 +142,7 @@ public abstract class Publicacion implements Serializable {
 	@Override
 	public String toString() {
 		return "Publicacion [id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", likes=" + likes
-				+ ", fecha=" + fecha + ", hashtags=" + hashtags + ", usuario=" + usuario.getUsuario() + ", comentarios="
-				+ comentarios + "]";
+				+ ", fecha=" + fecha.toString() + ", hashtags=" + hashtags + ", usuario=" + usuario.getUsuario() + "]";
 	}
 
 }

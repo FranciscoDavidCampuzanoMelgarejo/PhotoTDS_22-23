@@ -4,19 +4,29 @@ import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
+import umu.tds.persistencia.IPublicacionDAO;
+import umu.tds.persistencia.IUsuarioDAO;
+import umu.tds.persistencia.PublicacionDAO;
+import umu.tds.persistencia.UsuarioDAO;
 
 public class TestControlador {
 
 	private static Controlador controlador;
+	private static IUsuarioDAO usuarioDAO;
+	private static IPublicacionDAO publicacionDAO;
 
 	@BeforeClass
 	public static void setUp() {
 		controlador = Controlador.getControlador();
+		usuarioDAO = UsuarioDAO.getUsuarioDAO();
+		publicacionDAO = PublicacionDAO.getPublicacionDAO();
 	}
 
 	@Test
@@ -43,10 +53,31 @@ public class TestControlador {
 		assertTrue(controlador.loginUsuario("gema@um.es", "1234"));
 		assertFalse(controlador.loginUsuario("G3m1t4", "#GEMA#"));
 	}
-	
+
 	@Test
 	public void testEditarPerfil() {
 		controlador.editarPerfil(null, "Editar presentacion", "4321");
+	}
+
+	@Test
+	public void testPublicarFoto() {
+		List<Publicacion> publicaciones;
+		Usuario usuarioPepe = usuarioDAO.findBy(1);
+		publicaciones = usuarioPepe.getPublicaciones();
+		publicaciones.stream()
+			.forEach((Publicacion p) -> System.out.println(p.getTitulo()));
+		controlador.setUsuario(usuarioPepe);
+		controlador.publicarFoto("/ruta/a/foto", "Foto1", "Esto es mi primera foto", null);
+		
+		// Despues de publicar la foto
+		System.out.println(usuarioPepe.getPublicaciones());
+		
+		Usuario nuevoPepe = usuarioDAO.findBy(1);
+		publicaciones = nuevoPepe.getPublicaciones();
+		publicaciones.stream()
+			.forEach((Publicacion p) -> System.out.println(p.getTitulo()));
+		 
+
 	}
 
 }
