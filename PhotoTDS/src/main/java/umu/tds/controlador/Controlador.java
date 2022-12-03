@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import umu.tds.componente.CargadorFotos;
 import umu.tds.componente.FotosEvent;
 import umu.tds.componente.FotosListener;
 import umu.tds.fotos.HashTag;
@@ -49,6 +50,9 @@ public class Controlador implements FotosListener {
 
 	// Lista de usuarios a los que sigo
 	List<Usuario> usuariosSeguidos;
+	
+	// Componente Java Bean para cargar las fotos a partir de un fichero XML
+	private CargadorFotos cargador;
 
 	private Controlador() {
 		this.catalogoUsuarios = CatalogoUsuarios.getCatalogoUsuarios();
@@ -62,6 +66,8 @@ public class Controlador implements FotosListener {
 
 		this.usuario = null;
 		this.usuariosSeguidos = new LinkedList<Usuario>();
+		this.cargador = new CargadorFotos();
+		this.cargador.addFotosListener(this);
 	}
 
 	private void publicar(Publicacion publicacion) {
@@ -129,6 +135,10 @@ public class Controlador implements FotosListener {
 			}
 		}
 
+	}
+	
+	public void cargarFotos(String ruta) {
+		this.cargador.setFicheroFotos(ruta);
 	}
 
 	public boolean registrarUsuario(String nombre, String email, String nombreUsuario, String password,
