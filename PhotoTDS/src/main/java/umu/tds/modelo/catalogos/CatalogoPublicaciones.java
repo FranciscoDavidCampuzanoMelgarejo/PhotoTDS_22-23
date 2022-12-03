@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.persistencia.IPublicacionDAO;
@@ -53,6 +54,15 @@ public class CatalogoPublicaciones {
 	// Recuperar todas las publicaciones del catalogo
 	public List<Publicacion> getAll() {
 		return publicaciones.values().stream().collect(Collectors.toList());
+	}
+	
+	// Comprobar si ya existe una foto con el mismo path
+	// Devuelve verdadero si ya existe una foto con la misma ruta, falso en caso contrario
+	public boolean checkPath(String ruta) {
+		return publicaciones.values().stream()
+				.filter((Publicacion p) -> p instanceof Foto)
+				.anyMatch((Publicacion p) -> ((Foto) p).getRuta().equals(ruta));
+				
 	}
 
 }

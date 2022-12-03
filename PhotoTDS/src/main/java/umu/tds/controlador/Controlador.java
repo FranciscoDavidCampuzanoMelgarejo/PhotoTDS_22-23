@@ -2,13 +2,19 @@ package umu.tds.controlador;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
+import umu.tds.componente.FotosEvent;
+import umu.tds.componente.FotosListener;
+import umu.tds.fotos.HashTag;
 import umu.tds.modelo.catalogos.CatalogoPublicaciones;
 import umu.tds.modelo.catalogos.CatalogoUsuarios;
 import umu.tds.modelo.pojos.Album;
@@ -25,7 +31,7 @@ import umu.tds.persistencia.IUsuarioDAO;
 import umu.tds.persistencia.PublicacionDAO;
 import umu.tds.persistencia.UsuarioDAO;
 
-public class Controlador {
+public class Controlador implements FotosListener {
 
 	private static Controlador controlador;
 
@@ -57,7 +63,7 @@ public class Controlador {
 		this.usuario = null;
 		this.usuariosSeguidos = new LinkedList<Usuario>();
 	}
-	
+
 	private void publicar(Publicacion publicacion) {
 		publicacion.setUsuario(this.usuario);
 
@@ -87,6 +93,42 @@ public class Controlador {
 
 	public String getUserPicture() {
 		return usuario.getPerfil().getFoto();
+	}
+
+	@Override
+	public void enteradoCambio(EventObject e) {
+		if (e instanceof FotosEvent) {
+			FotosEvent evento = (FotosEvent) e;
+			for (umu.tds.fotos.Foto foto : evento.getFotosNuevas().getFoto()) {
+
+				// Si la foto no esta guardada en el catalogo
+				if (!catalogoPublicaciones.checkPath(foto.getPath())) {
+					List<String> hashtags = null;
+					String textoComentario = null;
+					if (!foto.getHashTags().isEmpty()) {
+						hashtags = foto.getHashTags().stream().flatMap(h -> h.getHashTag().stream())
+								.collect(Collectors.toList());
+
+						StringBuilder sb = new StringBuilder();
+						for (String h : hashtags) {
+							sb.append("#" + h);
+						}
+						sb.append("\n");
+						textoComentario = sb.toString();
+
+						System.out.println("HASHTAGS");
+						hashtags.stream().forEach(h -> System.out.println(h));
+
+						System.out.println("COMENTARIO");
+						System.out.println(textoComentario);
+					}
+
+					publicarFoto(foto.getPath(), foto.getTitulo(), foto.getDescripcion(), textoComentario, hashtags);
+
+				}
+			}
+		}
+
 	}
 
 	public boolean registrarUsuario(String nombre, String email, String nombreUsuario, String password,
@@ -173,11 +215,12 @@ public class Controlador {
 
 		Foto foto = new Foto(titulo, descripcion, ruta, new Comentario(comentario, usuario), hashtags);
 		publicar(foto);
-		
+
 	}
 
-	public void publicarAlbum(String titulo, String descripcion, String comentario, List<String> hashtags, Set<Foto> fotos) {
-		
+	public void publicarAlbum(String titulo, String descripcion, String comentario, List<String> hashtags,
+			Set<Foto> fotos) {
+
 		Album album = new Album(titulo, descripcion, new Comentario(comentario, usuario), hashtags, fotos);
 		publicar(album);
 	}
@@ -187,7 +230,7 @@ public class Controlador {
 		catalogoPublicaciones.remove(publicacion);
 		publicacionDAO.delete(publicacion);
 	}
-	
+
 	public void darLike(Integer id) {
 		Publicacion publicacion = catalogoPublicaciones.get(id);
 		publicacion.darLike();
