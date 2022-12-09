@@ -31,6 +31,7 @@ import java.io.File;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.border.EtchedBorder;
+import java.awt.Insets;
 
 /* 
  * - VENTANA PRINCIPAL DE PHOTOTDS -
@@ -40,21 +41,26 @@ public class VentanaPrincipal {
 
 	private CardLayout c;
 	private JFrame frame;
-	private String defaultPanel = "panelPrincipal";
 	
 	private Image publi1, publi2;
 	private Image busqueda1, busqueda2;
 	private Image home1, home2;
 	private Image user1, user2;
-	private Image userPicture1, userPicture2;
+	private Image userDock1, userDock2;
+	private Image userPicture;
 	private Image errImage, glass;
 	private Image dockizq, dockdrc;
 	private Image logoizq, logodrc, logoCentro;
 	
 	private Image fondo;
 	
+	/* Subir una foto */
+	private boolean subiendoFoto;
+	
 
 	public VentanaPrincipal() {
+		subiendoFoto = false;
+		
 		cargarRecursos();
 		initialize();
 	}
@@ -77,17 +83,17 @@ public class VentanaPrincipal {
 			logoizq = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/logo-images/logo-bordeizq.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
 			logodrc = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/logo-images/logo-bordedrc.png")).getScaledInstance(336, 32, Image.SCALE_SMOOTH);
 			logoCentro = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/logo-images/logo-centro.png")).getScaledInstance(168, 32, Image.SCALE_SMOOTH);
-			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondo-1.jpg")).getScaledInstance(840, 720, Image.SCALE_SMOOTH);
-			
-			// Creamos la imagen de usuario en el dock. 
+			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/fondo-3.jpg"));//.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
+			 
 			if(Controlador.getControlador().getUserPicture() != null) {
 				File archivo = new File(Controlador.getControlador().getUserPicture());
+				userPicture = ImageIO.read(archivo);
 				
 				// Para la imagen sin el cursor encima, colocamos la imagen de usuario sobre el fondo de cristal transparente
 				BufferedImage buffer1 = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
 				buffer1.getGraphics().drawImage(glass, 0, 0, null);
 				buffer1.getGraphics().drawImage(ImageIO.read(archivo).getScaledInstance(32, 32, Image.SCALE_SMOOTH), 16, 16, null);
-				userPicture1 = (Image) buffer1;
+				userDock1 = (Image) buffer1;
 				
 				// Para la imagen con el cursor encima, primero rasterizamos la imagen del usuario con menos brillo y luego la colocamos encima del fondo de cristal
 				BufferedImage buffer2 = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
@@ -108,9 +114,9 @@ public class VentanaPrincipal {
 				BufferedImage buffer3 = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
 					buffer3.getGraphics().drawImage(glass, 0, 0, null);
 					buffer3.getGraphics().drawImage(buffer2, 16, 16, null);
-				userPicture2 = (Image) buffer3;
+				userDock2 = (Image) buffer3;
 				
-			} else { userPicture1 = user1; userPicture2 = user2; }
+			} else { userDock1 = user1; userDock2 = user2; }
 			
 
 		} catch (Exception e) {
@@ -143,6 +149,7 @@ public class VentanaPrincipal {
 				g.drawImage(fondo, 0, 0, null);
 			}
 		});
+		
 		frame.setTitle("PhotoTDS");
 		frame.setBounds(100, 100, 840, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -246,7 +253,7 @@ public class VentanaPrincipal {
 		dockUsuario.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel usuarioIcon = new JLabel("");
-			usuarioIcon.setIcon(new ImageIcon(userPicture1));
+			usuarioIcon.setIcon(new ImageIcon(userDock1));
 		dockUsuario.add(usuarioIcon, BorderLayout.CENTER);
 		
 		JPanel bordeDrc = new JPanel() { {setOpaque(false);} };
@@ -270,11 +277,13 @@ public class VentanaPrincipal {
 		frame.getContentPane().add(photoTDSRenderPanel, gbc_photoTDSRenderPanel);
 		photoTDSRenderPanel.setLayout(new CardLayout(0, 0));
 		c = (CardLayout)photoTDSRenderPanel.getLayout();
-		c.show(photoTDSRenderPanel, defaultPanel);
+		//c.show(photoTDSRenderPanel, "panelPrincipal");
 		
 		JPanel panelPrincipal = new JPanel() { {setOpaque(false);} };
+		panelPrincipal.setBackground(new Color(0, 255, 255));
 		//panelPrincipal.setBackground(Color.RED);
 		photoTDSRenderPanel.add(panelPrincipal, "panelPrincipal");
+		c.show(photoTDSRenderPanel, "panelPrincipal");
 		dockPrincipal.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -293,14 +302,66 @@ public class VentanaPrincipal {
 		JPanel panelUsuario = new JPanel() { {setOpaque(false);} };
 		panelUsuario.setBackground(Color.GREEN);
 		photoTDSRenderPanel.add(panelUsuario, "panelUsuario");
+		GridBagLayout gbl_panelUsuario = new GridBagLayout();
+		gbl_panelUsuario.columnWidths = new int[]{0, 640, 0, 0};
+		gbl_panelUsuario.rowHeights = new int[]{0, 0};
+		gbl_panelUsuario.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelUsuario.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		panelUsuario.setLayout(gbl_panelUsuario);
+		
+		JPanel panelUsuarioIzq = new JPanel() { { setOpaque(false); }};
+		GridBagConstraints gbc_panelUsuarioIzq = new GridBagConstraints();
+		gbc_panelUsuarioIzq.fill = GridBagConstraints.BOTH;
+		gbc_panelUsuarioIzq.gridx = 0;
+		gbc_panelUsuarioIzq.gridy = 0;
+		panelUsuario.add(panelUsuarioIzq, gbc_panelUsuarioIzq);
+		
+		JPanel panelUsuarioCentro = new JPanel();
+		//panelUsuarioCentro.setBackground(Color.GREEN);
+		GridBagConstraints gbc_panelUsuarioCentro = new GridBagConstraints();
+		gbc_panelUsuarioCentro.fill = GridBagConstraints.BOTH;
+		gbc_panelUsuarioCentro.gridx = 1;
+		gbc_panelUsuarioCentro.gridy = 0;
+		panelUsuario.add(panelUsuarioCentro, gbc_panelUsuarioCentro);
+		GridBagLayout gbl_panelUsuarioCentro = new GridBagLayout();
+		gbl_panelUsuarioCentro.columnWidths = new int[]{0, 0};
+		gbl_panelUsuarioCentro.rowHeights = new int[]{0, 0};
+		gbl_panelUsuarioCentro.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_panelUsuarioCentro.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		panelUsuarioCentro.setLayout(gbl_panelUsuarioCentro);
+		
+		JPanel panelUsuarioCentroFoto = new JPanel();
+		GridBagConstraints gbc_panelUsuarioCentroFoto = new GridBagConstraints();
+		gbc_panelUsuarioCentroFoto.fill = GridBagConstraints.BOTH;
+		gbc_panelUsuarioCentroFoto.gridx = 0;
+		gbc_panelUsuarioCentroFoto.gridy = 0;
+		panelUsuarioCentro.add(panelUsuarioCentroFoto, gbc_panelUsuarioCentroFoto);
+		panelUsuarioCentroFoto.setLayout(new BorderLayout(0, 0));
+		
+		JLabel panelUsuarioFoto = new JLabel("");
+			float uwidth = userPicture.getWidth(null);
+			float uheight = userPicture.getHeight(null);
+			
+			
+			System.out.println(uwidth + ", " + uheight);
+			panelUsuarioFoto.setIcon(new ImageIcon(userPicture));
+		panelUsuarioCentroFoto.add(panelUsuarioFoto, BorderLayout.CENTER);
+		
+		JPanel panelUsuarioDrc = new JPanel(){ { setOpaque(false); }};
+		GridBagConstraints gbc_panelUsuarioDrc = new GridBagConstraints();
+		gbc_panelUsuarioDrc.fill = GridBagConstraints.BOTH;
+		gbc_panelUsuarioDrc.gridx = 2;
+		gbc_panelUsuarioDrc.gridy = 0;
+		panelUsuario.add(panelUsuarioDrc, gbc_panelUsuarioDrc);
+		
 		dockUsuario.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				usuarioIcon.setIcon(new ImageIcon(userPicture2));
+				usuarioIcon.setIcon(new ImageIcon(userDock2));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				usuarioIcon.setIcon(new ImageIcon(userPicture1));
+				usuarioIcon.setIcon(new ImageIcon(userDock1));
 			}
 			
 			@Override
@@ -327,9 +388,9 @@ public class VentanaPrincipal {
 			}
 		});
 		
-		JPanel panelPubli = new JPanel() { {setOpaque(false);} };
-		panelPubli.setBackground(Color.YELLOW);
-		photoTDSRenderPanel.add(panelPubli, "panelPubli");
+		//JPanel panelPubli = new JPanel() { {setOpaque(false);} };
+		//panelPubli.setBackground(Color.YELLOW);
+		//photoTDSRenderPanel.add(panelPubli, "panelPubli");
 		
 		JPanel photoTDSLogoPanel = new JPanel() { {setOpaque(false);} };
 		GridBagConstraints gbc_photoTDSLogoPanel = new GridBagConstraints();
@@ -392,7 +453,12 @@ public class VentanaPrincipal {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				c.show(photoTDSRenderPanel, "panelPubli");
+				//c.show(photoTDSRenderPanel, "panelPubli");
+				if(!subiendoFoto) {
+					VentanaSubirFoto vsf = new VentanaSubirFoto();
+						subiendoFoto = true;
+						vsf.mostrar();
+				}
 			}
 		});
 		
@@ -400,12 +466,12 @@ public class VentanaPrincipal {
 		frame.getContentPane().addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				bordeIzqGlass.setIcon(new ImageIcon(dockizq.getScaledInstance((frame.getWidth()-(64*4))/2, 64, Image.SCALE_SMOOTH)));
-				bordeDrcGlass.setIcon(new ImageIcon(dockdrc.getScaledInstance((frame.getWidth()-(64*4))/2, 64, Image.SCALE_SMOOTH)));
-				logobordeizqglass.setIcon(new ImageIcon(logoizq.getScaledInstance((frame.getWidth()-168)/2, 32, Image.SCALE_SMOOTH)));
-				logobordedrcglass.setIcon(new ImageIcon(logodrc.getScaledInstance((frame.getWidth()-168)/2, 32, Image.SCALE_SMOOTH)));
-				fondo = fondo.getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
-					frame.getContentPane().repaint();
+				bordeIzqGlass.setIcon(new ImageIcon(dockizq.getScaledInstance((frame.getWidth()-(64*4))/2, 64, Image.SCALE_FAST)));
+				bordeDrcGlass.setIcon(new ImageIcon(dockdrc.getScaledInstance((frame.getWidth()-(64*4))/2, 64, Image.SCALE_FAST)));
+				logobordeizqglass.setIcon(new ImageIcon(logoizq.getScaledInstance((frame.getWidth()-168)/2, 32, Image.SCALE_FAST)));
+				logobordedrcglass.setIcon(new ImageIcon(logodrc.getScaledInstance((frame.getWidth()-168)/2, 32, Image.SCALE_FAST)));
+				//fondo = fondo.getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_FAST);
+					//frame.getContentPane().repaint();
 			}
 		});
 	}

@@ -33,14 +33,22 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import java.util.regex.*;
+import javax.swing.JTextField;
 
 public class VentanaSubirFoto {
 
 	private JFrame frame;
 	private CardLayout c1;				// Cardlayout de toda la ventana
 	private CardLayout c2;				// Cardlayout del panel de selección de foto
-	private File archivo;				// Archivo seleccionado
-	JTextArea comentarioTextArea;		// Comentario de la foto
+	private Image fotoPubli;
+	
+	JLabel labelTitulo;
+	JLabel labelDescripcion;
+	JLabel labelComentario;
+	
+	JTextArea textoTitulo;
+	JTextArea textoDescripcion;
+	JTextArea textoComentario;
 	
 	private ImageIcon nuevapubli;	
 	
@@ -74,7 +82,7 @@ public class VentanaSubirFoto {
 
 	/* Getter del comentario de la publicación */
 	public String getComentario() {
-		return comentarioTextArea.getText();
+		return textoComentario.getText();
 	}
 
 	
@@ -147,8 +155,8 @@ public class VentanaSubirFoto {
 					devent.acceptDrop(DnDConstants.ACTION_COPY);
 					@SuppressWarnings("unchecked")
 					List<File> archivos = (List<File>) devent.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-					archivo = archivos.get(0);
-					fotoElegida.setIcon(new ImageIcon(archivo.toString()));
+					fotoPubli = ImageIO.read(archivos.get(0));
+					fotoElegida.setIcon(new ImageIcon(fotoPubli));
 					c2.show(paneldndfoto, "fotoElegida");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -160,9 +168,16 @@ public class VentanaSubirFoto {
 			public void mouseClicked(MouseEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				chooser.showOpenDialog(botonFilechooser);
-				archivo = chooser.getSelectedFile();
-				fotoElegida.setIcon(new ImageIcon(archivo.toString()));
-				c2.show(paneldndfoto, "fotoElegida");
+				
+				try {
+					fotoPubli = ImageIO.read(chooser.getSelectedFile());
+				} catch (Exception e1) { e1.printStackTrace(); }
+				 
+				if(fotoPubli!=null) { 
+					fotoElegida.setIcon(new ImageIcon(fotoPubli));
+					c2.show(paneldndfoto, "fotoElegida");
+				}
+				
 			}
 		});
 		
@@ -175,8 +190,10 @@ public class VentanaSubirFoto {
 					devent.acceptDrop(DnDConstants.ACTION_COPY);
 					@SuppressWarnings("unchecked")
 					List<File> archivos = (List<File>) devent.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-					archivo = archivos.get(0);
-					fotoElegida.setIcon(new ImageIcon(archivo.toString()));
+					
+					fotoPubli = ImageIO.read(archivos.get(0));
+					
+					if(fotoPubli!=null) fotoElegida.setIcon(new ImageIcon(fotoPubli));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -197,8 +214,14 @@ public class VentanaSubirFoto {
 		botonContinuar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				frame.setBounds(frame.getX(), frame.getY(), frame.getWidth(), 640);
-				vistaPreviaLabel.setIcon((ImageIcon) fotoElegida.getIcon());
+				frame.setBounds(frame.getX(), frame.getY(), frame.getWidth(), 720);
+				
+				float nw = fotoPubli.getWidth(null), nh = fotoPubli.getHeight(null);
+				
+				if(fotoPubli.getWidth(null)>=480) nw = (float) (fotoPubli.getWidth(null) * 0.5);
+				if(fotoPubli.getHeight(null)>=360) nh = (float) (fotoPubli.getHeight(null) * 0.5);
+				
+				vistaPreviaLabel.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)nw, (int)nh, Image.SCALE_SMOOTH)));
 				c1.show(frame.getContentPane(), "panelNuevaPublicacion");
 			}
 		});
@@ -206,7 +229,7 @@ public class VentanaSubirFoto {
 		botonContinuar.setBackground(new Color(24, 84, 215));
 		panelBotonContinuar.add(botonContinuar);
 		
-		
+					
 		JPanel panelNuevaPublicacion = new JPanel();
 		frame.getContentPane().add(panelNuevaPublicacion, "panelNuevaPublicacion");
 		panelNuevaPublicacion.setLayout(new BorderLayout(0, 0));
@@ -219,6 +242,12 @@ public class VentanaSubirFoto {
 		botonPublicacion.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				if(textoTitulo.getText().isEmpty() || textoDescripcion.getText().isEmpty()) {	// No dejamos que se haga la publicación
+					if(textoTitulo.getText().isEmpty()) { labelTitulo.setText("Titulo - campo obligatorio"); labelTitulo.setForeground(Color.red); }
+					if(textoDescripcion.getText().isEmpty()) { labelDescripcion.setText("Descripcion - campo obligatorio"); labelDescripcion.setForeground(Color.red); }
+				} else {																		// Hacemos la publicación
+					
+				}
 			}
 		});
 		botonPublicacion.setBackground(new Color(24, 84, 215));
@@ -229,9 +258,9 @@ public class VentanaSubirFoto {
 		panelNuevaPublicacion.add(panelPublicacion, BorderLayout.CENTER);
 		GridBagLayout gbl_panelPublicacion = new GridBagLayout();
 		gbl_panelPublicacion.columnWidths = new int[]{0, 0};
-		gbl_panelPublicacion.rowHeights = new int[]{1, 0, 0, 0};
+		gbl_panelPublicacion.rowHeights = new int[]{256, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelPublicacion.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_panelPublicacion.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelPublicacion.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
 		panelPublicacion.setLayout(gbl_panelPublicacion);
 		
 		
@@ -242,15 +271,62 @@ public class VentanaSubirFoto {
 		gbc_vistaPreviaLabel.gridy = 0;
 		panelPublicacion.add(vistaPreviaLabel, gbc_vistaPreviaLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Añade un comentario a tu foto");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.ITALIC, 16));
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.insets = new Insets(0, 10, 5, 0);
-		gbc_lblNewLabel_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lblNewLabel_1.gridx = 0;
-		gbc_lblNewLabel_1.gridy = 1;
-		panelPublicacion.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		labelTitulo = new JLabel("Título");
+		labelTitulo.setHorizontalAlignment(SwingConstants.LEFT);
+		labelTitulo.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		GridBagConstraints gbc_labelTitulo = new GridBagConstraints();
+		gbc_labelTitulo.insets = new Insets(0, 10, 5, 0);
+		gbc_labelTitulo.fill = GridBagConstraints.HORIZONTAL;
+		gbc_labelTitulo.gridx = 0;
+		gbc_labelTitulo.gridy = 1;
+		panelPublicacion.add(labelTitulo, gbc_labelTitulo);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
+		gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane_1.insets = new Insets(0, 10, 5, 10);
+		gbc_scrollPane_1.gridx = 0;
+		gbc_scrollPane_1.gridy = 2;
+		panelPublicacion.add(scrollPane_1, gbc_scrollPane_1);
+		
+		textoTitulo = new JTextArea();
+		textoTitulo.setLineWrap(true);
+		scrollPane_1.setViewportView(textoTitulo);
+		
+		labelDescripcion = new JLabel("Descripción");
+		labelDescripcion.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		GridBagConstraints gbc_labelDescripcion = new GridBagConstraints();
+		gbc_labelDescripcion.fill = GridBagConstraints.HORIZONTAL;
+		gbc_labelDescripcion.insets = new Insets(0, 10, 5, 0);
+		gbc_labelDescripcion.anchor = GridBagConstraints.WEST;
+		gbc_labelDescripcion.gridx = 0;
+		gbc_labelDescripcion.gridy = 3;
+		panelPublicacion.add(labelDescripcion, gbc_labelDescripcion);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
+		gbc_scrollPane_2.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane_2.insets = new Insets(0, 10, 5, 10);
+		gbc_scrollPane_2.gridx = 0;
+		gbc_scrollPane_2.gridy = 4;
+		panelPublicacion.add(scrollPane_2, gbc_scrollPane_2);
+		
+		textoDescripcion = new JTextArea();
+		textoDescripcion.setLineWrap(true);
+		scrollPane_2.setViewportView(textoDescripcion);
+		
+		labelComentario = new JLabel("Comentario (opcional)");
+		labelComentario.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		GridBagConstraints gbc_labelComentario = new GridBagConstraints();
+		gbc_labelComentario.fill = GridBagConstraints.HORIZONTAL;
+		gbc_labelComentario.anchor = GridBagConstraints.WEST;
+		gbc_labelComentario.insets = new Insets(0, 10, 5, 0);
+		gbc_labelComentario.gridx = 0;
+		gbc_labelComentario.gridy = 5;
+		panelPublicacion.add(labelComentario, gbc_labelComentario);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -258,12 +334,13 @@ public class VentanaSubirFoto {
 		gbc_scrollPane.insets = new Insets(0, 10, 0, 10);
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 2;
+		gbc_scrollPane.gridy = 6;
 		panelPublicacion.add(scrollPane, gbc_scrollPane);
 		
-		comentarioTextArea = new JTextArea();
-		comentarioTextArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
-		scrollPane.setViewportView(comentarioTextArea);
+		textoComentario = new JTextArea();
+		textoComentario.setLineWrap(true);
+		textoComentario.setFont(new Font("Monospaced", Font.PLAIN, 15));
+		scrollPane.setViewportView(textoComentario);
 		
 	}
 

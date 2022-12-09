@@ -589,7 +589,7 @@ public class PanelRegistro extends JScrollPane {
 		panelFecha.add(rigidArea_4);
 		panelFecha.add(lblErrorFecha);
 
-		dateChooser = new JDateChooser();
+		dateChooser = new JDateChooser("yyyy/MM/dd", "####/##/##", '_');
 		GridBagConstraints gbc_dateChooser = new GridBagConstraints();
 		gbc_dateChooser.insets = new Insets(0, 0, 10, 8);
 		gbc_dateChooser.fill = GridBagConstraints.HORIZONTAL;
