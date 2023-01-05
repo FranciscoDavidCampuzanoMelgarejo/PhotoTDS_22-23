@@ -78,7 +78,7 @@ public class VentanaLoginRegistro {
 		frame.getContentPane().add(panelLogin, PANEL_LOGIN);
 		frame.getContentPane().add(panelRegistro, PANEL_REGISTRO);
 	}
-
+	
 	/* Cambio de panel del cardlayout */
 	public void cambiarPanel(String panel) {
 		c.show(frame, panel);
