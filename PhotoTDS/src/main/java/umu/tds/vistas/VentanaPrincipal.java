@@ -246,7 +246,7 @@ public class VentanaPrincipal {
 		dockUsuario.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel usuarioIcon = new JLabel("");
-			usuarioIcon.setIcon(new ImageIcon(userPicture1));
+		usuarioIcon.setIcon(new ImageIcon(userPicture1));
 		dockUsuario.add(usuarioIcon, BorderLayout.CENTER);
 		
 		JPanel bordeDrc = new JPanel() { {setOpaque(false);} };
