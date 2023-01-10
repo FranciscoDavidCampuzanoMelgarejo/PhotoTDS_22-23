@@ -8,9 +8,6 @@ import java.awt.Graphics2D;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.UIManager;
-
-import com.formdev.flatlaf.FlatDarculaLaf;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Usuario;
@@ -89,7 +86,8 @@ public class VentanaPrincipal {
 			if(Controlador.getControlador().getUserPicture() != null) {
 				System.out.println("NO es NULO");
 				File archivo = new File(Controlador.getControlador().getUserPicture());
-				userPicture = ImageIO.read(archivo);
+				//userPicture = ImageIO.read(archivo);
+				userPicture = fondo;
 				
 				// Para la imagen sin el cursor encima, colocamos la imagen de usuario sobre el fondo de cristal transparente
 				BufferedImage buffer1 = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);

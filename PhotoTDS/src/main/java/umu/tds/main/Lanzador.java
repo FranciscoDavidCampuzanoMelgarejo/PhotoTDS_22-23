@@ -23,8 +23,6 @@ public class Lanzador {
 					/* -- La ventana de registro lanza la ventana principal una vez se ha logueado correctamente -- */
 					VentanaLoginRegistro vlr = new VentanaLoginRegistro();
 					vlr.mostrar();
-					VentanaSubirFoto vf = new VentanaSubirFoto();
-						//vf.mostrar();
 						
 				} catch (Exception e) { e.printStackTrace(); }
 			}

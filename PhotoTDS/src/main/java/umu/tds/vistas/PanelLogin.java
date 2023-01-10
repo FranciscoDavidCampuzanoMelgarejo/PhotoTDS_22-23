@@ -197,8 +197,13 @@ public class PanelLogin extends JPanel {
 				} else {
 					System.out.println("Exito al loguearse");
 					limpiarPanel();
-					VentanaPrincipal ventana = new VentanaPrincipal();
-						ventana.mostrar();
+					VentanaPhotoTDS ventana = new VentanaPhotoTDS();
+					//VentanaPrincipal ventana = new VentanaPrincipal();
+					ventana.mostrar();
+					
+					//VentanaPhotoTDS phototds = new VentanaPhotoTDS();
+						//phototds.mostrar();
+					
 					frmLoginRegistro.dispose();
 				}
 			}
