@@ -36,10 +36,9 @@ public class Utils {
 	// Metodo para redondear una imagen
 	public static BufferedImage redondearImagen(int ancho, Icon imagen) {
 		System.out.println("VA");
-		int diametro = Math.min(imagen.getIconWidth(), imagen.getIconHeight());
+		int diametro = Math.min(imagen.getIconWidth(), imagen.getIconHeight()); //No sirve para nada
 		System.out.println(diametro);
-		BufferedImage mask = new BufferedImage(imagen.getIconWidth(), imagen.getIconHeight(),
-				BufferedImage.TYPE_INT_ARGB);
+		BufferedImage mask = new BufferedImage(ancho, ancho, BufferedImage.TYPE_INT_ARGB);
 
 		Graphics2D g2d = mask.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -54,8 +53,7 @@ public class Utils {
 		// int y = (300 - imagen.getIconHeight()) / 2;
 		// System.out.println("X: " + x + " Y: " + y);
 
-		g2d.drawImage(((ImageIcon) imagen).getImage(), 0, 0, ancho,
-				ancho, null);
+		g2d.drawImage(((ImageIcon) imagen).getImage(), 0, 0, ancho, ancho, null);
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
 		g2d.drawImage(mask, 0, 0, null);
 		g2d.dispose();

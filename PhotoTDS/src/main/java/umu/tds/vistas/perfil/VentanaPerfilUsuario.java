@@ -64,25 +64,7 @@ public class VentanaPerfilUsuario {
 	private int fotosCargadas, fotosRestantes;
 	private int col, row;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaPerfilUsuario window = new VentanaPerfilUsuario();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the application.
-	 */
 	public VentanaPerfilUsuario() {
 		this.fotoPerfil = Controlador.getControlador().getUserPicture() == null
 				? new ImageIcon(getClass().getResource("/imagenes/noPicture-user-1.png"))
@@ -96,6 +78,11 @@ public class VentanaPerfilUsuario {
 		this.rutasFotos = Controlador.getControlador().getUsuarioLogueado().getRutasFotos();
 		initialize();
 	}
+	
+	public void mostrar() {
+		this.frame.setLocationRelativeTo(null);
+		this.frame.setVisible(true);
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -104,7 +91,7 @@ public class VentanaPerfilUsuario {
 		frame = new JFrame();
 		frame.setMinimumSize(new Dimension(690, 590));
 		frame.setBounds(100, 100, 700, 420);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel panelMenu = new JPanel();
 		frame.getContentPane().add(panelMenu, BorderLayout.WEST);
