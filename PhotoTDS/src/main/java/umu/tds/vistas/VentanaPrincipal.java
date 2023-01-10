@@ -8,12 +8,8 @@ import java.awt.Graphics2D;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.UIManager;
-
-import com.formdev.flatlaf.FlatDarculaLaf;
 
 import umu.tds.controlador.Controlador;
-import umu.tds.modelo.pojos.Usuario;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
