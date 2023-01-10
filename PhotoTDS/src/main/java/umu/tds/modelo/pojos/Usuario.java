@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -170,7 +171,7 @@ public class Usuario implements Serializable {
 	public void addPublicacion(Publicacion publicacion) {
 		this.publicaciones.add(publicacion);
 	}
-	
+
 	public int numeroSeguidores() {
 		return seguidores.size();
 	}
@@ -182,10 +183,16 @@ public class Usuario implements Serializable {
 	public void removeSeguidor(Usuario usuario) {
 		this.seguidores.remove(usuario);
 	}
-	
+
 	public boolean isSeguido(Usuario usuario) {
-		return seguidores.stream()
-				.anyMatch((Usuario u) -> u.equals(usuario));
+		return seguidores.stream().anyMatch((Usuario u) -> u.equals(usuario));
+	}
+
+	public List<String> getRutasFotos() {
+		return publicaciones.stream()
+				.filter((Publicacion p) -> p instanceof Foto)
+				.map((Publicacion p) -> ((Foto) p).getRuta()).collect(Collectors.toList());
+
 	}
 
 	@Override

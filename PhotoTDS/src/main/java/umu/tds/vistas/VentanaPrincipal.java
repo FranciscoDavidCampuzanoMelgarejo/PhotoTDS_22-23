@@ -249,6 +249,7 @@ public class VentanaPrincipal {
 		dockUsuario.setLayout(new BorderLayout(0, 0));
 		
 		final JLabel usuarioIcon = new JLabel("");
+		usuarioIcon.setIcon(new ImageIcon(userPicture));
 			usuarioIcon.setIcon(new ImageIcon(userDock1));
 		dockUsuario.add(usuarioIcon, BorderLayout.CENTER);
 		
