@@ -9,12 +9,15 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.GridBagLayout;
 import java.awt.Image;
 
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -39,14 +42,16 @@ import java.awt.Cursor;
 
 public class VentanaPerfilUsuario {
 
-	private static final int ANCHO_FOTO_PERFIL = 150;
+	private static final int ANCHO_FOTO_PERFIL = 150; // Ancho de la foto de perfil en la ventana del perfil del usuario
 
 	private static final int COLUMNAS = 3;
-	private static final int MINIMO_FOTOS_CARGAR = 6;
-	private static final int ANCHO_FOTO_INICIAL = 198;
+	private static final int MINIMO_FOTOS_CARGAR = 6; // Maximo de fotos del usuario que se cargan en su perfil inicialmente
+	private static final int ANCHO_FOTO_INICIAL = 198; // Ancho inicial de las fotos que se cargan en el perfil
 	
-	private static final int MINIMO_FOTO = 158;
-	private static final int MAXIMO_FOTO = 295;
+	private static final int MINIMO_FOTO = 158; // Ancho minimo de las fotos que se cargan
+	private static final int MAXIMO_FOTO = 295; // Ancho maximo de las fotos que se cargan
+	
+	private static final double ESCALA_FOTO_PERFIL = 0.333; // Al clickar en la foto de perfil, esta debe ocupar 1/3 de la pantalla
 
 	private JFrame frame;
 	private Icon fotoPerfil;
@@ -63,7 +68,7 @@ public class VentanaPerfilUsuario {
 	private Map<JLabel, Image> etiquetasImagenes; // Guarda que imagen corresponde a cada etiqueta
 	private int fotosCargadas, fotosRestantes;
 	private int col, row;
-
+	
 
 	public VentanaPerfilUsuario() {
 		this.fotoPerfil = Controlador.getControlador().getUserPicture() == null
@@ -92,13 +97,6 @@ public class VentanaPerfilUsuario {
 		frame.setMinimumSize(new Dimension(690, 590));
 		frame.setBounds(100, 100, 700, 420);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		JPanel panelMenu = new JPanel();
-		frame.getContentPane().add(panelMenu, BorderLayout.WEST);
-		panelMenu.setLayout(new BoxLayout(panelMenu, BoxLayout.Y_AXIS));
-
-		JButton btnInicio = new JButton("INICIO");
-		panelMenu.add(btnInicio);
 
 		JPanel panelContenedor = new JPanel();
 		frame.getContentPane().add(panelContenedor, BorderLayout.CENTER);
@@ -171,6 +169,17 @@ public class VentanaPerfilUsuario {
 		gbc_lblFotoPerfil.gridx = 0;
 		gbc_lblFotoPerfil.gridy = 0;
 		panelContenedorSuperior.add(lblFotoPerfil, gbc_lblFotoPerfil);
+		
+		// Al clickar en la foto de pefil, se abre un dialogo con la foto en grande
+		lblFotoPerfil.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int longitudImagen = (int)(ESCALA_FOTO_PERFIL * frame.getSize().height);
+				BufferedImage maskedDialogo = Utils.redondearImagen(longitudImagen, fotoPerfil);
+				DialogoFotoPerfil dialogoFoto = new DialogoFotoPerfil(frame, maskedDialogo);
+				dialogoFoto.mostrarDialogo();
+			}
+		});
 
 		JPanel panelPerfil = new JPanel();
 		GridBagConstraints gbc_panelPerfil = new GridBagConstraints();
@@ -208,6 +217,14 @@ public class VentanaPerfilUsuario {
 
 		JButton btnEditarPerfil = new JButton("Editar Perfil");
 		panelNombreUsuario.add(btnEditarPerfil);
+		
+		// Al clickar en el boton, abrir un dialogo para editar el perfil del usuario
+		btnEditarPerfil.addActionListener((ActionEvent e) -> {
+			BufferedImage fotoDialogoPerfil = Utils.redondearImagen(175, fotoPerfil);
+			DialogoEditarPerfil dialogoPerfil = new DialogoEditarPerfil(frame, fotoDialogoPerfil);
+			dialogoPerfil.mostrarDialogo();
+			
+		});
 
 		JLabel lblPublicaciones = new JLabel("100 Publicaciones");
 		lblPublicaciones.setFont(new Font("Tahoma", Font.PLAIN, 14));

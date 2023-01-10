@@ -30,6 +30,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.border.EtchedBorder;
 
+import umu.tds.vistas.perfil.VentanaPerfilUsuario;
+
 import java.awt.Font;
 
 public class PhotoTDSDock extends JPanel{
@@ -164,6 +166,17 @@ public class PhotoTDSDock extends JPanel{
 		dock_usuario_icon.setIcon(new ImageIcon(home1));
 		dock_usuario_icon.setHorizontalAlignment(SwingConstants.CENTER);
 		dock_usuario.add(dock_usuario_icon, BorderLayout.CENTER);
+		
+		// Al clickar en la etiqueta del del usuario (perfil), 
+		// abrir la ventana de perfil del usuario
+		
+		dock_usuario_icon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				VentanaPerfilUsuario ventanaPerfil = new VentanaPerfilUsuario();
+				ventanaPerfil.mostrar();
+			}
+		});
 	}
 	
 	
