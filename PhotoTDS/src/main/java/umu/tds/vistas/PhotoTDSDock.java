@@ -85,7 +85,7 @@ public class PhotoTDSDock extends JPanel{
 	public PhotoTDSDock() {
 		super();
 		cargarRecursos();
-		setDock2();
+		setDock1();
 		
 		gbc_dock = new GridBagConstraints();
 		gbc_dock.insets = new Insets(0, 0, 0, 5);
