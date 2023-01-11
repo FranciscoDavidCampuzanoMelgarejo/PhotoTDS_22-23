@@ -128,6 +128,23 @@ public class VentanaPhotoTDS {
 		
 		JPanel panelInicio = new JPanel();
 		apprender.add(panelInicio, "panelInicio");
+		panelInicio.setLayout(new BorderLayout(0, 0));
+		
+		/*
+		JLabel lblNewLabel = new JLabel("");
+			LinkedList<Image> imgs = new LinkedList<Image>();
+				imgs.add(fondo);
+				imgs.add(winIcon);
+				imgs.add(fondo);
+				
+				imgs.add(winIcon);
+				imgs.add(fondo);
+
+				
+				
+			lblNewLabel.setIcon(new ImageIcon(Utils.crearMosaico(512, 512, 4, imgs)));
+		panelInicio.add(lblNewLabel, BorderLayout.CENTER);
+		*/
 		
 		JPanel panelUsuario = new JPanel();
 		apprender.add(panelUsuario, "panelUsuario");

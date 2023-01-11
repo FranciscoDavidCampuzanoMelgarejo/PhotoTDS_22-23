@@ -1,12 +1,16 @@
 package umu.tds.vistas;
 
 import java.awt.AlphaComposite;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,5 +93,38 @@ public class Utils {
 		return buff;
 	}
 
-	/**/
+	/* Método para crear un mosaico de imágenes 
+	 * 	w --> ancho de la nueva imagen
+	 *  h --> alto de la nueva imagen
+	 *  z --> ancho y alto del mosaico; z imagenes x z imagenes
+	 *  imgs --> lista de imágenes
+	 * */
+	public static BufferedImage crearMosaico(int w, int h, int z, List<Image> imgs) {
+		BufferedImage buff = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		
+		int iw = w/z, ih = h/z;			// Ancho y alto de las imágenes del mosaico.
+		Iterator<Image> it = imgs.iterator();
+		Graphics g = buff.getGraphics();
+		
+		// Recorremos el mosaico y ponemos una imagen en cada casilla
+		for(int y=0; y<z; y++) {
+			for(int x=0; x<z; x++) {
+				if(it.hasNext()) {
+					Image img = it.next();
+					if(img.getWidth(null)!=img.getHeight(null)) {
+						int imgw = img.getWidth(null), imgh = img.getHeight(null);
+						img = img.getScaledInstance(imgw/3, imgh/3, Image.SCALE_SMOOTH);
+						int xori = img.getWidth(null)/2 - (iw/2) - 1;
+						int yori = img.getHeight(null)/2 - (ih/2) - 1;
+						BufferedImage buff2 = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB);
+						buff2.getGraphics().drawImage(img, -xori, -yori, null);
+						g.drawImage(buff2, (iw*x)-1, (ih*y)-1, null);
+					} else g.drawImage(img.getScaledInstance(iw, ih, Image.SCALE_SMOOTH), (iw*x)-1, (ih*y)-1, null);
+				}
+			}
+		}
+		
+		
+		return buff;
+	}
 }
