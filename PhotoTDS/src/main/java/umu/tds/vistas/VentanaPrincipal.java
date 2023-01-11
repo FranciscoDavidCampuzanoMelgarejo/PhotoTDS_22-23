@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import umu.tds.controlador.Controlador;
+import umu.tds.modelo.pojos.Usuario;
+import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -82,6 +84,7 @@ public class VentanaPrincipal {
 			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/fondo-3.jpg"));//.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
 			 
 			if(Controlador.getControlador().getUserPicture() != null) {
+				System.out.println("NO es NULO");
 				File archivo = new File(Controlador.getControlador().getUserPicture());
 				userPicture = ImageIO.read(archivo);
 				
@@ -252,6 +255,15 @@ public class VentanaPrincipal {
 		usuarioIcon.setIcon(new ImageIcon(userPicture));
 			usuarioIcon.setIcon(new ImageIcon(userDock1));
 		dockUsuario.add(usuarioIcon, BorderLayout.CENTER);
+		
+		//Al seleccionar el icono del usuario, cambiar a la ventana del perfil
+		usuarioIcon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				VentanaPerfilUsuario ventanaPerfil = new VentanaPerfilUsuario();
+				ventanaPerfil.mostrar();
+			}
+		});
 		
 		JPanel bordeDrc = new JPanel() { {setOpaque(false);} };
 		GridBagConstraints gbc_bordeDrc = new GridBagConstraints();

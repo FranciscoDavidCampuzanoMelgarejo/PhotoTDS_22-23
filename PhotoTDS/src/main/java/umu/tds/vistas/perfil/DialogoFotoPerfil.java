@@ -34,6 +34,10 @@ public class DialogoFotoPerfil extends JDialog implements ActionListener {
 
 		crearDialogo();
 	}
+	
+	public void mostrarDialogo() {
+		setVisible(true);
+	}
 
 	private void crearDialogo() {
 		this.setBounds(framePadre.getBounds());
@@ -42,7 +46,7 @@ public class DialogoFotoPerfil extends JDialog implements ActionListener {
 		this.getRootPane().setOpaque(false);
 		this.setUndecorated(true);
 		// this.getContentPane().setBackground(new Color(0, 0, 0, 200));
-		// this.setBackground(new Color(0, 0, 0, 200));
+		this.setBackground(new Color(0, 0, 0, 200));
 
 		JPanel panelNorte = new JPanel();
 		getContentPane().add(panelNorte, BorderLayout.NORTH);
@@ -63,7 +67,6 @@ public class DialogoFotoPerfil extends JDialog implements ActionListener {
 		JLabel lblFotoPerfil = new JLabel(new ImageIcon(fotoPerfil));
 		lblFotoPerfil.setHorizontalAlignment(SwingConstants.CENTER);
 		getContentPane().add(lblFotoPerfil, BorderLayout.CENTER);
-		setVisible(true);
 	}
 
 	@Override

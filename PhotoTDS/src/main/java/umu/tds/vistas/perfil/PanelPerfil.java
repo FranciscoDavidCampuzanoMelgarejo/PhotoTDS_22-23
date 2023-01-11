@@ -33,7 +33,8 @@ public class PanelPerfil extends JPanel {
 		this.imagenPerfil = imagenPerfil;
 		this.presentacion = presentacion;
 		// Añadir la imagen a la carperta "/src/resources/imagenes"
-		this.iconoCamara = new ImageIcon(new ImageIcon("").getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+		this.iconoCamara = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/camara-fotografica.png"))
+				.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
 
 		crearPanel();
 	}
@@ -68,7 +69,7 @@ public class PanelPerfil extends JPanel {
 		panelFotoPerfil.setLayer(lblIconoCamara, 2);
 		lblIconoCamara.setBounds(205, 133, 40, 40);
 		panelFotoPerfil.add(lblIconoCamara);
-		
+
 		JScrollPane panelScrollPresentacion = new JScrollPane();
 		panelScrollPresentacion.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_panelScrollPresentacion = new GridBagConstraints();
@@ -77,13 +78,13 @@ public class PanelPerfil extends JPanel {
 		gbc_panelScrollPresentacion.gridx = 1;
 		gbc_panelScrollPresentacion.gridy = 2;
 		add(panelScrollPresentacion, gbc_panelScrollPresentacion);
-		
+
 		JTextArea areaPresentacion = new JTextArea();
 		areaPresentacion.setLineWrap(true);
 		areaPresentacion.setRows(4);
 		areaPresentacion.setColumns(30);
 		panelScrollPresentacion.setViewportView(areaPresentacion);
-		
+
 		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		GridBagConstraints gbc_btnGuardar = new GridBagConstraints();

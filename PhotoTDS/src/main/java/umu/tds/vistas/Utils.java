@@ -2,10 +2,16 @@ package umu.tds.vistas;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.util.Arrays;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -35,11 +41,10 @@ public class Utils {
 
 	// Metodo para redondear una imagen
 	public static BufferedImage redondearImagen(int ancho, Icon imagen) {
-		System.out.println("VA");
-		int diametro = Math.min(imagen.getIconWidth(), imagen.getIconHeight());
-		System.out.println(diametro);
-		BufferedImage mask = new BufferedImage(imagen.getIconWidth(), imagen.getIconHeight(),
-				BufferedImage.TYPE_INT_ARGB);
+		//System.out.println("VA");
+		int diametro = Math.min(imagen.getIconWidth(), imagen.getIconHeight()); //No sirve para nada
+		//System.out.println(diametro);
+		BufferedImage mask = new BufferedImage(ancho, ancho, BufferedImage.TYPE_INT_ARGB);
 
 		Graphics2D g2d = mask.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -54,8 +59,7 @@ public class Utils {
 		// int y = (300 - imagen.getIconHeight()) / 2;
 		// System.out.println("X: " + x + " Y: " + y);
 
-		g2d.drawImage(((ImageIcon) imagen).getImage(), 0, 0, ancho,
-				ancho, null);
+		g2d.drawImage(((ImageIcon) imagen).getImage(), 0, 0, ancho, ancho, null);
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
 		g2d.drawImage(mask, 0, 0, null);
 		g2d.dispose();
@@ -64,4 +68,26 @@ public class Utils {
 
 	}
 
+	
+	/* Método para cambiar el brillo una imagen */
+	public static BufferedImage cambiarBrillo(float cantidad, Image img) {
+		BufferedImage buff = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+			buff.getGraphics().drawImage(img, 0,0, null);
+			
+		WritableRaster raster = buff.getRaster();
+		int[] pixel = new int[4];
+		for(int y=0;y<img.getHeight(null);y++) {
+			for(int x=0;x<img.getWidth(null);x++) {
+				raster.getPixel(x, y, pixel);
+				pixel[0] *= cantidad;
+				pixel[1] *= cantidad;
+				pixel[2] *= cantidad;
+				raster.setPixel(x, y, pixel);
+			}
+		}
+		
+		return buff;
+	}
+
+	/**/
 }

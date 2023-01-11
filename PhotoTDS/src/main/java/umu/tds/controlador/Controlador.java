@@ -98,6 +98,7 @@ public class Controlador implements FotosListener {
 	}
 
 	public String getUserPicture() {
+		System.out.println(usuario.getPerfil());
 		return usuario.getPerfil().getFoto();
 	}
 

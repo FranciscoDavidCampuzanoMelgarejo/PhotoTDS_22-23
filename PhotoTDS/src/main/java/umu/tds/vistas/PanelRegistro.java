@@ -162,7 +162,8 @@ public class PanelRegistro extends JScrollPane {
 
 	public PanelRegistro(JFrame frame) {
 		this.noPicture = true;
-		foto = this.getClass().getResource("/imagenes/dock-images/user1.png").toString();		// Foto por defecto
+		//foto = this.getClass().getResource("/imagenes/dock-images/user1.png").toString();		// Foto por defecto
+		this.foto = null;
 		this.frmLoginRegistro = frame;
 		this.iconoError = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/cross-icon.png")).getImage()
 				.getScaledInstance(20, 20, Image.SCALE_DEFAULT));

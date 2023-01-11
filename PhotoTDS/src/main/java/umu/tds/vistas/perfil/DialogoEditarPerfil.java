@@ -47,6 +47,10 @@ public class DialogoEditarPerfil extends JDialog {
 		this.panelPassword = new PanelPassword(this, Controlador.getControlador().getUsuarioLogueado().getPassword());
 		crearDialogo();
 	}
+	
+	public void mostrarDialogo() {
+		setVisible(true);
+	}
 
 	private void crearDialogo() {
 		setModalityType(ModalityType.APPLICATION_MODAL);
@@ -64,7 +68,6 @@ public class DialogoEditarPerfil extends JDialog {
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 
 		JPanel panelExterior = new JPanel();
-		panelExterior.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		scrollPane.setViewportView(panelExterior);
 		GridBagLayout gbl_panelExterior = new GridBagLayout();
 		gbl_panelExterior.columnWidths = new int[] { 40, 0, 0, 40, 0 };
