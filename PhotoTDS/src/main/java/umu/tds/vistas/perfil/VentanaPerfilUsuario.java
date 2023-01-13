@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+
 import java.awt.BorderLayout;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -17,7 +19,9 @@ import java.awt.Image;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
+import java.awt.event.AdjustmentEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -39,22 +43,28 @@ import umu.tds.vistas.Utils;
 
 import javax.swing.JScrollPane;
 import java.awt.Cursor;
+import javax.swing.ScrollPaneConstants;
 
 public class VentanaPerfilUsuario {
 
 	private static final int ANCHO_FOTO_PERFIL = 150; // Ancho de la foto de perfil en la ventana del perfil del usuario
 
 	private static final int COLUMNAS = 3;
-	private static final int MINIMO_FOTOS_CARGAR = 6; // Maximo de fotos del usuario que se cargan en su perfil inicialmente
+	private static final int MINIMO_FOTOS_CARGAR = 6; // Numero de fotos del usuario que se cargan en su perfil
+														// inicialmente
 	private static final int ANCHO_FOTO_INICIAL = 198; // Ancho inicial de las fotos que se cargan en el perfil
-	
+
 	private static final int MINIMO_FOTO = 158; // Ancho minimo de las fotos que se cargan
 	private static final int MAXIMO_FOTO = 295; // Ancho maximo de las fotos que se cargan
-	
-	private static final double ESCALA_FOTO_PERFIL = 0.333; // Al clickar en la foto de perfil, esta debe ocupar 1/3 de la pantalla
+
+	private static final double ESCALA_FOTO_PERFIL = 0.333; // Al clickar en la foto de perfil, esta debe ocupar 1/3 de
+															// la pantalla
+
+	private static final double PORCENTAJE_BARRA = 0.9;
 
 	private JFrame frame;
 	private Icon fotoPerfil;
+	private String rutaFotoPerfil;
 
 	// Cargar las fotos del usuario
 	private JScrollPane panelScrollFotos;
@@ -68,12 +78,14 @@ public class VentanaPerfilUsuario {
 	private Map<JLabel, Image> etiquetasImagenes; // Guarda que imagen corresponde a cada etiqueta
 	private int fotosCargadas, fotosRestantes;
 	private int col, row;
-	
 
 	public VentanaPerfilUsuario() {
-		this.fotoPerfil = Controlador.getControlador().getUserPicture() == null
-				? new ImageIcon(getClass().getResource("/imagenes/noPicture-user-1.png"))
-				: new ImageIcon(Controlador.getControlador().getUserPicture());
+		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
+
+		System.out.println(rutaFotoPerfil);
+		this.fotoPerfil = rutaFotoPerfil == null
+				? new ImageIcon(getClass().getResource("/imagenes/noPerfilPicture.jpg"))
+				: new ImageIcon(rutaFotoPerfil);
 
 		this.filasActuales = 0;
 		this.fotosCargadas = 0;
@@ -83,7 +95,7 @@ public class VentanaPerfilUsuario {
 		this.rutasFotos = Controlador.getControlador().getUsuarioLogueado().getRutasFotos();
 		initialize();
 	}
-	
+
 	public void mostrar() {
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);
@@ -104,7 +116,7 @@ public class VentanaPerfilUsuario {
 		gbl_panelContenedor.columnWidths = new int[] { 30, 0, 30, 0 };
 		gbl_panelContenedor.rowHeights = new int[] { 30, 0, 30, 0, 0, 0, 30, 0 };
 		gbl_panelContenedor.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
-		gbl_panelContenedor.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelContenedor.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		panelContenedor.setLayout(gbl_panelContenedor);
 
 		// Cada vez que cambie el tamaño de la pantalla (panelContenedor), las fotos
@@ -169,12 +181,12 @@ public class VentanaPerfilUsuario {
 		gbc_lblFotoPerfil.gridx = 0;
 		gbc_lblFotoPerfil.gridy = 0;
 		panelContenedorSuperior.add(lblFotoPerfil, gbc_lblFotoPerfil);
-		
+
 		// Al clickar en la foto de pefil, se abre un dialogo con la foto en grande
 		lblFotoPerfil.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int longitudImagen = (int)(ESCALA_FOTO_PERFIL * frame.getSize().height);
+				int longitudImagen = (int) (ESCALA_FOTO_PERFIL * frame.getSize().height);
 				BufferedImage maskedDialogo = Utils.redondearImagen(longitudImagen, fotoPerfil);
 				DialogoFotoPerfil dialogoFoto = new DialogoFotoPerfil(frame, maskedDialogo);
 				dialogoFoto.mostrarDialogo();
@@ -208,7 +220,7 @@ public class VentanaPerfilUsuario {
 		gbc_panelNombreUsuario.gridy = 0;
 		panelPerfil.add(panelNombreUsuario, gbc_panelNombreUsuario);
 
-		JLabel lblNombreUsuario = new JLabel("MelguiSama");
+		JLabel lblNombreUsuario = new JLabel(Controlador.getControlador().getUsername());
 		lblNombreUsuario.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panelNombreUsuario.add(lblNombreUsuario);
 
@@ -217,16 +229,17 @@ public class VentanaPerfilUsuario {
 
 		JButton btnEditarPerfil = new JButton("Editar Perfil");
 		panelNombreUsuario.add(btnEditarPerfil);
-		
+
 		// Al clickar en el boton, abrir un dialogo para editar el perfil del usuario
 		btnEditarPerfil.addActionListener((ActionEvent e) -> {
 			BufferedImage fotoDialogoPerfil = Utils.redondearImagen(175, fotoPerfil);
-			DialogoEditarPerfil dialogoPerfil = new DialogoEditarPerfil(frame, fotoDialogoPerfil);
+			DialogoEditarPerfil dialogoPerfil = new DialogoEditarPerfil(frame, fotoDialogoPerfil, rutaFotoPerfil);
 			dialogoPerfil.mostrarDialogo();
-			
+
 		});
 
-		JLabel lblPublicaciones = new JLabel("100 Publicaciones");
+		JLabel lblPublicaciones = new JLabel(
+				Controlador.getControlador().getUsuarioLogueado().numeroPublicaciones() + " Publicaciones");
 		lblPublicaciones.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblPublicaciones = new GridBagConstraints();
 		gbc_lblPublicaciones.insets = new Insets(0, 10, 5, 25);
@@ -234,7 +247,9 @@ public class VentanaPerfilUsuario {
 		gbc_lblPublicaciones.gridy = 2;
 		panelPerfil.add(lblPublicaciones, gbc_lblPublicaciones);
 
-		JLabel lblSeguidores = new JLabel("200 Seguidores");
+		JLabel lblSeguidores = new JLabel(
+				Controlador.getControlador().getUsuarioLogueado().numeroSeguidores() + " Seguidores");
+		lblSeguidores.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSeguidores.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblSeguidores = new GridBagConstraints();
 		gbc_lblSeguidores.insets = new Insets(0, 0, 5, 25);
@@ -242,7 +257,11 @@ public class VentanaPerfilUsuario {
 		gbc_lblSeguidores.gridy = 2;
 		panelPerfil.add(lblSeguidores, gbc_lblSeguidores);
 
-		JLabel lblSeguidos = new JLabel("300 Seguidos");
+		// Al clikar en los seguidores, se debe abrir un dialogo con las lista de
+		// seguidores del usuario
+
+		JLabel lblSeguidos = new JLabel(Controlador.getControlador().numeroUsuariosSeguidos() + " Seguidos");
+		lblSeguidos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSeguidos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblSeguidos = new GridBagConstraints();
 		gbc_lblSeguidos.insets = new Insets(0, 0, 5, 5);
@@ -250,7 +269,7 @@ public class VentanaPerfilUsuario {
 		gbc_lblSeguidos.gridy = 2;
 		panelPerfil.add(lblSeguidos, gbc_lblSeguidos);
 
-		JLabel lblNombreCompleto = new JLabel("Francisco David Campuzano Melgarejo");
+		JLabel lblNombreCompleto = new JLabel(Controlador.getControlador().getUserNombre());
 		lblNombreCompleto.setFont(new Font("Tahoma", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNombreCompleto = new GridBagConstraints();
 		gbc_lblNombreCompleto.anchor = GridBagConstraints.NORTHWEST;
@@ -260,7 +279,7 @@ public class VentanaPerfilUsuario {
 		gbc_lblNombreCompleto.gridy = 4;
 		panelPerfil.add(lblNombreCompleto, gbc_lblNombreCompleto);
 
-		JLabel lblCorreo = new JLabel("franciscodavid.campuzanom@um.es");
+		JLabel lblCorreo = new JLabel(Controlador.getControlador().getUsuarioLogueado().getEmail());
 		lblCorreo.setFont(new Font("Tahoma", Font.BOLD, 14));
 		GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
 		gbc_lblCorreo.gridwidth = 3;
@@ -322,6 +341,7 @@ public class VentanaPerfilUsuario {
 		panelBotones.add(btnAlbumes);
 
 		panelScrollFotos = new JScrollPane();
+		panelScrollFotos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		GridBagConstraints gbc_panelScrollFotos = new GridBagConstraints();
 		gbc_panelScrollFotos.anchor = GridBagConstraints.NORTH;
 		gbc_panelScrollFotos.insets = new Insets(0, 0, 5, 5);
@@ -329,6 +349,22 @@ public class VentanaPerfilUsuario {
 		gbc_panelScrollFotos.gridx = 1;
 		gbc_panelScrollFotos.gridy = 5;
 		panelContenedor.add(panelScrollFotos, gbc_panelScrollFotos);
+
+		// Al desplazar la barra vertical hacia abajo, cargar nuevas fotos
+		panelScrollFotos.getVerticalScrollBar().addAdjustmentListener((AdjustmentEvent e) -> {
+			System.out.println("BARRA");
+			JScrollBar barra = (JScrollBar) e.getAdjustable();
+			int posicionCarga = (int) ((barra.getMaximum() - barra.getModel().getExtent()) * PORCENTAJE_BARRA);
+			System.out.println("Maximo: " + barra.getMaximum());
+			System.out.println("Extent: " + barra.getModel().getExtent());
+			System.out.println("Posicion carga: " + posicionCarga + " Posicion actual: " + barra.getValue());
+
+			if ((fotosRestantes > 0) && (barra.getValue() >= posicionCarga)) {
+				cargarFotos(Math.min(MINIMO_FOTOS_CARGAR, fotosRestantes));
+				System.out.println("FOTOS CARGADAS");
+			}
+
+		});
 
 		panelFotosUsuario = new JPanel();
 		panelScrollFotos.setViewportView(panelFotosUsuario);
@@ -376,7 +412,7 @@ public class VentanaPerfilUsuario {
 			gbc.gridy = row;
 			gbc.fill = GridBagConstraints.NONE;
 			gbc.anchor = GridBagConstraints.NORTH;
-			gbc.insets = new Insets(0, 0, 10, 10);
+			gbc.insets = new Insets(0, 0, 5, 5);
 			panelFotosUsuario.add(label, gbc);
 			col = (col + 1) % 3;
 			if (col == 0)
@@ -384,7 +420,7 @@ public class VentanaPerfilUsuario {
 		}
 
 		fotosRestantes -= numeroFotos;
-		frame.pack();
+		// frame.revalidate();
 		anchoPanelActual = panelScrollFotos.getSize().getWidth();
 		System.out.println("Panel Ventana: " + panelScrollFotos.getSize());
 		System.out.println("Panel Fotos: " + panelFotosUsuario.getSize());

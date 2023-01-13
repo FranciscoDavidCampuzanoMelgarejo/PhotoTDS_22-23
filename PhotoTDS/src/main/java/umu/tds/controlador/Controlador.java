@@ -187,18 +187,13 @@ public class Controlador implements FotosListener {
 		return false;
 	}
 
-	public void editarPerfil(String foto, String presentacion, String password) {
-		PerfilUsuario perfil = usuario.getPerfil();
-		perfil.setFoto(foto);
-		perfil.setPresentacion(presentacion);
-
-		if (password != null) {
-			usuario.setPassword(password);
-		}
+	public void editarPerfil(String foto, String presentacion) {
+		usuario.cambiarPerfil(foto, presentacion);
 
 		usuarioDAO.update(usuario);
-
 	}
+	
+	
 
 	public void seguir(String nombreUsuario) {
 

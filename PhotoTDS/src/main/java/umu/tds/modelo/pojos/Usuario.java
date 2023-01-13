@@ -171,6 +171,10 @@ public class Usuario implements Serializable {
 	public void addPublicacion(Publicacion publicacion) {
 		this.publicaciones.add(publicacion);
 	}
+	
+	public int numeroPublicaciones() {
+		return this.publicaciones.size();
+	}
 
 	public int numeroSeguidores() {
 		return seguidores.size();
@@ -192,7 +196,11 @@ public class Usuario implements Serializable {
 		return publicaciones.stream()
 				.filter((Publicacion p) -> p instanceof Foto)
 				.map((Publicacion p) -> ((Foto) p).getRuta()).collect(Collectors.toList());
-
+	}
+	
+	public void cambiarPerfil(String foto, String presentacion) {
+		perfil.setFoto(foto);
+		perfil.setPresentacion(presentacion);
 	}
 
 	@Override

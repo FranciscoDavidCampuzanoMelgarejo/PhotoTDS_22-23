@@ -671,7 +671,7 @@ public class PanelRegistro extends JScrollPane {
 		panelCentro.add(seperadorCrearCuenta, gbc_seperadorCrearCuenta);
 
 		JButton btnCrearCuenta = new JButton("Crear Cuenta");
-		btnCrearCuenta.setBackground(new Color(240, 240, 240));
+		//btnCrearCuenta.setBackground(new Color(240, 240, 240));
 		btnCrearCuenta.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnCrearCuenta.setBackground(new Color(28, 84, 215));
 		btnCrearCuenta.setForeground(new Color(200, 200, 200));

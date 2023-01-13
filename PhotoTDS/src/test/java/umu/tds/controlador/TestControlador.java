@@ -65,6 +65,7 @@ public class TestControlador {
 		assertFalse(controlador.loginUsuario("invent", "1234"));
 	}
 
+	/*
 	@Test
 	public void testEditarPerfil() {
 		Usuario usuarioAntiguo = usuarioDAO.findBy(1);
@@ -73,6 +74,7 @@ public class TestControlador {
 		Usuario usuarioNuevo = usuarioDAO.findBy(1);
 		assertNotEquals(usuarioAntiguo, usuarioNuevo);
 	}
+	*/
 
 	@Test
 	public void testPublicarFoto() {

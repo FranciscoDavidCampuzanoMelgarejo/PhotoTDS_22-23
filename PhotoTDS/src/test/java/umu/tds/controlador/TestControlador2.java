@@ -29,29 +29,39 @@ public class TestControlador2 {
 
 
 	@Test
-	public void testGeneral() {
+	public void testGeneral1() {
 		
 		//Registrarse
 		//assertTrue(controlador.registrarUsuario("Gema Ruiz Perez", "gema@um.es", "gemita-99", "1234", LocalDate.now(), "Hola me llamo Gema.", "ruta/to/Gema"));
 		
 		// Loguearse
-		assertTrue(controlador.loginUsuario("gema@um.es", "1234"));
+		assertTrue(controlador.loginUsuario("Usuario_26", "aA1-"));
 		
 		//Publicar foto
 		//controlador.publicarFoto("ruta/inventada", "Foto inicial", "Foto del atardecer en Murcia", null);
 		
 		
-		Usuario usuario = usuarioDAO.findBy(2);
+		Usuario usuario = controlador.getUsuarioLogueado();
 		
+		/*
 		System.out.println("Numero de publicaciones: " + usuario.getPublicaciones().size());
 		usuario.getPublicaciones().stream()
 			.forEach((Publicacion p ) -> System.out.println(p));
+		*/
 		
-		Publicacion p = publicacionDAO.findBy(2);
-		System.out.println(p.getUsuario());
 		
 		//Seguir a un usuario
-		//controlador.seguir("gemita-99");
+		//controlador.seguir("jose99");
+		//controlador.seguir("MelguiSama");
+		
+		//Loguearme con otro usuario
+		assertTrue(controlador.loginUsuario("Anonimo", "aA1-"));
+		usuario = controlador.getUsuarioLogueado();
+		System.out.println(usuario.getUsuario());
+		
+		controlador.seguir("Usuario_26");
+		
+		
 		
 		/*
 		Usuario usuario = usuarioDAO.findBy(2);
@@ -70,6 +80,22 @@ public class TestControlador2 {
 			.forEach((Usuario u) -> System.out.println(u));
 		*/
 		
+		
+	}
+	
+	@Test
+	public void testGeneralPublicacion() {
+		assertTrue(controlador.loginUsuario("Usuario_26", "aA1-"));
+		
+		Usuario usuario = controlador.getUsuarioLogueado();
+		
+		//controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\pepoG.jpg", "Tomando apuntes", "Emoticono de la rana Pepe tomando apunte", null, null);
+		//controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\Algo.png", "Impresionado", "Emoticono de la rana Pepe impresionado", null, null);
+		//controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\based.jpg", "BASED", "Basado", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\booba.jpg", "BOOBA", "Ojo saltones", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\copium.jpg", "COPIUM", "Anestesiado", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\peepoHey.png", "SALUDO", "Emote de saludo", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\sadge.png", "SAD", "Emote triste", null, null);
 		
 	}
 

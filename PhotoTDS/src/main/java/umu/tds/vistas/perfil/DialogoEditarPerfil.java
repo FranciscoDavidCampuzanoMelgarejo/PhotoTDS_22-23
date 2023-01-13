@@ -38,16 +38,16 @@ public class DialogoEditarPerfil extends JDialog {
 	private JPanel panelContenido;
 	private CardLayout cardLayout;
 
-	public DialogoEditarPerfil(JFrame frame, BufferedImage imagenPerfil) {
+	public DialogoEditarPerfil(JFrame frame, BufferedImage imagenPerfil, String rutaImagenPerfil) {
 		this.framePadre = frame;
-		this.panelPerfil = new PanelPerfil(this, new ImageIcon(imagenPerfil),
+		this.panelPerfil = new PanelPerfil(this, new ImageIcon(imagenPerfil), rutaImagenPerfil,
 				Controlador.getControlador().getUserPresentacion());
 
 		// Viola el patron experto
 		this.panelPassword = new PanelPassword(this, Controlador.getControlador().getUsuarioLogueado().getPassword());
 		crearDialogo();
 	}
-	
+
 	public void mostrarDialogo() {
 		setVisible(true);
 	}
