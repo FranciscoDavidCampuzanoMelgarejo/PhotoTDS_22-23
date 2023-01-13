@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -197,12 +199,14 @@ public class PanelLogin extends JPanel {
 				} else {
 					System.out.println("Exito al loguearse");
 					limpiarPanel();
-					VentanaPhotoTDS ventana = new VentanaPhotoTDS();
-					//VentanaPrincipal ventana = new VentanaPrincipal();
-					ventana.mostrar();
 					
-					//VentanaPhotoTDS phototds = new VentanaPhotoTDS();
-						//phototds.mostrar();
+					//VentanaPrincipal ventana = new VentanaPrincipal();
+					//ventana.mostrar();
+					
+					
+					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+					VentanaPhotoTDS phototds = new VentanaPhotoTDS((int)(dim.getWidth()/2)-840/2, (int)(dim.getHeight()/2)-720/2);
+						phototds.mostrar();
 					
 					frmLoginRegistro.dispose();
 				}

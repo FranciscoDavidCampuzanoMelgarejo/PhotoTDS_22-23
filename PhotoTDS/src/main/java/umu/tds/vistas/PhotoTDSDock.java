@@ -4,182 +4,256 @@ import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
 import java.awt.CardLayout;
-import java.awt.EventQueue;
-
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-
 import java.awt.Image;
-
-import java.awt.Color;
+import java.io.File;
+import umu.tds.controlador.Controlador;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.io.File;
-import java.util.LinkedList;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import javax.swing.border.EtchedBorder;
-
-import umu.tds.vistas.perfil.VentanaPerfilUsuario;
-
-import java.awt.Font;
 
 public class PhotoTDSDock extends JPanel{
 	private static final long serialVersionUID = 1L;
-
-	private JLabel dock_inicio_icon, dock_publi_icon, dock_usuario_icon, dock_logo;
-	private GridBagConstraints gbc_dock;
+	private int DOCKICONSIZE1 = 38, DOCKICONSIZE2 = 42;
 	
-	private Image logo1, logo2, finder1, finder2, publi1, publi2, home1, home2;
-
-	
-	private void cargarRecursos() {
-		try {
-			logo1 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/logo-phototds-dock.png")).getScaledInstance(140, 64, Image.SCALE_SMOOTH);
-			logo2 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/logo-phototds-dock.png")).getScaledInstance(140, 64, Image.SCALE_SMOOTH);
-			finder1 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/busqueda.png")).getScaledInstance(38, 38, Image.SCALE_SMOOTH);
-			finder2 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/busqueda.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-			publi1 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/publi.png")).getScaledInstance(38, 38, Image.SCALE_SMOOTH);
-			publi2 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/publi.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-			home1 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/home.png")).getScaledInstance(38, 38, Image.SCALE_SMOOTH);
-			home2 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock-files/home.png")).getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-			
-			dock_inicio_icon = new JLabel("");
-			dock_publi_icon = new JLabel("");
-			dock_usuario_icon = new JLabel("");
-			dock_logo = new JLabel("");
-			
-			
-		} catch (NullPointerException edock1) {  System.err.println("Error inesperado en PhotoTDSDock.cargarRecursos()"); edock1.printStackTrace(); }
-		  catch(Exception edock2) { edock2.printStackTrace(); }
-	}
-
-	public GridBagConstraints getGBC() {
-		return gbc_dock;
-	}
-	
-	/* Dock estilo 1: estrecho, solo imagenes */
-	public void setDock1() {
-		dock_inicio_icon.setText("");
-		dock_publi_icon.setText("");
-		dock_usuario_icon.setText("");
-		dock_logo.setIcon(new ImageIcon(logo1));
-	}
-	
-	/* Dock estilo 2: ancho, imagenes + texto */
-	public void setDock2() {
-		dock_inicio_icon.setText("  Inicio");
-		dock_publi_icon.setText("  Crear");
-		dock_usuario_icon.setText("  Usuario");
-		dock_logo.setIcon(new ImageIcon(logo2));
-	}
+	private CardLayout c;
+	private JPanel dock1, dock2;
+	private Image dockbg, logo1, logo2, home, finder, publi, user;
 	
 	public PhotoTDSDock() {
 		super();
-		cargarRecursos();
-		setDock2();
-		
-		gbc_dock = new GridBagConstraints();
-		gbc_dock.insets = new Insets(0, 0, 0, 5);
-		gbc_dock.fill = GridBagConstraints.BOTH;
-		gbc_dock.gridx = 0;
-		gbc_dock.gridy = 0;
-		//phototdsrender.add(dock, gbc_dock);
-		GridBagLayout gbl_dock = new GridBagLayout();
-		gbl_dock.columnWidths = new int[]{0, 0};
-		gbl_dock.rowHeights = new int[]{64, 64, 64, 64, 0, 0};
-		gbl_dock.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_dock.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		this.setLayout(gbl_dock);
-		
-		JPanel dock_panelLogo = new JPanel(){ {setOpaque(false);} };
-		GridBagConstraints gbc_dock_panelLogo = new GridBagConstraints();
-		gbc_dock_panelLogo.insets = new Insets(0, 0, 5, 0);
-		gbc_dock_panelLogo.fill = GridBagConstraints.BOTH;
-		gbc_dock_panelLogo.gridx = 0;
-		gbc_dock_panelLogo.gridy = 0;
-		this.add(dock_panelLogo, gbc_dock_panelLogo);
-		dock_panelLogo.setLayout(new BorderLayout(0, 0));
-		
-		dock_logo.setIcon(new ImageIcon(logo1));
-		dock_logo.setHorizontalAlignment(SwingConstants.CENTER);
-		dock_panelLogo.add(dock_logo, BorderLayout.CENTER);
-		
-		JPanel dock_inicio = new JPanel(){ {setOpaque(false);} };
-		dock_inicio.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				dock_inicio_icon.setIcon(new ImageIcon(home2));
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				dock_inicio_icon.setIcon(new ImageIcon(home1));
-			}
-		});
-		GridBagConstraints gbc_dock_inicio = new GridBagConstraints();
-		gbc_dock_inicio.insets = new Insets(0, 0, 5, 0);
-		gbc_dock_inicio.fill = GridBagConstraints.BOTH;
-		gbc_dock_inicio.gridx = 0;
-		gbc_dock_inicio.gridy = 1;
-		this.add(dock_inicio, gbc_dock_inicio);
-		dock_inicio.setLayout(new BorderLayout(0, 0));
-		
-		dock_inicio_icon.setFont(new Font("Berlin Sans FB", Font.ITALIC, 16));
-		dock_inicio_icon.setIcon(new ImageIcon(home1));
-		dock_inicio_icon.setHorizontalAlignment(SwingConstants.CENTER);
-		dock_inicio.add(dock_inicio_icon);
-		
-		JPanel dock_publi = new JPanel(){ {setOpaque(false);} };
-		GridBagConstraints gbc_dock_publi = new GridBagConstraints();
-		gbc_dock_publi.insets = new Insets(0, 0, 5, 0);
-		gbc_dock_publi.fill = GridBagConstraints.BOTH;
-		gbc_dock_publi.gridx = 0;
-		gbc_dock_publi.gridy = 2;
-		this.add(dock_publi, gbc_dock_publi);
-		dock_publi.setLayout(new BorderLayout(0, 0));
-		
-		dock_publi_icon.setFont(new Font("Berlin Sans FB", Font.ITALIC, 16));
-		dock_publi_icon.setIcon(new ImageIcon(publi1));
-		dock_publi_icon.setHorizontalAlignment(SwingConstants.CENTER);
-		dock_publi.add(dock_publi_icon);
-		
-		JPanel dock_usuario = new JPanel(){ {setOpaque(false);} };
-		GridBagConstraints gbc_dock_usuario = new GridBagConstraints();
-		gbc_dock_usuario.insets = new Insets(0, 0, 5, 0);
-		gbc_dock_usuario.fill = GridBagConstraints.BOTH;
-		gbc_dock_usuario.gridx = 0;
-		gbc_dock_usuario.gridy = 3;
-		this.add(dock_usuario, gbc_dock_usuario);
-		dock_usuario.setLayout(new BorderLayout(0, 0));
-		
-		dock_usuario_icon.setFont(new Font("Berlin Sans FB", Font.ITALIC, 16));
-		dock_usuario_icon.setIcon(new ImageIcon(home1));
-		dock_usuario_icon.setHorizontalAlignment(SwingConstants.CENTER);
-		dock_usuario.add(dock_usuario_icon, BorderLayout.CENTER);
-		
-		// Al clickar en la etiqueta del del usuario (perfil), 
-		// abrir la ventana de perfil del usuario
-		
-		dock_usuario_icon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				VentanaPerfilUsuario ventanaPerfil = new VentanaPerfilUsuario();
-				ventanaPerfil.mostrar();
-			}
-		});
+		this.setOpaque(false);
+		try {
+			cargarRecursos();
+			dibujar();
+		} catch (Exception edock) { edock.printStackTrace(); }
 	}
 	
+	/* Cambia el estilo del dock */
+	public void cambiarDock(String estilo) {
+		c.show(this, estilo);
+	}
+
+	/* Recarga la imagen de usuario del dock */
+	public void recargarImagenUsuario() throws Exception{
+		File userpic;
+		String userpicture = Controlador.getControlador().getUserPicture();
+		if(userpicture!=null) {
+			userpic = new File(userpicture);
+		} else userpic = new File(PhotoTDSDock.class.getResource("/imagenes/dock/nouser.png").getFile());
+		user = ImageIO.read(userpic);
+	}
 	
+	/* Tamaño de iconos al pasar el cursor sobre ellos */
+	public void setDockIconSize1(int size) { this.DOCKICONSIZE1 = size; }
+	public void setDockIconSize2(int size) { this.DOCKICONSIZE2 = size; }
 	
+	/* Precarga de recursos gráficos del dock */
+	private void cargarRecursos() throws Exception{
+		dockbg = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock/dockbg1.png"));
+		logo1 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock/logo1.png"));
+		logo2 = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock/logo2.png"));
+		home = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock/home.png"));
+		finder = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock/finder.png"));
+		publi = ImageIO.read(PhotoTDSDock.class.getResource("/imagenes/dock/publi.png"));
+		
+		File userpic;
+		String userpicture = Controlador.getControlador().getUserPicture();
+		if(userpicture!=null) {
+			userpic = new File(userpicture);
+		} else userpic = new File(PhotoTDSDock.class.getResource("/imagenes/dock/nouser.png").getFile());
+		user = ImageIO.read(userpic);
+	}
 	
+	/* Dibujado de componentes del dock */
+	private void dibujar() throws Exception{
+		c = new CardLayout(0,0);
+		setLayout(c);
+				
+		/* DOCK1 */
+		dock1 = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			{ setOpaque(false); }
+			@Override
+			protected void paintComponent(Graphics g) {
+				g.drawImage(dockbg.getScaledInstance(64, dock1.getHeight(), Image.SCALE_SMOOTH), 0,0, null);
+			}
+		};
+
+		add(dock1, "dock1");
+		GridBagLayout gbl_dock1 = new GridBagLayout();
+		gbl_dock1.columnWidths = new int[]{0, 0};
+		gbl_dock1.rowHeights = new int[]{64, 64, 64, 64, 64, 0};
+		gbl_dock1.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_dock1.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		dock1.setLayout(gbl_dock1);
+		
+		JPanel dock1logo = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			{ setOpaque(false); }
+		};
+		GridBagConstraints gbc_dock1logo = new GridBagConstraints();
+		gbc_dock1logo.fill = GridBagConstraints.VERTICAL;
+		gbc_dock1logo.gridx = 0;
+		gbc_dock1logo.gridy = 0;
+		dock1.add(dock1logo, gbc_dock1logo);
+		dock1logo.setLayout(new BorderLayout(0, 0));
+		
+		JLabel dock1logoicon = new JLabel("");
+		dock1logoicon.setToolTipText("PhotoTDS");
+			dock1logoicon.setIcon(new ImageIcon(logo1.getScaledInstance(DOCKICONSIZE1, 50, Image.SCALE_SMOOTH)));
+		dock1logo.add(dock1logoicon, BorderLayout.CENTER);
+		
+		JPanel dock1home = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			{ setOpaque(false); }
+		};
+		GridBagConstraints gbc_dock1home = new GridBagConstraints();
+		gbc_dock1home.fill = GridBagConstraints.VERTICAL;
+		gbc_dock1home.gridx = 0;
+		gbc_dock1home.gridy = 1;
+		dock1.add(dock1home, gbc_dock1home);
+		dock1home.setLayout(new BorderLayout(0, 0));
+		
+		JLabel dock1homeicon = new JLabel("");
+		dock1homeicon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				dock1homeicon.setIcon(new ImageIcon(home.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
+			}
+			@Override 
+			public void mouseExited(MouseEvent e) {
+				dock1homeicon.setIcon(new ImageIcon(home.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				dock1homeicon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1homeicon.getIcon()).getImage())));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				dock1homeicon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1homeicon.getIcon()).getImage())));
+			}
+		});
+		dock1homeicon.setToolTipText("Inicio");
+			dock1homeicon.setIcon(new ImageIcon(home.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+		dock1home.add(dock1homeicon, BorderLayout.CENTER);
+		
+		JPanel dock1finder = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			{ setOpaque(false); }
+		};
+		GridBagConstraints gbc_dock1finder = new GridBagConstraints();
+		gbc_dock1finder.fill = GridBagConstraints.VERTICAL;
+		gbc_dock1finder.gridx = 0;
+		gbc_dock1finder.gridy = 2;
+		dock1.add(dock1finder, gbc_dock1finder);
+		dock1finder.setLayout(new BorderLayout(0, 0));
+		
+		JLabel dock1findericon = new JLabel("");
+		dock1findericon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				dock1findericon.setIcon(new ImageIcon(finder.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
+			}
+			@Override 
+			public void mouseExited(MouseEvent e) {
+				dock1findericon.setIcon(new ImageIcon(finder.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				dock1findericon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1findericon.getIcon()).getImage())));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				dock1findericon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1findericon.getIcon()).getImage())));
+			}
+		});
+		dock1findericon.setToolTipText("Buscar");
+			dock1findericon.setIcon(new ImageIcon(finder.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+		dock1finder.add(dock1findericon, BorderLayout.CENTER);
+		
+		JPanel dock1publi = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			{ setOpaque(false); }
+		};
+		GridBagConstraints gbc_dock1publi = new GridBagConstraints();
+		gbc_dock1publi.fill = GridBagConstraints.VERTICAL;
+		gbc_dock1publi.gridx = 0;
+		gbc_dock1publi.gridy = 3;
+		dock1.add(dock1publi, gbc_dock1publi);
+		dock1publi.setLayout(new BorderLayout(0, 0));
+		
+		JLabel dock1publiicon = new JLabel("");
+		dock1publiicon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				dock1publiicon.setIcon(new ImageIcon(publi.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
+			}
+			@Override 
+			public void mouseExited(MouseEvent e) {
+				dock1publiicon.setIcon(new ImageIcon(publi.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				dock1publiicon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1publiicon.getIcon()).getImage())));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				dock1publiicon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1publiicon.getIcon()).getImage())));
+			}
+		});
+			dock1publiicon.setToolTipText("Publicar");
+			dock1publiicon.setIcon(new ImageIcon(publi.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+		dock1publi.add(dock1publiicon, BorderLayout.CENTER);
+		
+		JPanel dock1user = new JPanel() {
+			private static final long serialVersionUID = 1L;
+			{ setOpaque(false); }
+		};
+		GridBagConstraints gbc_dock1user = new GridBagConstraints();
+		gbc_dock1user.fill = GridBagConstraints.VERTICAL;
+		gbc_dock1user.gridx = 0;
+		gbc_dock1user.gridy = 4;
+		dock1.add(dock1user, gbc_dock1user);
+		dock1user.setLayout(new BorderLayout(0, 0));
+		
+		JLabel dock1usericon = new JLabel("");
+		dock1usericon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_FAST)));
+			}
+			@Override 
+			public void mouseExited(MouseEvent e) {
+				dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_FAST)));
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+				dock1usericon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1usericon.getIcon()).getImage())));
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				dock1usericon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1usericon.getIcon()).getImage())));
+			}
+		});
+			dock1usericon.setToolTipText(Controlador.getControlador().getUsername());
+			dock1usericon.setIcon(new ImageIcon(Utils.redondearImagen(38, new ImageIcon( user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)))));
+			
+		dock1user.add(dock1usericon, BorderLayout.CENTER);
+		
+		/* DOCK2 */
+		dock2 = new JPanel();
+		add(dock2, "dock2");
+		GridBagLayout gbl_dock2 = new GridBagLayout();
+		gbl_dock2.columnWidths = new int[]{0};
+		gbl_dock2.rowHeights = new int[]{0};
+		gbl_dock2.columnWeights = new double[]{Double.MIN_VALUE};
+		gbl_dock2.rowWeights = new double[]{Double.MIN_VALUE};
+		dock2.setLayout(gbl_dock2);
+		
+		
+	}
 }

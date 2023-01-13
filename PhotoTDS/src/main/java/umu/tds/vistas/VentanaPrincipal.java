@@ -86,8 +86,7 @@ public class VentanaPrincipal {
 			if(Controlador.getControlador().getUserPicture() != null) {
 				System.out.println("NO es NULO");
 				File archivo = new File(Controlador.getControlador().getUserPicture());
-				//userPicture = ImageIO.read(archivo);
-				userPicture = fondo;
+				userPicture = ImageIO.read(archivo);
 				
 				// Para la imagen sin el cursor encima, colocamos la imagen de usuario sobre el fondo de cristal transparente
 				BufferedImage buffer1 = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
