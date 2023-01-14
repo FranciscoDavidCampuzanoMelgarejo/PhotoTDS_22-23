@@ -19,6 +19,8 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -52,6 +54,10 @@ public class DialogoEditarPerfil extends JDialog {
 
 	public void mostrarDialogo() {
 		setVisible(true);
+	}
+
+	public boolean cambiarFotoPerfil() {
+		return panelPerfil.cambiarFotoPerfil();
 	}
 
 	private void crearDialogo() {
@@ -116,12 +122,12 @@ public class DialogoEditarPerfil extends JDialog {
 		panelContenido.setLayout(cardLayout);
 		panelContenido.add(panelPerfil, PANEL_PERFIL);
 		panelContenido.add(panelPassword, PANEL_PASSWORD);
-		
+
 		btnCambiarPerfil.addActionListener((ActionEvent e) -> {
 			cardLayout.show(panelContenido, PANEL_PERFIL);
 			panelPassword.limpiar();
 		});
-		
+
 		btnCambiarPassword.addActionListener((ActionEvent e) -> {
 			cardLayout.show(panelContenido, PANEL_PASSWORD);
 			panelPerfil.limpiar();

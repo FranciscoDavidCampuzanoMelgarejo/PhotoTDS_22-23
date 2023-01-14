@@ -56,7 +56,9 @@ public class PanelPerfil extends JPanel {
 	private JLabel lblFotoPerfil;
 	private JTextArea areaPresentacion;
 	private JLabel lblContadorLetras;
-	private boolean cambioFoto = false;
+	private boolean cambioFoto = false; // Para saber si se ha cambiado la foto antes de guardarla
+	
+	private String rutaImagenPerfilIncial = Controlador.getControlador().getUserPicture();
 
 	public PanelPerfil(JDialog dialogo, Icon imagenPerfil, String rutaImagenPerfil, String presentacion) {
 		this.dialogoPadre = dialogo;
@@ -215,5 +217,9 @@ public class PanelPerfil extends JPanel {
 			}
 
 		});
+	}
+	
+	public boolean cambiarFotoPerfil() {
+		return (!rutaImagenPerfilIncial.equals(rutaImagenPerfil));
 	}
 }

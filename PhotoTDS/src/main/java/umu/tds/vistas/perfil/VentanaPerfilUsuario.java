@@ -26,6 +26,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +68,7 @@ public class VentanaPerfilUsuario {
 	private JFrame frame;
 	private Icon fotoPerfil;
 	private String rutaFotoPerfil;
+	private JLabel lblFotoPerfil;
 
 	// Cargar las fotos del usuario
 	private JScrollPane panelScrollFotos;
@@ -99,6 +103,14 @@ public class VentanaPerfilUsuario {
 	public void mostrar() {
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);
+	}
+
+	private void cambiarFotoPerfil() {
+		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
+		this.fotoPerfil = new ImageIcon(rutaFotoPerfil);
+
+		BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
+		this.lblFotoPerfil.setIcon(new ImageIcon(masked));
 	}
 
 	/**
@@ -174,7 +186,7 @@ public class VentanaPerfilUsuario {
 		panelContenedorSuperior.setLayout(gbl_panelContenedorSuperior);
 
 		BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil); // Foto redondeada
-		JLabel lblFotoPerfil = new JLabel(new ImageIcon(masked));
+		lblFotoPerfil = new JLabel(new ImageIcon(masked));
 		lblFotoPerfil.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		GridBagConstraints gbc_lblFotoPerfil = new GridBagConstraints();
 		gbc_lblFotoPerfil.insets = new Insets(0, 0, 0, 5);
@@ -235,6 +247,15 @@ public class VentanaPerfilUsuario {
 			BufferedImage fotoDialogoPerfil = Utils.redondearImagen(175, fotoPerfil);
 			DialogoEditarPerfil dialogoPerfil = new DialogoEditarPerfil(frame, fotoDialogoPerfil, rutaFotoPerfil);
 			dialogoPerfil.mostrarDialogo();
+
+			dialogoPerfil.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent e) {
+					if (dialogoPerfil.cambiarFotoPerfil()) {
+						cambiarFotoPerfil();
+					}
+				}
+			});
 
 		});
 
