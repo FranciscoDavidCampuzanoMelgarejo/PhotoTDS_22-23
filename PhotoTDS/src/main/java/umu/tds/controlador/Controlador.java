@@ -193,6 +193,11 @@ public class Controlador implements FotosListener {
 		usuarioDAO.update(usuario);
 	}
 	
+	public void cambiarPassword(String nuevaPassword) {
+		usuario.setPassword(nuevaPassword);
+		usuarioDAO.update(usuario);
+	}
+	
 	
 
 	public void seguir(String nombreUsuario) {

@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.io.File;
 import umu.tds.controlador.Controlador;
+import umu.tds.vistas.perfil.VentanaPerfilUsuario;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -237,6 +239,12 @@ public class PhotoTDSDock extends JPanel{
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				dock1usericon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1usericon.getIcon()).getImage())));
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				VentanaPerfilUsuario ventanaPerfil = new VentanaPerfilUsuario();
+				ventanaPerfil.mostrar();
 			}
 		});
 			dock1usericon.setToolTipText(Controlador.getControlador().getUsername());

@@ -53,6 +53,8 @@ public class PanelPerfil extends JPanel {
 
 	private JFileChooser fileChooser; // Cambiar la foto de perfil
 
+	private JLabel lblFotoPerfil;
+	private JTextArea areaPresentacion;
 	private JLabel lblContadorLetras;
 	private boolean cambioFoto = false;
 
@@ -66,6 +68,11 @@ public class PanelPerfil extends JPanel {
 				.getImage().getScaledInstance(SIZE_ICONO_OPTION_PANE, SIZE_ICONO_OPTION_PANE, Image.SCALE_SMOOTH));
 		this.fileChooser = new JFileChooser();
 		crearPanel();
+	}
+	
+	public void limpiar() {
+		this.lblFotoPerfil.setIcon(imagenPerfil);
+		this.areaPresentacion.setText(presentacion);
 	}
 
 	// Metodo privado para crear el panel
@@ -85,7 +92,7 @@ public class PanelPerfil extends JPanel {
 		gbc_panelFotoPerfil.gridy = 1;
 		add(panelFotoPerfil, gbc_panelFotoPerfil);
 
-		JLabel lblFotoPerfil = new JLabel(imagenPerfil);
+		lblFotoPerfil = new JLabel(imagenPerfil);
 		lblFotoPerfil.setBounds(95, 11, 175, 175);
 		panelFotoPerfil.add(lblFotoPerfil);
 
@@ -128,7 +135,7 @@ public class PanelPerfil extends JPanel {
 		gbc_panelScrollPresentacion.gridy = 2;
 		add(panelScrollPresentacion, gbc_panelScrollPresentacion);
 
-		JTextArea areaPresentacion = new JTextArea();
+		areaPresentacion = new JTextArea();
 		areaPresentacion.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		areaPresentacion.setLineWrap(true);
 		areaPresentacion.setRows(4);
