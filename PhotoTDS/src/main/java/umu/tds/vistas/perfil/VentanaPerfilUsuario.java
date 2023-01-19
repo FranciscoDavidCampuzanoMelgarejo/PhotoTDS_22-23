@@ -21,6 +21,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -31,6 +32,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.awt.Font;
@@ -82,8 +84,11 @@ public class VentanaPerfilUsuario {
 	private Map<JLabel, Image> etiquetasImagenes; // Guarda que imagen corresponde a cada etiqueta
 	private int fotosCargadas, fotosRestantes;
 	private int col, row;
+	
+	private List<ActionListener> listeners;
 
-	public VentanaPerfilUsuario() {
+	public VentanaPerfilUsuario(List<ActionListener> as) {
+		listeners = as;
 		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
 
 		System.out.println(rutaFotoPerfil);
@@ -100,6 +105,15 @@ public class VentanaPerfilUsuario {
 		initialize();
 	}
 
+	public void addActionListener(ActionListener a) {
+		if(listeners==null) listeners = new LinkedList<ActionListener>();
+		listeners.add(a);
+	}
+
+	public void notificacionPerfilUsuario(ActionEvent e) {
+		listeners.stream().forEach(l -> l.actionPerformed(e));
+	}
+	
 	public void mostrar() {
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);

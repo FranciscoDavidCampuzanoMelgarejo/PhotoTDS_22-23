@@ -11,11 +11,14 @@ import java.awt.CardLayout;
 import javax.imageio.ImageIO;
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
 import umu.tds.controlador.Controlador;
 import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class PhotoTDSDock extends JPanel{
 	private static final long serialVersionUID = 1L;
@@ -24,6 +27,8 @@ public class PhotoTDSDock extends JPanel{
 	private CardLayout c;
 	private JPanel dock1, dock2;
 	private Image dockbg, logo1, logo2, home, finder, publi, user;
+	
+	private List<ActionListener> listeners;
 	
 	public PhotoTDSDock() {
 		super();
@@ -34,19 +39,30 @@ public class PhotoTDSDock extends JPanel{
 		} catch (Exception edock) { edock.printStackTrace(); }
 	}
 	
+	public void addActionListener(ActionListener a) {
+		if(listeners==null) listeners = new LinkedList<ActionListener>();
+		listeners.add(a);
+	}
+	
+	public void notificacionDock(ActionEvent a) {
+		if(listeners!=null) listeners.stream().forEach(l -> l.actionPerformed(a));
+	}
+	
 	/* Cambia el estilo del dock */
 	public void cambiarDock(String estilo) {
 		c.show(this, estilo);
 	}
 
 	/* Recarga la imagen de usuario del dock */
-	public void recargarImagenUsuario() throws Exception{
+	public void recargarImagenUsuario(){
 		File userpic;
 		String userpicture = Controlador.getControlador().getUserPicture();
 		if(userpicture!=null) {
 			userpic = new File(userpicture);
 		} else userpic = new File(PhotoTDSDock.class.getResource("/imagenes/dock/nouser.png").getFile());
-		user = ImageIO.read(userpic);
+		try{
+			user = ImageIO.read(userpic);
+		} catch (IOException ioe) { ioe.printStackTrace(); }
 	}
 	
 	/* Tamaño de iconos al pasar el cursor sobre ellos */
@@ -68,6 +84,7 @@ public class PhotoTDSDock extends JPanel{
 			userpic = new File(userpicture);
 		} else userpic = new File(PhotoTDSDock.class.getResource("/imagenes/dock/nouser.png").getFile());
 		user = ImageIO.read(userpic);
+		user = Utils.redondearImagen(user.getWidth(null), new ImageIcon(user));
 	}
 	
 	/* Dibujado de componentes del dock */
@@ -125,18 +142,24 @@ public class PhotoTDSDock extends JPanel{
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				dock1homeicon.setIcon(new ImageIcon(home.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
+				//dock1homeicon.setIcon(new ImageIcon(((ImageIcon)dock1homeicon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
 			}
 			@Override 
 			public void mouseExited(MouseEvent e) {
 				dock1homeicon.setIcon(new ImageIcon(home.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+				//dock1homeicon.setIcon(new ImageIcon(((ImageIcon)dock1homeicon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				dock1homeicon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1homeicon.getIcon()).getImage())));
+				dock1homeicon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, home.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH))));
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				dock1homeicon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1homeicon.getIcon()).getImage())));
+				dock1homeicon.setIcon(new ImageIcon(home.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				notificacionDock(new ActionEvent(this, 0, "home"));
 			}
 		});
 		dock1homeicon.setToolTipText("Inicio");
@@ -159,18 +182,24 @@ public class PhotoTDSDock extends JPanel{
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				dock1findericon.setIcon(new ImageIcon(finder.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
+				//dock1findericon.setIcon(new ImageIcon(((ImageIcon)dock1findericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
 			}
 			@Override 
 			public void mouseExited(MouseEvent e) {
 				dock1findericon.setIcon(new ImageIcon(finder.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+				//dock1findericon.setIcon(new ImageIcon(((ImageIcon)dock1findericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				dock1findericon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1findericon.getIcon()).getImage())));
+				dock1findericon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, finder.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH))));
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				dock1findericon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1findericon.getIcon()).getImage())));
+				dock1findericon.setIcon(new ImageIcon(finder.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				notificacionDock(new ActionEvent(this, 1, "finder"));
 			}
 		});
 		dock1findericon.setToolTipText("Buscar");
@@ -193,22 +222,24 @@ public class PhotoTDSDock extends JPanel{
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				dock1publiicon.setIcon(new ImageIcon(publi.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
+				//dock1publiicon.setIcon(new ImageIcon(((ImageIcon)dock1publiicon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
 			}
 			@Override 
 			public void mouseExited(MouseEvent e) {
 				dock1publiicon.setIcon(new ImageIcon(publi.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+				//dock1publiicon.setIcon(new ImageIcon(((ImageIcon)dock1publiicon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				dock1publiicon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1publiicon.getIcon()).getImage())));
+				dock1publiicon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, publi.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH))));
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				dock1publiicon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1publiicon.getIcon()).getImage())));
+				dock1publiicon.setIcon(new ImageIcon(publi.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
 			}
-			@Override 
+			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				notificacionDock(new ActionEvent(this, 2, "publi"));
 			}
 		});
 			dock1publiicon.setToolTipText("Publicar");
@@ -231,24 +262,24 @@ public class PhotoTDSDock extends JPanel{
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_FAST)));
+				//dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
 			}
 			@Override 
 			public void mouseExited(MouseEvent e) {
 				dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_FAST)));
+				//dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				dock1usericon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, ((ImageIcon)dock1usericon.getIcon()).getImage())));
+				dock1usericon.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, user.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH))));
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				dock1usericon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1usericon.getIcon()).getImage())));
+				dock1usericon.setIcon(new ImageIcon(user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
 			}
-			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				VentanaPerfilUsuario ventanaPerfil = new VentanaPerfilUsuario();
-				ventanaPerfil.mostrar();
+				notificacionDock(new ActionEvent(this, 3, "user"));
 			}
 		});
 			dock1usericon.setToolTipText(Controlador.getControlador().getUsername());
@@ -257,6 +288,7 @@ public class PhotoTDSDock extends JPanel{
 		dock1user.add(dock1usericon, BorderLayout.CENTER);
 		
 		/* DOCK2 */
+		/*
 		dock2 = new JPanel();
 		add(dock2, "dock2");
 		GridBagLayout gbl_dock2 = new GridBagLayout();
@@ -265,7 +297,6 @@ public class PhotoTDSDock extends JPanel{
 		gbl_dock2.columnWeights = new double[]{Double.MIN_VALUE};
 		gbl_dock2.rowWeights = new double[]{Double.MIN_VALUE};
 		dock2.setLayout(gbl_dock2);
-		
-		
+		*/
 	}
 }

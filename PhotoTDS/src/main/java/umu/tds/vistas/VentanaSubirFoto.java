@@ -29,8 +29,13 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -57,12 +62,24 @@ public class VentanaSubirFoto {
 	private ImageIcon nuevapubli;	
 	
 	private Pattern patronEtiqueta;
+	
+	private List<ActionListener> listeners;
 
 	/* Constructor */
 	public VentanaSubirFoto() {
 		cargarRecursos();
 		initialize();
 	}
+	
+	public void addActionListener(ActionListener a) {
+		if(listeners==null) listeners = new LinkedList<ActionListener>();
+		listeners.add(a);
+	}
+
+	public void notificacionSubirFoto(ActionEvent e) {
+		if(listeners!=null) listeners.stream().forEach(l -> l.actionPerformed(e));
+	}
+	
 	
 	/* Mostrar ventana */
 	public void mostrar() {
@@ -72,6 +89,11 @@ public class VentanaSubirFoto {
 	/* Ocultar ventana */
 	public void ocultar() {
 		frame.setVisible(false);
+	}
+	
+	/* Destruye la ventana */
+	public void destruir() {
+		frame.dispose();
 	}
 	
 	/* Cargar recursos de la ventana */
@@ -93,6 +115,12 @@ public class VentanaSubirFoto {
 	/* Dibujado de ventana */
 	private void initialize() {
 		frame = new JFrame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent w) {
+				notificacionSubirFoto(new ActionEvent(this, 5, "subirFotoCerrando"));
+			}
+		});
 		frame.setTitle("Nueva publicación");
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 512, 480);
@@ -253,7 +281,7 @@ public class VentanaSubirFoto {
 					if(textoDescripcion.getText().isEmpty()) { labelDescripcion.setText("Descripcion - campo obligatorio"); labelDescripcion.setForeground(Color.red); }
 				} else {																		// Hacemos la publicación
 					Controlador.getControlador().publicarFoto(filePubli.getAbsolutePath(), textoTitulo.getText(), textoDescripcion.getText(), textoComentario.getText(), null);
-					frame.dispose();
+					notificacionSubirFoto(new ActionEvent(this, 4, "fotoSubida"));
 				}
 			}
 		});

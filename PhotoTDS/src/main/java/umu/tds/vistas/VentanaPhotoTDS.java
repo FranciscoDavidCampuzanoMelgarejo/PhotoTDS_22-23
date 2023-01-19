@@ -19,33 +19,34 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.util.LinkedList;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import javax.swing.border.EtchedBorder;
-import java.awt.Insets;
-import javax.swing.SwingConstants;
-import java.awt.Font;
+import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 /**@title Ventana principal de PhotoTDS
  * @author Francisco & Diego
  * */
 
-public class VentanaPhotoTDS {
+public class VentanaPhotoTDS implements ActionListener{
 
 	private JFrame frame;
 	private JPanel phototdsrender;
+	private JPanel apprender;
 	private PhotoTDSDock dock;
 	private CardLayout c;
 	private GridBagLayout layout1, layout2;
 	
 	private Image fondo, winIcon;
 	private VentanaSubirFoto subirFoto;
-	
-	
+	private boolean subiendoFoto;
+
 	private void cargarRecursos() {
 		try {
 			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/fondo-3.jpg")).getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
@@ -63,6 +64,8 @@ public class VentanaPhotoTDS {
 	
 	public VentanaPhotoTDS(int winX, int winY) {
 		cargarRecursos();
+		
+		subiendoFoto = false;
 		
 		layout1 = new GridBagLayout();
 			layout1.columnWidths = new int[]{64, 0, 776, 0, 0};
@@ -100,6 +103,7 @@ public class VentanaPhotoTDS {
 		phototdsrender.setLayout(layout1);
 		
 		dock = new PhotoTDSDock();
+			dock.addActionListener(this);
 		
 		JPanel panelDock = new JPanel() {
 			private static final long serialVersionUID = 1L;
@@ -113,7 +117,7 @@ public class VentanaPhotoTDS {
 		panelDock.setLayout(new BorderLayout(0, 0));
 		panelDock.add(dock);
 		
-		JPanel apprender = new JPanel() { 
+		apprender = new JPanel() { 
 			private static final long serialVersionUID = 1L;
 			{setOpaque(false);} 
 		};
@@ -127,30 +131,46 @@ public class VentanaPhotoTDS {
 			c = (CardLayout)apprender.getLayout();
 		
 		JPanel panelInicio = new JPanel();
+		panelInicio.setBackground(Color.RED);
 		apprender.add(panelInicio, "panelInicio");
 		panelInicio.setLayout(new BorderLayout(0, 0));
 		
-		/*
-		JLabel lblNewLabel = new JLabel("");
-			LinkedList<Image> imgs = new LinkedList<Image>();
-				imgs.add(fondo);
-				imgs.add(winIcon);
-				imgs.add(fondo);
-				
-				imgs.add(winIcon);
-				imgs.add(fondo);
-
-				
-				
-			lblNewLabel.setIcon(new ImageIcon(Utils.crearMosaico(512, 512, 4, imgs)));
-		panelInicio.add(lblNewLabel, BorderLayout.CENTER);
-		*/
-		
-		JPanel panelUsuario = new JPanel();
-		apprender.add(panelUsuario, "panelUsuario");
-		
 		JPanel panelBusqueda = new JPanel();
+		panelBusqueda.setBackground(Color.PINK);
 		apprender.add(panelBusqueda, "panelBusqueda");	
 	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String comando = e.getActionCommand();
+		switch(comando) {
+			case "home" : { c.show(apprender, "panelInicio"); break; }
+			case "finder" : { c.show(apprender, "panelBusqueda"); break; }
+			case "publi" : {
+				if(!subiendoFoto) {
+					subiendoFoto = true;
+					subirFoto = new VentanaSubirFoto();
+					subirFoto.addActionListener(this);
+					subirFoto.mostrar();
+				}
+				break;
+			}
+			case "user" : {
+				System.out.println("Cuenta de usuario");
+				break;
+			}
+			case "fotoSubida" : {
+				System.out.println("Nueva foto subida");
+				subirFoto.destruir();
+				subiendoFoto = false;
+				dock.recargarImagenUsuario();
+				break;
+			}
+			case "subirFotoCerrando" : { subiendoFoto = false; break; }
+		}
+		
+	}
+
+
 
 }
