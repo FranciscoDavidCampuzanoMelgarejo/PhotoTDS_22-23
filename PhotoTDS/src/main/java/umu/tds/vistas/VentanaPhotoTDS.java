@@ -43,7 +43,7 @@ public class VentanaPhotoTDS {
 	private GridBagLayout layout1, layout2;
 	
 	private Image fondo, winIcon;
-	
+	private VentanaSubirFoto subirFoto;
 	
 	
 	private void cargarRecursos() {
