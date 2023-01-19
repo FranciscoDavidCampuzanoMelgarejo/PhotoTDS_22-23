@@ -42,13 +42,15 @@ import javax.swing.JSeparator;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Publicacion;
+import umu.tds.modelo.pojos.Usuario;
 import umu.tds.vistas.Utils;
+import umu.tds.vistas.seguidores.DialogoSeguidores;
 
 import javax.swing.JScrollPane;
 import java.awt.Cursor;
 import javax.swing.ScrollPaneConstants;
 
-public class VentanaPerfilUsuario {
+public class PanelPerfilUsuario extends JPanel {
 
 	private static final int ANCHO_FOTO_PERFIL = 150; // Ancho de la foto de perfil en la ventana del perfil del usuario
 
@@ -64,9 +66,11 @@ public class VentanaPerfilUsuario {
 															// la pantalla
 
 	private static final double PORCENTAJE_BARRA = 0.9;
+	
+	private Usuario usuarioPerfil;
 
-	private JFrame frame;
-	private Icon fotoPerfil;
+	private JFrame framePadre; // Frame padre
+	private Icon fotoPerfil; // Foto de perfil sin retocar
 	private String rutaFotoPerfil;
 	private JLabel lblFotoPerfil;
 
@@ -83,8 +87,10 @@ public class VentanaPerfilUsuario {
 	private int fotosCargadas, fotosRestantes;
 	private int col, row;
 
-	public VentanaPerfilUsuario() {
-		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
+	public PanelPerfilUsuario(JFrame framePadre, Usuario usuario) {
+		this.framePadre = framePadre;
+		this.usuarioPerfil = usuario;
+		this.rutaFotoPerfil = usuarioPerfil.getPerfil().getFoto();
 
 		System.out.println(rutaFotoPerfil);
 		this.fotoPerfil = rutaFotoPerfil == null
@@ -93,16 +99,11 @@ public class VentanaPerfilUsuario {
 
 		this.filasActuales = 0;
 		this.fotosCargadas = 0;
-		this.fotosRestantes = Controlador.getControlador().getUsuarioLogueado().getPublicaciones().size();
+		this.fotosRestantes = usuarioPerfil.numeroPublicaciones();
 		row = col = 0;
 		this.etiquetasImagenes = new HashMap<JLabel, Image>();
-		this.rutasFotos = Controlador.getControlador().getUsuarioLogueado().getRutasFotos();
+		this.rutasFotos = usuarioPerfil.getRutasFotos();
 		initialize();
-	}
-
-	public void mostrar() {
-		this.frame.setLocationRelativeTo(null);
-		this.frame.setVisible(true);
 	}
 
 	private void cambiarFotoPerfil() {
@@ -117,13 +118,9 @@ public class VentanaPerfilUsuario {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setMinimumSize(new Dimension(690, 590));
-		frame.setBounds(100, 100, 700, 420);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel panelContenedor = new JPanel();
-		frame.getContentPane().add(panelContenedor, BorderLayout.CENTER);
+		add(panelContenedor, BorderLayout.CENTER);
 		GridBagLayout gbl_panelContenedor = new GridBagLayout();
 		gbl_panelContenedor.columnWidths = new int[] { 30, 0, 30, 0 };
 		gbl_panelContenedor.rowHeights = new int[] { 30, 0, 30, 0, 0, 0, 30, 0 };
@@ -137,7 +134,7 @@ public class VentanaPerfilUsuario {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				System.out.println("DENTRO");
-				System.out.println(frame.getSize());
+				System.out.println(getSize());
 				System.out.println(panelScrollFotos.getSize());
 
 				int anchoFoto = (int) Math.floor(panelScrollFotos.getSize().getWidth() / COLUMNAS) - 12;
@@ -198,10 +195,10 @@ public class VentanaPerfilUsuario {
 		lblFotoPerfil.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int longitudImagen = (int) (ESCALA_FOTO_PERFIL * frame.getSize().height);
+				int longitudImagen = (int) (ESCALA_FOTO_PERFIL * getSize().height);
 				BufferedImage maskedDialogo = Utils.redondearImagen(longitudImagen, fotoPerfil);
-				DialogoFotoPerfil dialogoFoto = new DialogoFotoPerfil(frame, maskedDialogo);
-				dialogoFoto.mostrarDialogo();
+				//DialogoFotoPerfil dialogoFoto = new DialogoFotoPerfil(this, maskedDialogo);
+				//dialogoFoto.mostrarDialogo();
 			}
 		});
 
@@ -245,9 +242,10 @@ public class VentanaPerfilUsuario {
 		// Al clickar en el boton, abrir un dialogo para editar el perfil del usuario
 		btnEditarPerfil.addActionListener((ActionEvent e) -> {
 			BufferedImage fotoDialogoPerfil = Utils.redondearImagen(175, fotoPerfil);
-			DialogoEditarPerfil dialogoPerfil = new DialogoEditarPerfil(frame, fotoDialogoPerfil, rutaFotoPerfil);
-			dialogoPerfil.mostrarDialogo();
+			//DialogoEditarPerfil dialogoPerfil = new DialogoEditarPerfil(frame, fotoDialogoPerfil, rutaFotoPerfil);
+			//dialogoPerfil.mostrarDialogo();
 
+			/*
 			dialogoPerfil.addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent e) {
@@ -256,6 +254,7 @@ public class VentanaPerfilUsuario {
 					}
 				}
 			});
+			*/
 
 		});
 
@@ -268,8 +267,7 @@ public class VentanaPerfilUsuario {
 		gbc_lblPublicaciones.gridy = 2;
 		panelPerfil.add(lblPublicaciones, gbc_lblPublicaciones);
 
-		JLabel lblSeguidores = new JLabel(
-				Controlador.getControlador().getUsuarioLogueado().numeroSeguidores() + " Seguidores");
+		JLabel lblSeguidores = new JLabel(usuarioPerfil.numeroSeguidores() + " Seguidores");
 		lblSeguidores.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSeguidores.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblSeguidores = new GridBagConstraints();
@@ -280,8 +278,18 @@ public class VentanaPerfilUsuario {
 
 		// Al clikar en los seguidores, se debe abrir un dialogo con las lista de
 		// seguidores del usuario
+		/*
+		lblSeguidores.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DialogoSeguidores dialogoSeguidores = new DialogoSeguidores("Seguidores",
+						Controlador.getControlador().getUsuarioLogueado().getSeguidores(), frame);
+				dialogoSeguidores.mostrar();
+			}
+		});
+		*/
 
-		JLabel lblSeguidos = new JLabel(Controlador.getControlador().numeroUsuariosSeguidos() + " Seguidos");
+		JLabel lblSeguidos = new JLabel(Controlador.getControlador().getNumeroUsuariosSeguidos(usuarioPerfil) + " Seguidos");
 		lblSeguidos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSeguidos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblSeguidos = new GridBagConstraints();
@@ -289,6 +297,19 @@ public class VentanaPerfilUsuario {
 		gbc_lblSeguidos.gridx = 2;
 		gbc_lblSeguidos.gridy = 2;
 		panelPerfil.add(lblSeguidos, gbc_lblSeguidos);
+
+		// Al clickar en los usuarios seguids, se debe abrir un dialogo con una lista de
+		// los usuarios a los que sigue el usuario logueado
+		/*
+		lblSeguidos.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DialogoSeguidores dialogoSeguidores = new DialogoSeguidores("Siguiendo",
+						Controlador.getControlador().getUsuariosSeguidos(), frame);
+				dialogoSeguidores.mostrar();
+			}
+		});
+		*/
 
 		JLabel lblNombreCompleto = new JLabel(Controlador.getControlador().getUserNombre());
 		lblNombreCompleto.setFont(new Font("Tahoma", Font.BOLD, 14));

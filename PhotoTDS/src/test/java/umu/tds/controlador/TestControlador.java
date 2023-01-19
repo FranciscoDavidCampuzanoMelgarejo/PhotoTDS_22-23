@@ -66,15 +66,12 @@ public class TestControlador {
 	}
 
 	/*
-	@Test
-	public void testEditarPerfil() {
-		Usuario usuarioAntiguo = usuarioDAO.findBy(1);
-		controlador.setUsuarioLogueado(usuarioAntiguo);
-		controlador.editarPerfil("/ruta/hacia/foto", "He cambiado el perfil", null);
-		Usuario usuarioNuevo = usuarioDAO.findBy(1);
-		assertNotEquals(usuarioAntiguo, usuarioNuevo);
-	}
-	*/
+	 * @Test public void testEditarPerfil() { Usuario usuarioAntiguo =
+	 * usuarioDAO.findBy(1); controlador.setUsuarioLogueado(usuarioAntiguo);
+	 * controlador.editarPerfil("/ruta/hacia/foto", "He cambiado el perfil", null);
+	 * Usuario usuarioNuevo = usuarioDAO.findBy(1); assertNotEquals(usuarioAntiguo,
+	 * usuarioNuevo); }
+	 */
 
 	@Test
 	public void testPublicarFoto() {
@@ -100,10 +97,19 @@ public class TestControlador {
 
 		Album publicacion = (Album) publicacionDAO.findBy(2);
 		assertNotNull(publicacion);
-		//assertTrue(publicacion.getFotos().contains(foto));
+		// assertTrue(publicacion.getFotos().contains(foto));
 		System.out.println(publicacion);
 		publicacion.getFotos().stream().forEach(p -> System.out.println(p));
 
+	}
+
+	@Test
+	public void testSeguir() {
+		controlador.loginUsuario("Usuario_1", "cC1-");
+		controlador.seguir("Usuario_26");
+
+		controlador.loginUsuario("Usuario_26", "cC1-");
+		controlador.seguir("Usuario_1");
 	}
 
 }

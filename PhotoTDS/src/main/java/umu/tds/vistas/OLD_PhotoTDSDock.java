@@ -30,7 +30,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.border.EtchedBorder;
 
-import umu.tds.vistas.perfil.VentanaPerfilUsuario;
+import umu.tds.vistas.perfil.PanelPerfilUsuario;
 
 import java.awt.Font;
 
@@ -201,7 +201,7 @@ public class OLD_PhotoTDSDock extends JPanel{
 		dock_usuario_icon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				VentanaPerfilUsuario ventanaPerfil = new VentanaPerfilUsuario();
+				PanelPerfilUsuario ventanaPerfil = new PanelPerfilUsuario();
 				ventanaPerfil.mostrar();
 			}
 		});

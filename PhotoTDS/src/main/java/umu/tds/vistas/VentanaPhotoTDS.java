@@ -26,6 +26,10 @@ import java.util.LinkedList;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.border.EtchedBorder;
+
+import umu.tds.controlador.Controlador;
+import umu.tds.vistas.perfil.PanelPerfilUsuario;
+
 import java.awt.Insets;
 import javax.swing.SwingConstants;
 import java.awt.Font;
@@ -146,7 +150,7 @@ public class VentanaPhotoTDS {
 		panelInicio.add(lblNewLabel, BorderLayout.CENTER);
 		*/
 		
-		JPanel panelUsuario = new JPanel();
+		JPanel panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
 		apprender.add(panelUsuario, "panelUsuario");
 		
 		JPanel panelBusqueda = new JPanel();

@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Usuario;
-import umu.tds.vistas.perfil.VentanaPerfilUsuario;
+import umu.tds.vistas.perfil.PanelPerfilUsuario;
 
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -260,7 +260,7 @@ public class VentanaPrincipal {
 		usuarioIcon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				VentanaPerfilUsuario ventanaPerfil = new VentanaPerfilUsuario();
+				PanelPerfilUsuario ventanaPerfil = new PanelPerfilUsuario();
 				ventanaPerfil.mostrar();
 			}
 		});
