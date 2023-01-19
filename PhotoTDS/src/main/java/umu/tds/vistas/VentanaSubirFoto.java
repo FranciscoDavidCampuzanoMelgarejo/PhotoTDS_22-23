@@ -19,6 +19,9 @@ import java.util.List;
 import javax.swing.JTextArea;
 import java.awt.CardLayout;
 import javax.swing.SwingConstants;
+
+import umu.tds.controlador.Controlador;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -41,6 +44,7 @@ public class VentanaSubirFoto {
 	private CardLayout c1;				// Cardlayout de toda la ventana
 	private CardLayout c2;				// Cardlayout del panel de selección de foto
 	private Image fotoPubli;
+	private File filePubli;
 	
 	JLabel labelTitulo;
 	JLabel labelDescripcion;
@@ -155,6 +159,7 @@ public class VentanaSubirFoto {
 					devent.acceptDrop(DnDConstants.ACTION_COPY);
 					@SuppressWarnings("unchecked")
 					List<File> archivos = (List<File>) devent.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+					filePubli = archivos.get(0);
 					fotoPubli = ImageIO.read(archivos.get(0));
 					fotoElegida.setIcon(new ImageIcon(fotoPubli));
 					c2.show(paneldndfoto, "fotoElegida");
@@ -170,7 +175,8 @@ public class VentanaSubirFoto {
 				chooser.showOpenDialog(botonFilechooser);
 				
 				try {
-					fotoPubli = ImageIO.read(chooser.getSelectedFile());
+					filePubli = chooser.getSelectedFile();
+					fotoPubli = ImageIO.read(filePubli);
 				} catch (Exception e1) { e1.printStackTrace(); }
 				 
 				if(fotoPubli!=null) { 
@@ -190,8 +196,8 @@ public class VentanaSubirFoto {
 					devent.acceptDrop(DnDConstants.ACTION_COPY);
 					@SuppressWarnings("unchecked")
 					List<File> archivos = (List<File>) devent.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-					
-					fotoPubli = ImageIO.read(archivos.get(0));
+					filePubli = archivos.get(0);
+					fotoPubli = ImageIO.read(filePubli);
 					
 					if(fotoPubli!=null) fotoElegida.setIcon(new ImageIcon(fotoPubli));
 				} catch (Exception e) {
@@ -246,7 +252,8 @@ public class VentanaSubirFoto {
 					if(textoTitulo.getText().isEmpty()) { labelTitulo.setText("Titulo - campo obligatorio"); labelTitulo.setForeground(Color.red); }
 					if(textoDescripcion.getText().isEmpty()) { labelDescripcion.setText("Descripcion - campo obligatorio"); labelDescripcion.setForeground(Color.red); }
 				} else {																		// Hacemos la publicación
-					
+					Controlador.getControlador().publicarFoto(filePubli.getAbsolutePath(), textoTitulo.getText(), textoDescripcion.getText(), textoComentario.getText(), null);
+					frame.dispose();
 				}
 			}
 		});
@@ -260,7 +267,7 @@ public class VentanaSubirFoto {
 		gbl_panelPublicacion.columnWidths = new int[]{0, 0};
 		gbl_panelPublicacion.rowHeights = new int[]{256, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelPublicacion.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_panelPublicacion.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelPublicacion.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
 		panelPublicacion.setLayout(gbl_panelPublicacion);
 		
 		

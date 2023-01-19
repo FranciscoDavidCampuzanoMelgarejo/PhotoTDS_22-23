@@ -206,6 +206,10 @@ public class PhotoTDSDock extends JPanel{
 			public void mouseReleased(MouseEvent e) {
 				dock1publiicon.setIcon(new ImageIcon(Utils.cambiarBrillo(2f, ((ImageIcon)dock1publiicon.getIcon()).getImage())));
 			}
+			@Override 
+			public void mouseClicked(MouseEvent e) {
+				
+			}
 		});
 			dock1publiicon.setToolTipText("Publicar");
 			dock1publiicon.setIcon(new ImageIcon(publi.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
