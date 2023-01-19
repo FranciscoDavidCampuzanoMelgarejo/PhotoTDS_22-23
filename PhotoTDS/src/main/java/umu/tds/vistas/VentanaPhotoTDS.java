@@ -12,6 +12,9 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 
 import javax.swing.JPanel;
+
+import umu.tds.vistas.perfil.VentanaPerfilUsuario;
+
 import java.awt.GridBagConstraints;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -46,6 +49,9 @@ public class VentanaPhotoTDS implements ActionListener{
 	private Image fondo, winIcon;
 	private VentanaSubirFoto subirFoto;
 	private boolean subiendoFoto;
+	
+	private VentanaPerfilUsuario perfilusuario;
+	private boolean viendoperfil;
 
 	private void cargarRecursos() {
 		try {
@@ -66,6 +72,7 @@ public class VentanaPhotoTDS implements ActionListener{
 		cargarRecursos();
 		
 		subiendoFoto = false;
+		viendoperfil = false;
 		
 		layout1 = new GridBagLayout();
 			layout1.columnWidths = new int[]{64, 0, 776, 0, 0};
@@ -143,6 +150,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
+		
 		switch(comando) {
 			case "home" : { c.show(apprender, "panelInicio"); break; }
 			case "finder" : { c.show(apprender, "panelBusqueda"); break; }
@@ -156,17 +164,29 @@ public class VentanaPhotoTDS implements ActionListener{
 				break;
 			}
 			case "user" : {
-				System.out.println("Cuenta de usuario");
+				if(!viendoperfil) {
+					viendoperfil = true;
+					perfilusuario = new VentanaPerfilUsuario();
+					perfilusuario.mostrar();
+					perfilusuario.addActionListener(this);
+				}
 				break;
 			}
 			case "fotoSubida" : {
 				System.out.println("Nueva foto subida");
 				subirFoto.destruir();
 				subiendoFoto = false;
-				dock.recargarImagenUsuario();
 				break;
 			}
 			case "subirFotoCerrando" : { subiendoFoto = false; break; }
+			case "perfilusuarioCerrando" : {
+				viendoperfil = false;
+				break;
+			}
+			case "cambioFotoPerfil" : {
+				dock.recargarImagenUsuario();
+				break;
+			}
 		}
 		
 	}

@@ -46,8 +46,8 @@ public class Utils {
 	// Metodo para redondear una imagen
 	public static BufferedImage redondearImagen(int ancho, Icon imagen) {
 
-		System.out.println("REDONDEAR IMAGEN");
-		System.out.println("VA");
+		//System.out.println("REDONDEAR IMAGEN");
+		//System.out.println("VA");
 		// int diametro = Math.min(imagen.getIconWidth(), imagen.getIconHeight()); //No sirve para nada
 		//System.out.println(diametro);
 		BufferedImage mask = new BufferedImage(ancho, ancho, BufferedImage.TYPE_INT_ARGB);

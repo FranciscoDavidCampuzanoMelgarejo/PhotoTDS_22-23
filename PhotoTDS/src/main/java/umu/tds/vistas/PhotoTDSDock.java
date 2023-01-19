@@ -28,6 +28,8 @@ public class PhotoTDSDock extends JPanel{
 	private JPanel dock1, dock2;
 	private Image dockbg, logo1, logo2, home, finder, publi, user;
 	
+	private JLabel dock1usericon;
+	
 	private List<ActionListener> listeners;
 	
 	public PhotoTDSDock() {
@@ -63,6 +65,7 @@ public class PhotoTDSDock extends JPanel{
 		try{
 			user = ImageIO.read(userpic);
 		} catch (IOException ioe) { ioe.printStackTrace(); }
+		dock1usericon.setIcon(new ImageIcon(Utils.redondearImagen(DOCKICONSIZE1, new ImageIcon(user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)))));
 	}
 	
 	/* Tamaño de iconos al pasar el cursor sobre ellos */
@@ -257,17 +260,19 @@ public class PhotoTDSDock extends JPanel{
 		dock1.add(dock1user, gbc_dock1user);
 		dock1user.setLayout(new BorderLayout(0, 0));
 		
-		JLabel dock1usericon = new JLabel("");
+		dock1usericon = new JLabel("");
 		dock1usericon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_FAST)));
+				//dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_FAST)));
 				//dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)));
+				dock1usericon.setIcon(new ImageIcon(Utils.redondearImagen(DOCKICONSIZE2, new ImageIcon(user.getScaledInstance(DOCKICONSIZE2, DOCKICONSIZE2, Image.SCALE_SMOOTH)))));
 			}
 			@Override 
 			public void mouseExited(MouseEvent e) {
-				dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_FAST)));
+				//dock1usericon.setIcon(Utils.redondearImagen(DOCKICONSIZE1, new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_FAST)));
 				//dock1usericon.setIcon(new ImageIcon(((ImageIcon)dock1usericon.getIcon()).getImage().getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+				dock1usericon.setIcon(new ImageIcon(Utils.redondearImagen(DOCKICONSIZE1, new ImageIcon(user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)))));
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -275,7 +280,8 @@ public class PhotoTDSDock extends JPanel{
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				dock1usericon.setIcon(new ImageIcon(user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+				//dock1usericon.setIcon(new ImageIcon(user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)));
+				dock1usericon.setIcon(new ImageIcon(Utils.redondearImagen(DOCKICONSIZE1, new ImageIcon(user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)))));
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {

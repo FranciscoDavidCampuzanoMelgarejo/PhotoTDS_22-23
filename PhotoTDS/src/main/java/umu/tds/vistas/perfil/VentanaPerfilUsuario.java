@@ -87,8 +87,7 @@ public class VentanaPerfilUsuario {
 	
 	private List<ActionListener> listeners;
 
-	public VentanaPerfilUsuario(List<ActionListener> as) {
-		listeners = as;
+	public VentanaPerfilUsuario() {
 		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
 
 		System.out.println(rutaFotoPerfil);
@@ -125,6 +124,7 @@ public class VentanaPerfilUsuario {
 
 		BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
 		this.lblFotoPerfil.setIcon(new ImageIcon(masked));
+		notificacionPerfilUsuario(new ActionEvent(this, 6, "cambioFotoPerfil"));
 	}
 
 	/**
@@ -135,6 +135,12 @@ public class VentanaPerfilUsuario {
 		frame.setMinimumSize(new Dimension(690, 590));
 		frame.setBounds(100, 100, 700, 420);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent w) {
+				notificacionPerfilUsuario(new ActionEvent(this, 6, "perfilusuarioCerrando"));
+			}
+		});
 
 		JPanel panelContenedor = new JPanel();
 		frame.getContentPane().add(panelContenedor, BorderLayout.CENTER);
@@ -150,9 +156,9 @@ public class VentanaPerfilUsuario {
 		panelContenedor.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				System.out.println("DENTRO");
-				System.out.println(frame.getSize());
-				System.out.println(panelScrollFotos.getSize());
+				//System.out.println("DENTRO");
+				//System.out.println(frame.getSize());
+				//System.out.println(panelScrollFotos.getSize());
 
 				int anchoFoto = (int) Math.floor(panelScrollFotos.getSize().getWidth() / COLUMNAS) - 12;
 				boolean reescalar = true;
@@ -168,9 +174,9 @@ public class VentanaPerfilUsuario {
 				}
 
 				if (panelScrollFotos.getSize().getWidth() != anchoPanelActual && reescalar) {
-					System.out.println("RESIZED");
+					//System.out.println("RESIZED");
 					anchoPanelActual = panelScrollFotos.getSize().getWidth();
-					System.out.println("Ancho foto: " + anchoFotoActual);
+					//System.out.println("Ancho foto: " + anchoFotoActual);
 
 					for (JLabel label : etiquetasImagenes.keySet()) {
 						ImageIcon icono = new ImageIcon(etiquetasImagenes.get(label).getScaledInstance(anchoFotoActual,
@@ -387,16 +393,16 @@ public class VentanaPerfilUsuario {
 
 		// Al desplazar la barra vertical hacia abajo, cargar nuevas fotos
 		panelScrollFotos.getVerticalScrollBar().addAdjustmentListener((AdjustmentEvent e) -> {
-			System.out.println("BARRA");
+			//System.out.println("BARRA");
 			JScrollBar barra = (JScrollBar) e.getAdjustable();
 			int posicionCarga = (int) ((barra.getMaximum() - barra.getModel().getExtent()) * PORCENTAJE_BARRA);
-			System.out.println("Maximo: " + barra.getMaximum());
-			System.out.println("Extent: " + barra.getModel().getExtent());
-			System.out.println("Posicion carga: " + posicionCarga + " Posicion actual: " + barra.getValue());
+			//System.out.println("Maximo: " + barra.getMaximum());
+			//System.out.println("Extent: " + barra.getModel().getExtent());
+			//System.out.println("Posicion carga: " + posicionCarga + " Posicion actual: " + barra.getValue());
 
 			if ((fotosRestantes > 0) && (barra.getValue() >= posicionCarga)) {
 				cargarFotos(Math.min(MINIMO_FOTOS_CARGAR, fotosRestantes));
-				System.out.println("FOTOS CARGADAS");
+				//System.out.println("FOTOS CARGADAS");
 			}
 
 		});
@@ -412,7 +418,7 @@ public class VentanaPerfilUsuario {
 	}
 
 	private void cargarFotos(int numeroFotos) {
-		System.out.println("cargar");
+		//System.out.println("cargar");
 		filasActuales = filasActuales + (int) (Math.ceil(numeroFotos / COLUMNAS));
 		gbl_panelFotosUsuario.rowHeights = new int[filasActuales + 1];
 
@@ -420,7 +426,7 @@ public class VentanaPerfilUsuario {
 		pesosFilas[filasActuales] = Double.MIN_VALUE;
 		gbl_panelFotosUsuario.rowWeights = pesosFilas;
 
-		System.out.println("Ancho actual: " + anchoPanelActual);
+		//System.out.println("Ancho actual: " + anchoPanelActual);
 		int anchoFoto = anchoFotoActual = ANCHO_FOTO_INICIAL;
 
 		for (int i = 0; i < numeroFotos; i++) {
@@ -457,9 +463,9 @@ public class VentanaPerfilUsuario {
 		fotosRestantes -= numeroFotos;
 		// frame.revalidate();
 		anchoPanelActual = panelScrollFotos.getSize().getWidth();
-		System.out.println("Panel Ventana: " + panelScrollFotos.getSize());
-		System.out.println("Panel Fotos: " + panelFotosUsuario.getSize());
-		System.out.println("FIN");
+		//System.out.println("Panel Ventana: " + panelScrollFotos.getSize());
+		//System.out.println("Panel Fotos: " + panelFotosUsuario.getSize());
+		//System.out.println("FIN");
 	}
 
 }
