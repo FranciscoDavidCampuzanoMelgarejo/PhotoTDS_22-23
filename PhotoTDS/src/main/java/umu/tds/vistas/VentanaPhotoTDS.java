@@ -12,6 +12,7 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 
 import javax.swing.JPanel;
+
 import java.awt.GridBagConstraints;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,6 +20,8 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.beans.PropertyChangeEvent;
@@ -35,13 +38,17 @@ import umu.tds.vistas.perfil.PanelPerfilUsuario;
 import java.awt.Insets;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-/**@title Ventana principal de PhotoTDS
+/**
+ * @title Ventana principal de PhotoTDS
  * @author Francisco & Diego
- * */
+ */
 
 public class VentanaPhotoTDS implements PropertyChangeListener {
-	
+
 	public static final String PANEL_INICIO = "Panel Inicio";
 	public static final String PANEL_USUARIO = "Panel Usuario";
 	public static final String PANEL_BUSQUEDA = "Panel Busqueda";
@@ -52,43 +59,50 @@ public class VentanaPhotoTDS implements PropertyChangeListener {
 	private PhotoTDSDock dock;
 	private CardLayout c;
 	private GridBagLayout layout1, layout2;
-	
+
 	private Image fondo, winIcon;
 	private VentanaSubirFoto subirFoto;
-	
-	
+	private boolean subiendoFoto;
+
+	private boolean viendoperfil;
+
 	private void cargarRecursos() {
 		try {
-			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/fondo-3.jpg")).getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
+			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/fondo-3.jpg"))
+					.getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
 			winIcon = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock/logo1.png"));
-		} catch (Exception e1) { e1.printStackTrace(); }
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
-	
+
 	public void mostrar() {
 		frame.setVisible(true);
 	}
-	 
+
 	public void destruir() {
 		frame.dispose();
 	}
-	
+
 	public VentanaPhotoTDS(int winX, int winY) {
 		cargarRecursos();
-		
+
+		subiendoFoto = false;
+		viendoperfil = false;
+
 		layout1 = new GridBagLayout();
-			layout1.columnWidths = new int[]{64, 0, 776, 0, 0};
-			layout1.rowHeights = new int[]{0, 0};
-			layout1.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-			layout1.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-			
+		layout1.columnWidths = new int[] { 64, 0, 776, 0, 0 };
+		layout1.rowHeights = new int[] { 0, 0 };
+		layout1.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
+		layout1.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+
 		layout2 = new GridBagLayout();
-			layout2.columnWidths = new int[]{200, 0, 640, 0, 0};
-			layout2.rowHeights = new int[]{0, 0};
-			layout2.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
-			layout2.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-			
+		layout2.columnWidths = new int[] { 200, 0, 640, 0, 0 };
+		layout2.rowHeights = new int[] { 0, 0 };
+		layout2.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
+		layout2.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+
 		dibujar(winX, winY);
-		dock.addListener(this);
 	}
 
 	private void dibujar(int winX, int winY) {
@@ -98,24 +112,30 @@ public class VentanaPhotoTDS implements PropertyChangeListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("PhotoTDS");
 		frame.setIconImage(winIcon);
-		
+
 		phototdsrender = new JPanel() {
 			private static final long serialVersionUID = 1L;
-			{setOpaque(false);} 
+			{
+				setOpaque(false);
+			}
+
 			@Override
 			public void paintComponent(Graphics g) {
 				g.drawImage(fondo, 0, 0, null);
 			}
 		};
-		
+
 		frame.setContentPane(phototdsrender);
 		phototdsrender.setLayout(layout1);
-		
+
 		dock = new PhotoTDSDock();
-		
+		dock.addListener(this);
+
 		JPanel panelDock = new JPanel() {
 			private static final long serialVersionUID = 1L;
-			{ setOpaque(false); } 
+			{
+				setOpaque(false);
+			}
 		};
 		GridBagConstraints gbc_panelDock = new GridBagConstraints();
 		gbc_panelDock.fill = GridBagConstraints.BOTH;
@@ -124,10 +144,12 @@ public class VentanaPhotoTDS implements PropertyChangeListener {
 		phototdsrender.add(panelDock, gbc_panelDock);
 		panelDock.setLayout(new BorderLayout(0, 0));
 		panelDock.add(dock);
-		
-		apprender = new JPanel() { 
+
+		apprender = new JPanel() {
 			private static final long serialVersionUID = 1L;
-			{setOpaque(false);} 
+			{
+				setOpaque(false);
+			}
 		};
 		apprender.setBackground(Color.RED);
 		GridBagConstraints gbc_apprender = new GridBagConstraints();
@@ -136,44 +158,59 @@ public class VentanaPhotoTDS implements PropertyChangeListener {
 		gbc_apprender.gridy = 0;
 		phototdsrender.add(apprender, gbc_apprender);
 		apprender.setLayout(new CardLayout(0, 0));
-			c = (CardLayout)apprender.getLayout();
-		
+		c = (CardLayout) apprender.getLayout();
+
 		JPanel panelInicio = new JPanel();
+		panelInicio.setBackground(Color.RED);
 		apprender.add(panelInicio, "panelInicio");
 		panelInicio.setLayout(new BorderLayout(0, 0));
-		
-		/*
-		JLabel lblNewLabel = new JLabel("");
-			LinkedList<Image> imgs = new LinkedList<Image>();
-				imgs.add(fondo);
-				imgs.add(winIcon);
-				imgs.add(fondo);
-				
-				imgs.add(winIcon);
-				imgs.add(fondo);
 
-				
-				
-			lblNewLabel.setIcon(new ImageIcon(Utils.crearMosaico(512, 512, 4, imgs)));
-		panelInicio.add(lblNewLabel, BorderLayout.CENTER);
-		*/
-		
+		/*
+		 * JLabel lblNewLabel = new JLabel(""); LinkedList<Image> imgs = new
+		 * LinkedList<Image>(); imgs.add(fondo); imgs.add(winIcon); imgs.add(fondo);
+		 * 
+		 * imgs.add(winIcon); imgs.add(fondo);
+		 * 
+		 * 
+		 * 
+		 * lblNewLabel.setIcon(new ImageIcon(Utils.crearMosaico(512, 512, 4, imgs)));
+		 * panelInicio.add(lblNewLabel, BorderLayout.CENTER);
+		 */
+
 		JPanel panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
 		apprender.add(panelUsuario, PANEL_USUARIO);
-		
+
 		JPanel panelBusqueda = new JPanel();
-		apprender.add(panelBusqueda, PANEL_BUSQUEDA);	
+		apprender.add(panelBusqueda, PANEL_BUSQUEDA);
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		String panelActual = (String) evt.getOldValue();
 		String panelNuevo = (String) evt.getNewValue();
-		
-		if(!panelActual.equals(panelNuevo)) {
+
+		if (!panelActual.equals(panelNuevo)) {
 			c.show(apprender, panelNuevo);
 		}
-		
 	}
+
+	/*
+	 * @Override public void actionPerformed(ActionEvent e) { String comando =
+	 * e.getActionCommand();
+	 * 
+	 * switch(comando) { case "home" : { c.show(apprender, "panelInicio"); break; }
+	 * case "finder" : { c.show(apprender, "panelBusqueda"); break; } case "publi" :
+	 * { if(!subiendoFoto) { subiendoFoto = true; subirFoto = new
+	 * VentanaSubirFoto(); subirFoto.addActionListener(this); subirFoto.mostrar(); }
+	 * break; } case "user" : { if(!viendoperfil) { viendoperfil = true;
+	 * perfilusuario = new VentanaPerfilUsuario(); perfilusuario.mostrar();
+	 * perfilusuario.addActionListener(this); } break; } case "fotoSubida" : {
+	 * System.out.println("Nueva foto subida"); subirFoto.destruir(); subiendoFoto =
+	 * false; break; } case "subirFotoCerrando" : { subiendoFoto = false; break; }
+	 * case "perfilusuarioCerrando" : { viendoperfil = false; break; } case
+	 * "cambioFotoPerfil" : { dock.recargarImagenUsuario(); break; } }
+	 * 
+	 * }
+	 */
 
 }
