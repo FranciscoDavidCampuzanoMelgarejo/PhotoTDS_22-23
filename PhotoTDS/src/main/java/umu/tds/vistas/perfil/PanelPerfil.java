@@ -42,9 +42,11 @@ public class PanelPerfil extends JPanel {
 
 	private static final int MAX_CARACTERES = 200;
 	private static final int SIZE_ICONO_OPTION_PANE = 40;
+	private static final int ANCHO_FOTO_PERFIL = 175;
 
-	private Icon imagenPerfil;
-	private String rutaImagenPerfil;
+	private Icon fotoPerfil; // Esta varible guarda la ultima foto de perfil que ha sido guardada (boton de
+										// guardar clickado)
+	private String rutaFotoPerfil;
 	private String presentacion;
 
 	private Icon iconoCamara;
@@ -57,24 +59,25 @@ public class PanelPerfil extends JPanel {
 	private JTextArea areaPresentacion;
 	private JLabel lblContadorLetras;
 	private boolean cambioFoto = false; // Para saber si se ha cambiado la foto antes de guardarla
-	
+
 	private String rutaImagenPerfilIncial = Controlador.getControlador().getUserPicture();
 
-	public PanelPerfil(JDialog dialogo, Icon imagenPerfil, String rutaImagenPerfil, String presentacion) {
+	public PanelPerfil(JDialog dialogo, Icon fotoPerfil, String rutaFotoPerfil) {
 		this.dialogoPadre = dialogo;
-		this.imagenPerfil = imagenPerfil;
-		this.rutaImagenPerfil = rutaImagenPerfil;
-		this.presentacion = presentacion;
+		this.fotoPerfil = new ImageIcon(Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil));
+		this.rutaFotoPerfil = rutaFotoPerfil;
+		this.presentacion = Controlador.getControlador().getUserPresentacion();
 		// Añadir la imagen a la carperta "/src/resources/imagenes"
 		this.iconoCamara = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/camara-fotografica.png"))
 				.getImage().getScaledInstance(SIZE_ICONO_OPTION_PANE, SIZE_ICONO_OPTION_PANE, Image.SCALE_SMOOTH));
 		this.fileChooser = new JFileChooser();
 		crearPanel();
 	}
-	
+
 	public void limpiar() {
-		this.lblFotoPerfil.setIcon(imagenPerfil);
+		this.lblFotoPerfil.setIcon(fotoPerfil);
 		this.areaPresentacion.setText(presentacion);
+		cambioFoto = false;
 	}
 
 	// Metodo privado para crear el panel
@@ -94,8 +97,8 @@ public class PanelPerfil extends JPanel {
 		gbc_panelFotoPerfil.gridy = 1;
 		add(panelFotoPerfil, gbc_panelFotoPerfil);
 
-		lblFotoPerfil = new JLabel(imagenPerfil);
-		lblFotoPerfil.setBounds(95, 11, 175, 175);
+		lblFotoPerfil = new JLabel(fotoPerfil);
+		lblFotoPerfil.setBounds(95, 11, ANCHO_FOTO_PERFIL, ANCHO_FOTO_PERFIL);
 		panelFotoPerfil.add(lblFotoPerfil);
 
 		lblFondo = new EtiquetaCircular(100, new Color(102, 193, 224), new Color(70, 150, 210), new Color(43, 87, 208));
@@ -106,15 +109,15 @@ public class PanelPerfil extends JPanel {
 
 		// Al clickar en la etiqueta, abrir el FileChooser
 		lblFondo.addMouseListener(new MouseAdapter() {
-			
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int valorChooser = fileChooser.showOpenDialog(lblFondo);
 				if (valorChooser == JFileChooser.APPROVE_OPTION) {
 					// CUIDADO: HAY QUE SELCCIONAR UNA FOTO
 					File fichero = fileChooser.getSelectedFile();
-					rutaImagenPerfil = fichero.toString();
-					BufferedImage masked = Utils.redondearImagen(175, new ImageIcon(rutaImagenPerfil));
+					rutaFotoPerfil = fichero.toString();
+					BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, new ImageIcon(rutaFotoPerfil));
 					lblFotoPerfil.setIcon(new ImageIcon(masked));
 					// lblFotoPerfil.setBounds(95, 11, 175, 175);
 					cambioFoto = true;
@@ -208,7 +211,8 @@ public class PanelPerfil extends JPanel {
 			}
 
 			if (cambioFoto || presentacionModificada) {
-				Controlador.getControlador().editarPerfil(rutaImagenPerfil, presentacion);
+				Controlador.getControlador().editarPerfil(rutaFotoPerfil, presentacion);
+				this.fotoPerfil = lblFotoPerfil.getIcon();
 				Image iconoReescalado = new ImageIcon(getClass().getResource("/imagenes/check-mark.png")).getImage()
 						.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 				JOptionPane.showMessageDialog(this, "Los cambios han sido guardados exitosamente", "Cambios Guardados",
@@ -218,8 +222,8 @@ public class PanelPerfil extends JPanel {
 
 		});
 	}
-	
+
 	public boolean cambiarFotoPerfil() {
-		return (!rutaImagenPerfilIncial.equals(rutaImagenPerfil));
+		return (!rutaImagenPerfilIncial.equals(rutaFotoPerfil));
 	}
 }

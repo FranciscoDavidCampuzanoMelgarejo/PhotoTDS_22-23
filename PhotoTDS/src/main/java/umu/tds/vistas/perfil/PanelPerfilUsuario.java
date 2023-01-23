@@ -62,11 +62,8 @@ public class PanelPerfilUsuario extends JPanel {
 	private static final int MINIMO_FOTO = 158; // Ancho minimo de las fotos que se cargan
 	private static final int MAXIMO_FOTO = 295; // Ancho maximo de las fotos que se cargan
 
-	private static final double ESCALA_FOTO_PERFIL = 0.333; // Al clickar en la foto de perfil, esta debe ocupar 1/3 de
-															// la pantalla
-
 	private static final double PORCENTAJE_BARRA = 0.9;
-	
+
 	private Usuario usuarioPerfil;
 
 	private JFrame framePadre; // Frame padre
@@ -87,6 +84,8 @@ public class PanelPerfilUsuario extends JPanel {
 	private int fotosCargadas, fotosRestantes;
 	private int col, row;
 
+	private FactoriaBotonPerfil factoria;
+
 	public PanelPerfilUsuario(JFrame framePadre, Usuario usuario) {
 		this.framePadre = framePadre;
 		this.usuarioPerfil = usuario;
@@ -103,6 +102,22 @@ public class PanelPerfilUsuario extends JPanel {
 		row = col = 0;
 		this.etiquetasImagenes = new HashMap<JLabel, Image>();
 		this.rutasFotos = usuarioPerfil.getRutasFotos();
+
+		// Factoria para crear un boton -> Si el usuario del perfil es el usuario
+		// logueado (Editar Perfil)
+		// si el usuario logueado no sigue al usuario del perfil (Seguir)
+		// si el usuario logueado siguel al usuario del perfil (Siguiendo)
+		EstadoBotonPerfil estado = Controlador.getControlador().getUsuarioLogueado().equals(usuario)
+				? EstadoBotonPerfil.EDITAR_PERFIL
+				: (usuario.isSeguido(Controlador.getControlador().getUsuarioLogueado()) ? EstadoBotonPerfil.SIGUIENDO
+						: EstadoBotonPerfil.SEGUIR);
+
+		if (estado.equals(EstadoBotonPerfil.EDITAR_PERFIL))
+			factoria = new FactoriaBotonPerfil.FactoriaBotonPerfilBuilder(estado)
+					.dialogo(framePadre, fotoPerfil, rutaFotoPerfil).build();
+		else
+			factoria = new FactoriaBotonPerfil.FactoriaBotonPerfilBuilder(estado).build();
+
 		initialize();
 	}
 
@@ -195,10 +210,8 @@ public class PanelPerfilUsuario extends JPanel {
 		lblFotoPerfil.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int longitudImagen = (int) (ESCALA_FOTO_PERFIL * getSize().height);
-				BufferedImage maskedDialogo = Utils.redondearImagen(longitudImagen, fotoPerfil);
-				//DialogoFotoPerfil dialogoFoto = new DialogoFotoPerfil(this, maskedDialogo);
-				//dialogoFoto.mostrarDialogo();
+				DialogoFotoPerfil dialogoFoto = new DialogoFotoPerfil(framePadre.getBounds(), fotoPerfil);
+				dialogoFoto.mostrarDialogo();
 			}
 		});
 
@@ -236,27 +249,9 @@ public class PanelPerfilUsuario extends JPanel {
 		Component rigidArea = Box.createRigidArea(new Dimension(30, 20));
 		panelNombreUsuario.add(rigidArea);
 
-		JButton btnEditarPerfil = new JButton("Editar Perfil");
-		panelNombreUsuario.add(btnEditarPerfil);
-
-		// Al clickar en el boton, abrir un dialogo para editar el perfil del usuario
-		btnEditarPerfil.addActionListener((ActionEvent e) -> {
-			BufferedImage fotoDialogoPerfil = Utils.redondearImagen(175, fotoPerfil);
-			//DialogoEditarPerfil dialogoPerfil = new DialogoEditarPerfil(frame, fotoDialogoPerfil, rutaFotoPerfil);
-			//dialogoPerfil.mostrarDialogo();
-
-			/*
-			dialogoPerfil.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowClosed(WindowEvent e) {
-					if (dialogoPerfil.cambiarFotoPerfil()) {
-						cambiarFotoPerfil();
-					}
-				}
-			});
-			*/
-
-		});
+		// Boton para editar perfil, seguir a un usuario, o dejar de seguirlo
+		JButton botonPerfil = factoria.crearBoton();
+		panelNombreUsuario.add(botonPerfil);
 
 		JLabel lblPublicaciones = new JLabel(
 				Controlador.getControlador().getUsuarioLogueado().numeroPublicaciones() + " Publicaciones");
@@ -278,18 +273,19 @@ public class PanelPerfilUsuario extends JPanel {
 
 		// Al clikar en los seguidores, se debe abrir un dialogo con las lista de
 		// seguidores del usuario
-		/*
+
 		lblSeguidores.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DialogoSeguidores dialogoSeguidores = new DialogoSeguidores("Seguidores",
-						Controlador.getControlador().getUsuarioLogueado().getSeguidores(), frame);
+				DialogoSeguidores dialogoSeguidores = new DialogoSeguidores("Seguidores", usuarioPerfil.getSeguidores(),
+						framePadre.getSize().height, framePadre.getContentPane());
 				dialogoSeguidores.mostrar();
 			}
 		});
-		*/
 
-		JLabel lblSeguidos = new JLabel(Controlador.getControlador().getNumeroUsuariosSeguidos(usuarioPerfil) + " Seguidos");
+		JLabel lblSeguidos = new JLabel(
+				Controlador.getControlador().getNumeroUsuariosSeguidos(usuarioPerfil) + " Seguidos");
 		lblSeguidos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSeguidos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblSeguidos = new GridBagConstraints();
@@ -300,16 +296,17 @@ public class PanelPerfilUsuario extends JPanel {
 
 		// Al clickar en los usuarios seguids, se debe abrir un dialogo con una lista de
 		// los usuarios a los que sigue el usuario logueado
-		/*
+
 		lblSeguidos.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				DialogoSeguidores dialogoSeguidores = new DialogoSeguidores("Siguiendo",
-						Controlador.getControlador().getUsuariosSeguidos(), frame);
+						Controlador.getControlador().getUsuariosSeguidos(usuarioPerfil), framePadre.getSize().height,
+						framePadre.getContentPane());
 				dialogoSeguidores.mostrar();
 			}
 		});
-		*/
 
 		JLabel lblNombreCompleto = new JLabel(Controlador.getControlador().getUserNombre());
 		lblNombreCompleto.setFont(new Font("Tahoma", Font.BOLD, 14));

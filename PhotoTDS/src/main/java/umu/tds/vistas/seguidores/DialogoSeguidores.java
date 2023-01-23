@@ -35,15 +35,17 @@ public class DialogoSeguidores extends JDialog {
 
 	private String textoSuperior;
 	private Image iconoCierre;
-	private JFrame framePadre;
+	private int altura;
+	private Component componente;
 
 	private JList<Usuario> lista;
 	private List<Usuario> usuarios;
 
-	public DialogoSeguidores(String texto, Set<Usuario> usuarios, JFrame frame) {
+	public DialogoSeguidores(String texto, Set<Usuario> usuarios, int altura, Component componente) {
 		this.textoSuperior = texto;
 		this.usuarios = new ArrayList<Usuario>(usuarios);
-		this.framePadre = frame;
+		this.altura = (int) Math.ceil(altura * PORCENTAJE_ALTURA);
+		this.componente = componente;
 		this.iconoCierre = new ImageIcon(getClass().getResource("/imagenes/cross-dialogo.png")).getImage()
 				.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 
@@ -62,9 +64,8 @@ public class DialogoSeguidores extends JDialog {
 		this.getRootPane().setOpaque(false);
 		this.setUndecorated(true);
 
-		int altura = (int) Math.ceil(framePadre.getContentPane().getSize().height * PORCENTAJE_ALTURA);
 		setSize(ANCHO_DIALOGO, altura);
-		setLocationRelativeTo(framePadre.getContentPane());
+		setLocationRelativeTo(componente);
 
 		lista = new JList<Usuario>(usuarios.toArray(new Usuario[usuarios.size()]));
 		lista.setCellRenderer(new RendererLista());

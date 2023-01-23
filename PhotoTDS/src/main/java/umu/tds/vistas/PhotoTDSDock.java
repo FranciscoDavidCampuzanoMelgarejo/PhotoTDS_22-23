@@ -16,14 +16,22 @@ import umu.tds.vistas.perfil.PanelPerfilUsuario;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
-public class PhotoTDSDock extends JPanel{
+public class PhotoTDSDock extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private int DOCKICONSIZE1 = 38, DOCKICONSIZE2 = 42;
 	
 	private CardLayout c;
 	private JPanel dock1, dock2;
 	private Image dockbg, logo1, logo2, home, finder, publi, user;
+	
+	// Oyentes a la espera de que al clickar un boton, se notifique de un evento
+	private PropertyChangeSupport oyentes = new PropertyChangeSupport(this);
+	
+	// Propiedad ligada
+	private String panelActual = VentanaPhotoTDS.PANEL_INICIO;
 	
 	public PhotoTDSDock() {
 		super();
@@ -52,6 +60,19 @@ public class PhotoTDSDock extends JPanel{
 	/* Tamaño de iconos al pasar el cursor sobre ellos */
 	public void setDockIconSize1(int size) { this.DOCKICONSIZE1 = size; }
 	public void setDockIconSize2(int size) { this.DOCKICONSIZE2 = size; }
+	
+	// Metodo para añadir un listener a la lista de oyentes
+	
+	public void addListener(PropertyChangeListener listener) {
+		System.out.println("VA");
+		oyentes.addPropertyChangeListener(listener);
+	}
+	
+	
+	// Metodo para eliminar un listener de la lista de oyentes
+	public void removeListener(PropertyChangeListener listener) {
+		oyentes.removePropertyChangeListener(listener);
+	}
 	
 	/* Precarga de recursos gráficos del dock */
 	private void cargarRecursos() throws Exception{
@@ -226,7 +247,7 @@ public class PhotoTDSDock extends JPanel{
 		dock1.add(dock1user, gbc_dock1user);
 		dock1user.setLayout(new BorderLayout(0, 0));
 		
-		JLabel dock1usericon = new JLabel("");
+		JLabel dock1usericon = new JLabel();
 		dock1usericon.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -247,7 +268,8 @@ public class PhotoTDSDock extends JPanel{
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				c.show(, name);
+				oyentes.firePropertyChange("panelActual", panelActual, VentanaPhotoTDS.PANEL_USUARIO);
+				panelActual = VentanaPhotoTDS.PANEL_USUARIO;
 			}
 		});
 			dock1usericon.setToolTipText(Controlador.getControlador().getUsername());

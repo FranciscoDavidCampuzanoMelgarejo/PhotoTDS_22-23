@@ -21,6 +21,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.LinkedList;
 import java.awt.event.ComponentAdapter;
@@ -38,10 +40,15 @@ import java.awt.Font;
  * @author Francisco & Diego
  * */
 
-public class VentanaPhotoTDS {
+public class VentanaPhotoTDS implements PropertyChangeListener {
+	
+	public static final String PANEL_INICIO = "Panel Inicio";
+	public static final String PANEL_USUARIO = "Panel Usuario";
+	public static final String PANEL_BUSQUEDA = "Panel Busqueda";
 
 	private JFrame frame;
 	private JPanel phototdsrender;
+	private JPanel apprender;
 	private PhotoTDSDock dock;
 	private CardLayout c;
 	private GridBagLayout layout1, layout2;
@@ -81,6 +88,7 @@ public class VentanaPhotoTDS {
 			layout2.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 			
 		dibujar(winX, winY);
+		dock.addListener(this);
 	}
 
 	private void dibujar(int winX, int winY) {
@@ -117,7 +125,7 @@ public class VentanaPhotoTDS {
 		panelDock.setLayout(new BorderLayout(0, 0));
 		panelDock.add(dock);
 		
-		JPanel apprender = new JPanel() { 
+		apprender = new JPanel() { 
 			private static final long serialVersionUID = 1L;
 			{setOpaque(false);} 
 		};
@@ -151,10 +159,21 @@ public class VentanaPhotoTDS {
 		*/
 		
 		JPanel panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
-		apprender.add(panelUsuario, "panelUsuario");
+		apprender.add(panelUsuario, PANEL_USUARIO);
 		
 		JPanel panelBusqueda = new JPanel();
-		apprender.add(panelBusqueda, "panelBusqueda");	
+		apprender.add(panelBusqueda, PANEL_BUSQUEDA);	
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		String panelActual = (String) evt.getOldValue();
+		String panelNuevo = (String) evt.getNewValue();
+		
+		if(!panelActual.equals(panelNuevo)) {
+			c.show(apprender, panelNuevo);
+		}
+		
 	}
 
 }
