@@ -12,6 +12,7 @@ import umu.tds.vistas.*;
  * -- CLASE PRINCIPAL DE PHOTOTDS --
  * **/
 
+
 public class Lanzador {
 	
 	public static void main(final String[] args) {		
