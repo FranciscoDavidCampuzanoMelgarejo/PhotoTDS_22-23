@@ -3,11 +3,14 @@ package umu.tds.controlador;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -198,8 +201,6 @@ public class Controlador implements FotosListener {
 		usuarioDAO.update(usuario);
 	}
 	
-	
-
 	public void seguir(String nombreUsuario) {
 
 		// Obtener el usuario al que se quiere seguir
@@ -256,6 +257,14 @@ public class Controlador implements FotosListener {
 		return usuariosSeguidos.size();
 	}
 
+	// Devuelve las últimas 20 publicaciones de usuarios que seguimos, desde la fecha actual
+	public List<Publicacion> getUltimasPublicaciones(){
+		return catalogoPublicaciones.getAll().stream()
+											 .sorted(Comparator.comparing(Publicacion::getFecha))
+											 .limit(20)
+											 .collect(Collectors.toList());
+	}
+	
 	// Getters y Setters
 	public Usuario getUsuarioLogueado() {
 		return this.usuario;

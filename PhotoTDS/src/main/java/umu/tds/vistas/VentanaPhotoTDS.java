@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
@@ -13,6 +14,10 @@ import java.awt.Image;
 
 import javax.swing.JPanel;
 
+import umu.tds.controlador.Controlador;
+import umu.tds.modelo.pojos.Foto;
+import umu.tds.modelo.pojos.Publicacion;
+import umu.tds.vistas.lists.PublicacionRenderer;
 import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 
 import java.awt.GridBagConstraints;
@@ -31,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JList;
 
 
 /**@title Ventana principal de PhotoTDS
@@ -52,6 +58,8 @@ public class VentanaPhotoTDS implements ActionListener{
 	
 	private VentanaPerfilUsuario perfilusuario;
 	private boolean viendoperfil;
+	private JList list;
+	private JList list_1;
 
 	private void cargarRecursos() {
 		try {
@@ -141,6 +149,7 @@ public class VentanaPhotoTDS implements ActionListener{
 		panelInicio.setBackground(Color.RED);
 		apprender.add(panelInicio, "panelInicio");
 		panelInicio.setLayout(new BorderLayout(0, 0));
+		
 		
 		JPanel panelBusqueda = new JPanel();
 		panelBusqueda.setBackground(Color.PINK);
