@@ -243,6 +243,17 @@ public class PanelRegistro extends JScrollPane {
 				chooser.showOpenDialog(lblFoto);
 				File archivo = chooser.getSelectedFile();
 				if (archivo != null) {
+					try{
+						Image pic = ImageIO.read(archivo);
+						float iw = pic.getWidth(null), ih = pic.getHeight(null), s;
+						s = (iw>ih) ? 200/iw : 200/ih;
+						//ImageIcon i = new ImageIcon(pic.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH));
+						lblFoto.setIcon(new ImageIcon(Utils.redondearImagen((int)(iw*s), new ImageIcon(pic))));
+						noPicture = false;
+			
+						foto = archivo.toString();
+					} catch (IOException ioe) {}
+					/*
 					ImageIcon pp = new ImageIcon(archivo.toString());
 					int h = pp.getIconHeight();
 					int w = pp.getIconWidth();
@@ -258,6 +269,8 @@ public class PanelRegistro extends JScrollPane {
 						noPicture = false;
 						foto = archivo.toString();
 					}
+					*/
+					
 				}
 			}
 		});
