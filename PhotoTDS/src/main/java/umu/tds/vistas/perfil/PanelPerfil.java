@@ -58,7 +58,7 @@ public class PanelPerfil extends JPanel {
 	private JLabel lblContadorLetras;
 	private boolean cambioFoto = false; // Para saber si se ha cambiado la foto antes de guardarla
 	
-	private String rutaImagenPerfilIncial = Controlador.getControlador().getUserPicture();
+	private String rutaImagenPerfilInicial = Controlador.getControlador().getUserPicture();
 
 	public PanelPerfil(JDialog dialogo, Icon imagenPerfil, String rutaImagenPerfil, String presentacion) {
 		this.dialogoPadre = dialogo;
@@ -69,6 +69,7 @@ public class PanelPerfil extends JPanel {
 		this.iconoCamara = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/camara-fotografica.png"))
 				.getImage().getScaledInstance(SIZE_ICONO_OPTION_PANE, SIZE_ICONO_OPTION_PANE, Image.SCALE_SMOOTH));
 		this.fileChooser = new JFileChooser();
+		rutaImagenPerfilInicial = (rutaImagenPerfilInicial==null) ? " " : rutaImagenPerfilInicial;
 		crearPanel();
 	}
 	
@@ -220,6 +221,6 @@ public class PanelPerfil extends JPanel {
 	}
 	
 	public boolean cambiarFotoPerfil() {
-		return (!rutaImagenPerfilIncial.equals(rutaImagenPerfil));
+		return (!rutaImagenPerfilInicial.equals(rutaImagenPerfil));
 	}
 }

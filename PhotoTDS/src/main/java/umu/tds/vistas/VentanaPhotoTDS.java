@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -36,6 +37,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
 import javax.swing.JList;
 
 
@@ -63,7 +67,7 @@ public class VentanaPhotoTDS implements ActionListener{
 
 	private void cargarRecursos() {
 		try {
-			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/fondo-3.jpg")).getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
+			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/bg.png")).getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
 			winIcon = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock/logo1.png"));
 		} catch (Exception e1) { e1.printStackTrace(); }
 	}
