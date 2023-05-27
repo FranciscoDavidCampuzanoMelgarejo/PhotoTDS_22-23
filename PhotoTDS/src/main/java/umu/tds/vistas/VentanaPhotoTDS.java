@@ -3,6 +3,7 @@ package umu.tds.vistas;
 import java.awt.CardLayout;
 import java.awt.EventQueue;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -112,7 +113,11 @@ public class VentanaPhotoTDS implements ActionListener{
 			{setOpaque(false);} 
 			@Override
 			public void paintComponent(Graphics g) {
-				g.drawImage(fondo, 0, 0, null);
+				float ww = frame.getWidth(), wh = frame.getHeight(), iw = fondo.getWidth(null), ih = fondo.getHeight(null);
+				int numX = (int)((ww + iw-1) / iw), numY = (int)((wh + ih-1) / ih);
+				for(int y=0; y<numY; y++)
+					for(int x=0; x<numX; x++)
+						g.drawImage(fondo, x*(int)iw, y*(int)ih, null);
 			}
 		};
 		
@@ -155,7 +160,7 @@ public class VentanaPhotoTDS implements ActionListener{
 		
 		JPanel panelBusqueda = new JPanel();
 		panelBusqueda.setBackground(Color.PINK);
-		apprender.add(panelBusqueda, "panelBusqueda");	
+		apprender.add(panelBusqueda, "panelBusqueda");
 	}
 
 	/* la ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
