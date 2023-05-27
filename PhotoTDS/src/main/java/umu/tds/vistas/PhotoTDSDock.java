@@ -33,7 +33,7 @@ public class PhotoTDSDock extends JPanel{
 	
 	private CardLayout c;
 	private JPanel dock1;
-	private Image logo1, home, finder, publi, user;
+	private Image logo1, home, finder, publi, user; 
 	
 	private JLabel dock1usericon;
 	
