@@ -2,5 +2,5 @@
 Repositorio para alojar el proyecto de la asignatura de Tecnologías del Desarrollo del Software (TDS)
 
 ## Autores
-Francisco 
-Diego
+Francisco David Campuzado Melgarejo\n 
+Diego Párraga Nicolás
