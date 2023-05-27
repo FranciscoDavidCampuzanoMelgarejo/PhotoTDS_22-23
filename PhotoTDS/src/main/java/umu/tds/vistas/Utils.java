@@ -1,6 +1,7 @@
 package umu.tds.vistas;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -45,27 +46,23 @@ public class Utils {
 
 	// Metodo para redondear una imagen
 	public static BufferedImage redondearImagen(int ancho, Icon imagen) {
-
-		//System.out.println("REDONDEAR IMAGEN");
-		//System.out.println("VA");
-		// int diametro = Math.min(imagen.getIconWidth(), imagen.getIconHeight()); //No sirve para nada
-		//System.out.println(diametro);
 		BufferedImage mask = new BufferedImage(ancho, ancho, BufferedImage.TYPE_INT_ARGB);
 
 		Graphics2D g2d = mask.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g2d.fillOval(0, 0, ancho - 1, ancho - 1);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.fillOval(1, 1, ancho-2, ancho-2);
 		g2d.dispose();
-
+		
+		
 		BufferedImage masked = new BufferedImage(ancho, ancho, BufferedImage.TYPE_INT_ARGB);
 		g2d = masked.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		// int x = (300 - imagen.getIconWidth()) / 2;
-		// int y = (300 - imagen.getIconHeight()) / 2;
-		// System.out.println("X: " + x + " Y: " + y);
-
-		g2d.drawImage(((ImageIcon) imagen).getImage(), 0, 0, ancho, ancho, null);
+		g2d.setColor(new Color(0x1e, 0x1e, 0x1e));
+		g2d.fillRect(0, 0, ancho, ancho);
+		g2d.drawImage(((ImageIcon) imagen).getImage(), 1, 1, ancho, ancho, null);
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
 		g2d.drawImage(mask, 0, 0, null);
 		g2d.dispose();

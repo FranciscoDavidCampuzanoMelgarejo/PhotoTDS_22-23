@@ -177,7 +177,8 @@ public class PanelPerfil extends JPanel {
 			}
 		});
 
-		lblContadorLetras = new JLabel(presentacion.length() + " / 200");
+		//lblContadorLetras = new JLabel(presentacion.length() + " / 200");
+		lblContadorLetras = (presentacion==null) ? new JLabel("0 / 200") : new JLabel(presentacion.length() + " / 200");
 		lblContadorLetras.setHorizontalAlignment(SwingConstants.LEFT);
 		GridBagConstraints gbc_lblContadorLetras = new GridBagConstraints();
 		gbc_lblContadorLetras.anchor = GridBagConstraints.NORTHWEST;
@@ -202,7 +203,9 @@ public class PanelPerfil extends JPanel {
 		// Al clickar en el boton, indicar que los cambios se han guardado (no de
 		// momento en base de datos)
 		btnGuardar.addActionListener((ActionEvent e) -> {
+			/*
 			boolean presentacionModificada = false;
+			if(presentacion==null)
 			if (!presentacion.equals(areaPresentacion.getText())) {
 				presentacionModificada = true;
 				presentacion = areaPresentacion.getText();
@@ -216,7 +219,18 @@ public class PanelPerfil extends JPanel {
 						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconoReescalado));
 				cambioFoto = false;
 			}
-
+			*/
+			String nuevaPresentacion = areaPresentacion.getText();
+			boolean presentacionModificada = (nuevaPresentacion!=null) ? true : false;
+			
+			if(cambioFoto || presentacionModificada) {
+				Controlador.getControlador().editarPerfil(rutaImagenPerfil, nuevaPresentacion);
+				Image iconoReescalado = new ImageIcon(getClass().getResource("/imagenes/check-mark.png")).getImage()
+						.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+				JOptionPane.showMessageDialog(this, "Los cambios han sido guardados exitosamente", "Cambios Guardados",
+						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconoReescalado));
+				cambioFoto = false;
+			}
 		});
 	}
 	

@@ -214,6 +214,7 @@ public class PanelRegistro extends JScrollPane {
 		lblFoto.setHorizontalAlignment(SwingConstants.CENTER);
 		lblFoto.setIcon(noPicture1);
 		GridBagConstraints gbc_lblFoto = new GridBagConstraints();
+		gbc_lblFoto.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblFoto.insets = new Insets(0, 0, 5, 5);
 		gbc_lblFoto.anchor = GridBagConstraints.NORTH;
 		gbc_lblFoto.gridx = 0;
@@ -253,24 +254,6 @@ public class PanelRegistro extends JScrollPane {
 			
 						foto = archivo.toString();
 					} catch (IOException ioe) {}
-					/*
-					ImageIcon pp = new ImageIcon(archivo.toString());
-					int h = pp.getIconHeight();
-					int w = pp.getIconWidth();
-					if (h > 100 || w > 100) {
-						// Si la imagen es demasiado grande, cancelamos la operacion
-						JOptionPane.showMessageDialog(frmLoginRegistro, "Solo se admiten imágenes de hasta 100x100 píxeles",
-								"Error al cargar imagen de perfil", JOptionPane.ERROR_MESSAGE);
-						lblFoto.setIcon(noPicture1);
-						noPicture = true;
-					} else {
-						lblFoto.setIcon(pp);
-						lblFoto.setToolTipText("Cambiar foto de perfil");
-						noPicture = false;
-						foto = archivo.toString();
-					}
-					*/
-					
 				}
 			}
 		});
@@ -281,7 +264,7 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout.setHgap(0);
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelNombreApellidos = new GridBagConstraints();
-		gbc_panelNombreApellidos.anchor = GridBagConstraints.WEST;
+		gbc_panelNombreApellidos.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelNombreApellidos.insets = new Insets(0, 0, 5, 8);
 		gbc_panelNombreApellidos.gridx = 0;
 		gbc_panelNombreApellidos.gridy = 2;
@@ -293,9 +276,6 @@ public class PanelRegistro extends JScrollPane {
 
 		lblErrorNombApell = new JLabel("");
 		lblErrorNombApell.setVisible(false);
-
-		Component rigidArea = Box.createRigidArea(new Dimension(10, 20));
-		panelNombreApellidos.add(rigidArea);
 		lblErrorNombApell.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorNombApell.setForeground(new Color(255, 106, 106));
 		panelNombreApellidos.add(lblErrorNombApell);
@@ -356,7 +336,7 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_1.setHgap(0);
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelUsuario = new GridBagConstraints();
-		gbc_panelUsuario.anchor = GridBagConstraints.WEST;
+		gbc_panelUsuario.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelUsuario.insets = new Insets(0, 0, 5, 8);
 		gbc_panelUsuario.gridx = 0;
 		gbc_panelUsuario.gridy = 4;
@@ -368,9 +348,6 @@ public class PanelRegistro extends JScrollPane {
 
 		lblErrorUsuario = new JLabel("");
 		lblErrorUsuario.setVisible(false);
-
-		Component rigidArea_1 = Box.createRigidArea(new Dimension(10, 20));
-		panelUsuario.add(rigidArea_1);
 		lblErrorUsuario.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorUsuario.setForeground(new Color(255, 106, 106));
 		panelUsuario.add(lblErrorUsuario);
@@ -429,7 +406,7 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_2.setHgap(0);
 		flowLayout_2.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelCorreo = new GridBagConstraints();
-		gbc_panelCorreo.anchor = GridBagConstraints.WEST;
+		gbc_panelCorreo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelCorreo.insets = new Insets(0, 0, 5, 8);
 		gbc_panelCorreo.gridx = 0;
 		gbc_panelCorreo.gridy = 6;
@@ -441,9 +418,6 @@ public class PanelRegistro extends JScrollPane {
 
 		lblErrorCorreo = new JLabel("");
 		lblErrorCorreo.setVisible(false);
-
-		Component rigidArea_2 = Box.createRigidArea(new Dimension(10, 20));
-		panelCorreo.add(rigidArea_2);
 		lblErrorCorreo.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorCorreo.setForeground(new Color(255, 106, 106));
 		panelCorreo.add(lblErrorCorreo);
@@ -502,7 +476,7 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_3.setHgap(0);
 		flowLayout_3.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelPassword = new GridBagConstraints();
-		gbc_panelPassword.anchor = GridBagConstraints.WEST;
+		gbc_panelPassword.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelPassword.insets = new Insets(0, 0, 5, 8);
 		gbc_panelPassword.gridx = 0;
 		gbc_panelPassword.gridy = 8;
@@ -515,9 +489,6 @@ public class PanelRegistro extends JScrollPane {
 		lblErrorPassword = new JLabel("");
 		lblErrorPassword.setBackground(Color.YELLOW);
 		lblErrorPassword.setVisible(false);
-
-		Component rigidArea_3 = Box.createRigidArea(new Dimension(10, 20));
-		panelPassword.add(rigidArea_3);
 		lblErrorPassword.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorPassword.setForeground(new Color(255, 106, 106));
 		panelPassword.add(lblErrorPassword);
@@ -583,7 +554,7 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_4.setHgap(0);
 		flowLayout_4.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelFecha = new GridBagConstraints();
-		gbc_panelFecha.anchor = GridBagConstraints.WEST;
+		gbc_panelFecha.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelFecha.insets = new Insets(0, 0, 5, 8);
 		gbc_panelFecha.gridx = 0;
 		gbc_panelFecha.gridy = 10;
@@ -597,9 +568,6 @@ public class PanelRegistro extends JScrollPane {
 		lblErrorFecha.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		lblErrorFecha.setForeground(new Color(255, 106, 106));
 		lblErrorFecha.setVisible(false);
-
-		Component rigidArea_4 = Box.createRigidArea(new Dimension(10, 20));
-		panelFecha.add(rigidArea_4);
 		panelFecha.add(lblErrorFecha);
 
 		dateChooser = new JDateChooser("yyyy/MM/dd", "####/##/##", '_');
@@ -625,7 +593,7 @@ public class PanelRegistro extends JScrollPane {
 		flowLayout_5.setHgap(0);
 		flowLayout_5.setAlignment(FlowLayout.LEFT);
 		GridBagConstraints gbc_panelPresentacion = new GridBagConstraints();
-		gbc_panelPresentacion.anchor = GridBagConstraints.WEST;
+		gbc_panelPresentacion.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelPresentacion.insets = new Insets(0, 0, 5, 8);
 		gbc_panelPresentacion.gridx = 0;
 		gbc_panelPresentacion.gridy = 13;
@@ -685,7 +653,7 @@ public class PanelRegistro extends JScrollPane {
 		JButton btnCrearCuenta = new JButton("Crear Cuenta");
 		//btnCrearCuenta.setBackground(new Color(240, 240, 240));
 		btnCrearCuenta.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnCrearCuenta.setBackground(new Color(28, 84, 215));
+		btnCrearCuenta.setBackground(new Color(0xb2, 0x00, 0x9c));
 		btnCrearCuenta.setForeground(new Color(200, 200, 200));
 
 		btnCrearCuenta.addActionListener((ActionEvent e) -> {
@@ -772,7 +740,7 @@ public class PanelRegistro extends JScrollPane {
 		panelCentro.add(btnCrearCuenta, gbc_btnCrearCuenta);
 
 		JLabel lblInicioSesion = new JLabel("¿Ya tienes una cuenta?");
-		lblInicioSesion.setForeground(new Color(0, 128, 255));
+		lblInicioSesion.setForeground(new Color(0xb2, 0x00, 0x9c));
 		lblInicioSesion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		lblInicioSesion.addMouseListener(new MouseListener() {
@@ -811,8 +779,8 @@ public class PanelRegistro extends JScrollPane {
 		});
 
 		GridBagConstraints gbc_lblInicioSesion = new GridBagConstraints();
+		gbc_lblInicioSesion.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblInicioSesion.ipady = 1;
-		gbc_lblInicioSesion.anchor = GridBagConstraints.WEST;
 		gbc_lblInicioSesion.insets = new Insets(0, 0, 0, 8);
 		gbc_lblInicioSesion.gridx = 0;
 		gbc_lblInicioSesion.gridy = 17;

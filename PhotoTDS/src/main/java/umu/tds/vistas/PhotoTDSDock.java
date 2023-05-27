@@ -15,6 +15,8 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import umu.tds.controlador.Controlador;
@@ -73,15 +75,19 @@ public class PhotoTDSDock extends JPanel{
 
 	/* Recarga la imagen de usuario del dock */
 	public void recargarImagenUsuario(){
+		/*
 		File userpic;
 		String userpicture = Controlador.getControlador().getUserPicture();
 		if(userpicture!=null) {
 			userpic = new File(userpicture);
-		} else userpic = new File(PhotoTDSDock.class.getResource("/imagenes/dock/nouser.png").getFile());
+		} else userpic = new File(PhotoTDSDock.class.getResource("/imagenes/noprofilepic.png").getFile());
 		try{
+			System.out.println(userpicture);
 			user = ImageIO.read(userpic);
 		} catch (IOException ioe) { ioe.printStackTrace(); }
 		dock1usericon.setIcon(new ImageIcon(Utils.redondearImagen(DOCKICONSIZE1, new ImageIcon(user.getScaledInstance(DOCKICONSIZE1, DOCKICONSIZE1, Image.SCALE_SMOOTH)))));
+		*/
+		
 	}
 	
 	/* Tamaño de iconos al pasar el cursor sobre ellos */

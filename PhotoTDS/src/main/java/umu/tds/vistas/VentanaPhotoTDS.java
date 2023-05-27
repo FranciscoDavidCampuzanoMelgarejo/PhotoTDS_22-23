@@ -62,8 +62,6 @@ public class VentanaPhotoTDS implements ActionListener{
 	
 	private VentanaPerfilUsuario perfilusuario;
 	private boolean viendoperfil;
-	private JList list;
-	private JList list_1;
 
 	private void cargarRecursos() {
 		try {
@@ -160,6 +158,7 @@ public class VentanaPhotoTDS implements ActionListener{
 		apprender.add(panelBusqueda, "panelBusqueda");	
 	}
 
+	/* la ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
@@ -186,7 +185,7 @@ public class VentanaPhotoTDS implements ActionListener{
 				break;
 			}
 			case "fotoSubida" : {
-				System.out.println("Nueva foto subida");
+				//System.out.println("Nueva foto subida");
 				subirFoto.destruir();
 				subiendoFoto = false;
 				break;
