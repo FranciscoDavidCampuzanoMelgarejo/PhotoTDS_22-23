@@ -1,13 +1,10 @@
 package umu.tds.vistas;
 
 import java.awt.CardLayout;
-import java.awt.EventQueue;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import java.awt.GridBagLayout;
@@ -16,32 +13,23 @@ import java.awt.Image;
 import javax.swing.JPanel;
 
 import umu.tds.controlador.Controlador;
-import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.Publicacion;
-import umu.tds.vistas.lists.PublicacionRenderer;
+import umu.tds.modelo.pojos.Usuario;
+import umu.tds.vistas.lists.PubliListRenderer;
 import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 
 import java.awt.GridBagConstraints;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 
 import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListModel;
+import javax.swing.ScrollPaneConstants;
 
 
 /**@title Ventana principal de PhotoTDS
@@ -63,12 +51,27 @@ public class VentanaPhotoTDS implements ActionListener{
 	
 	private VentanaPerfilUsuario perfilusuario;
 	private boolean viendoperfil;
+	
+	private VentanaAbout about;
+	
+	private VentanaPremium premium;
+	
+	private ArrayList<Publicacion> publiList;
+	private DefaultListModel<Publicacion> publiListModel;
+	private JScrollPane panelInicio;
+	private JPanel panelPubliList;
+	private JList<Publicacion> publiJList;
 
 	private void cargarRecursos() {
 		try {
-			fondo = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/fondos/bg.png")).getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
-			winIcon = ImageIO.read(VentanaPrincipal.class.getResource("/imagenes/dock/logo1.png"));
+			fondo = ImageIO.read(VentanaPhotoTDS.class.getResource("/imagenes/fondos/bg.png")).getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
+			winIcon = ImageIO.read(VentanaPhotoTDS.class.getResource("/imagenes/dock/logo1.png"));
 		} catch (Exception e1) { e1.printStackTrace(); }
+	}
+	
+	private void recargarRecientes() {
+		publiListModel.addAll(Controlador.getControlador().getUltimasPublicaciones());
+		publiJList.revalidate();
 	}
 	
 	public void mostrar() {
@@ -84,6 +87,10 @@ public class VentanaPhotoTDS implements ActionListener{
 		
 		subiendoFoto = false;
 		viendoperfil = false;
+		publiList = (ArrayList<Publicacion>) Controlador.getControlador().getUltimasFotos();
+		System.out.println(publiList.toString());
+		publiListModel = new DefaultListModel<Publicacion>();
+			publiListModel.addAll(publiList);
 		
 		layout1 = new GridBagLayout();
 			layout1.columnWidths = new int[]{64, 0, 776, 0, 0};
@@ -98,6 +105,8 @@ public class VentanaPhotoTDS implements ActionListener{
 			layout2.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 			
 		dibujar(winX, winY);
+		dock.recargarImagenUsuario();
+		dock.recargarPremium();
 	}
 
 	private void dibujar(int winX, int winY) {
@@ -143,7 +152,6 @@ public class VentanaPhotoTDS implements ActionListener{
 			private static final long serialVersionUID = 1L;
 			{setOpaque(false);} 
 		};
-		apprender.setBackground(Color.RED);
 		GridBagConstraints gbc_apprender = new GridBagConstraints();
 		gbc_apprender.fill = GridBagConstraints.BOTH;
 		gbc_apprender.gridx = 2;
@@ -151,59 +159,71 @@ public class VentanaPhotoTDS implements ActionListener{
 		phototdsrender.add(apprender, gbc_apprender);
 		apprender.setLayout(new CardLayout(0, 0));
 			c = (CardLayout)apprender.getLayout();
-		
-		JPanel panelInicio = new JPanel();
-		panelInicio.setBackground(Color.RED);
-		apprender.add(panelInicio, "panelInicio");
-		panelInicio.setLayout(new BorderLayout(0, 0));
-		
-		
-		JPanel panelBusqueda = new JPanel();
-		panelBusqueda.setBackground(Color.PINK);
-		apprender.add(panelBusqueda, "panelBusqueda");
+			
+			panelInicio = new JScrollPane();
+			panelInicio.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+			panelInicio.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			apprender.add(panelInicio, "panelInicio");
+			
+			panelPubliList = new JPanel() {
+				private static final long serialVersionUID = 1L;
+				{setOpaque(false);} 
+			};
+			panelInicio.setViewportView(panelPubliList);
+			panelPubliList.setLayout(new BorderLayout(0, 0));
+			
+			publiJList = new JList<Publicacion>(publiListModel) {
+				private static final long serialVersionUID = 1L;
+				{setOpaque(false);} 
+			};
+			publiJList.setCellRenderer(new PubliListRenderer());
+			panelPubliList.add(publiJList, BorderLayout.CENTER);
 	}
 
-	/* la ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
+	/* La ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
 		
 		switch(comando) {
-			case "home" : { c.show(apprender, "panelInicio"); break; }
-			case "finder" : { c.show(apprender, "panelBusqueda"); break; }
-			case "publi" : {
-				if(!subiendoFoto) {
-					subiendoFoto = true;
-					subirFoto = new VentanaSubirFoto();
-					subirFoto.addActionListener(this);
-					subirFoto.mostrar();
-				}
+			case "home" :					// Publicaciones recientes
+				recargarRecientes();
+				c.show(apprender, "panelInicio");
+				System.out.println(Controlador.getControlador().getUltimasPublicaciones());
+				break; 
+			case "finder" : 				// Búsqueda de publicaciones por usuaro y etiqueta
+				c.show(apprender, "panelBusqueda"); 
+				break; 
+			case "publi" : {				// Subir nueva publicación
+				VentanaSubirFoto.getInstancia().mostrar();	
 				break;
 			}
-			case "user" : {
-				if(!viendoperfil) {
-					viendoperfil = true;
-					perfilusuario = new VentanaPerfilUsuario();
-					perfilusuario.mostrar();
-					perfilusuario.addActionListener(this);
-				}
+			case "user" : {					// Perfil de usuario
+				VentanaPerfilUsuario.getInstancia().mostrar();
+				VentanaPerfilUsuario.getInstancia().addActionListener(this);
 				break;
 			}
-			case "fotoSubida" : {
-				//System.out.println("Nueva foto subida");
-				subirFoto.destruir();
-				subiendoFoto = false;
-				break;
-			}
-			case "subirFotoCerrando" : { subiendoFoto = false; break; }
-			case "perfilusuarioCerrando" : {
-				viendoperfil = false;
-				break;
-			}
-			case "cambioFotoPerfil" : {
+			case "cambioFotoPerfil" : {		// Notificación para actualizar perfil en el dock
 				dock.recargarImagenUsuario();
 				break;
 			}
+			case "about" :					// Ventana "Acerca de"
+				about = VentanaAbout.getInstancia();
+				about.mostrar();
+				break;
+			case "premium":					// Mostrar ventana de premium
+				premium = VentanaPremium.getInstancia();
+				premium.mostrar();
+				premium.addActionListener(this);
+				break;
+			case "cambioPremium" :			// Notifiación para actualizar premium en el dock
+				Controlador.getControlador().setPremium(true);
+				dock.recargarPremium();
+				break;
+			case "cambioNoPremium" :
+				Controlador.getControlador().setPremium(false);
+				dock.recargarPremium();
+				break;
 		}
 		
 	}

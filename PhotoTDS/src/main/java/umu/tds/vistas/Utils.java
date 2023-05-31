@@ -62,7 +62,7 @@ public class Utils {
 
 		g2d.setColor(new Color(0x1e, 0x1e, 0x1e));
 		g2d.fillRect(0, 0, ancho, ancho);
-		g2d.drawImage(((ImageIcon) imagen).getImage(), 1, 1, ancho, ancho, null);
+		g2d.drawImage(((ImageIcon) imagen).getImage(), 1, 1, ancho-2, ancho-2, null);
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
 		g2d.drawImage(mask, 0, 0, null);
 		g2d.dispose();

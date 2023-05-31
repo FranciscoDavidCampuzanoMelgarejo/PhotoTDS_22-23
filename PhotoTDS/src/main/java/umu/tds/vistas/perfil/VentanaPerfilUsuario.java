@@ -66,6 +66,8 @@ public class VentanaPerfilUsuario {
 															// la pantalla
 
 	private static final double PORCENTAJE_BARRA = 0.9;
+	
+	private static VentanaPerfilUsuario instancia = null;
 
 	private JFrame frame;
 	private Icon fotoPerfil;
@@ -87,7 +89,7 @@ public class VentanaPerfilUsuario {
 	
 	private List<ActionListener> listeners;
 
-	public VentanaPerfilUsuario() {
+	private VentanaPerfilUsuario() {
 		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
 
 		System.out.println(rutaFotoPerfil);
@@ -102,6 +104,11 @@ public class VentanaPerfilUsuario {
 		this.etiquetasImagenes = new HashMap<JLabel, Image>();
 		this.rutasFotos = Controlador.getControlador().getUsuarioLogueado().getRutasFotos();
 		initialize();
+	}
+	
+	public static VentanaPerfilUsuario getInstancia() {
+		if(instancia==null) instancia = new VentanaPerfilUsuario();
+		return instancia;
 	}
 
 	public void addActionListener(ActionListener a) {
@@ -118,18 +125,27 @@ public class VentanaPerfilUsuario {
 		this.frame.setVisible(true);
 	}
 
+	public void destruir() {
+		frame.dispose();
+		instancia = null;
+	}
+	
 	private void cambiarFotoPerfil() {
+		/*
 		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
 		this.fotoPerfil = new ImageIcon(rutaFotoPerfil);
 
 		BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
 		this.lblFotoPerfil.setIcon(new ImageIcon(masked));
 		notificacionPerfilUsuario(new ActionEvent(this, 6, "cambioFotoPerfil"));
+		*/
+		rutaFotoPerfil = Controlador.getControlador().getUserPicture();
+		fotoPerfil = (rutaFotoPerfil==null) ? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png")) : new ImageIcon(rutaFotoPerfil);
+		fotoPerfil = new ImageIcon(Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil));
+		this.lblFotoPerfil.setIcon(fotoPerfil);
+		notificacionPerfilUsuario(new ActionEvent(this, 6, "cambioFotoPerfil"));
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setMinimumSize(new Dimension(690, 590));

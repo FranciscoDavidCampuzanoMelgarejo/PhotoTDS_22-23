@@ -104,6 +104,16 @@ public class Controlador implements FotosListener {
 		System.out.println(usuario.getPerfil());
 		return usuario.getPerfil().getFoto();
 	}
+	
+	/* Devuelve la ruta de la foto de perfil de un usuario */
+	public String getUserPicture(String username) {
+		Usuario u = catalogoUsuarios.get(username);
+		return (u==null) ? null : u.getPerfil().getFoto();
+	}
+	
+	public boolean isPremium() {
+		return usuario.getPremium();
+	}
 
 	@Override
 	public void enteradoCambio(EventObject e) {
@@ -263,6 +273,42 @@ public class Controlador implements FotosListener {
 											 .sorted(Comparator.comparing(Publicacion::getFecha))
 											 .limit(20)
 											 .collect(Collectors.toList());
+	}
+	
+	// Devuelve las últimas 20 fotos de todos los usuarios que seguimos y nosotros mismos
+	public List<Publicacion> getUltimasFotos(){
+		return catalogoPublicaciones.getAll().stream()
+											 .filter(publi -> publi.getClass()==Foto.class)
+											 .filter(publi -> usuariosSeguidos.contains(publi.getUsuario()) || publi.getUsuario().getId()==usuario.getId())
+											 .sorted(Comparator.comparing(Publicacion::getFecha))
+											 .limit(20)
+											 .collect(Collectors.toList());
+	}
+	
+	// PREMIUM: activa o desactiva el status de premium del usuario
+	public void setPremium(boolean value) {
+		usuario.setPremium(value);
+		usuarioDAO.update(usuario);
+	}
+	
+	// PREMIUM: devuelve las 10 fotos con más me gusta del usuario actual
+	public List<Publicacion> getMasMeGusta(){
+		return catalogoPublicaciones.getAll().stream()
+											 .filter(publi -> publi.getUsuario().getId()==usuario.getId())
+											 .filter(publi -> publi.getClass()==Foto.class)
+										     .sorted(Comparator.comparing(Publicacion::getLikes))
+										     .limit(10)
+										     .collect(Collectors.toList());
+	}
+	
+	// PREMIUM: genera un fichero EXCEL con la lista de seguidores (nombre, email, presentacion)
+	public void generarExcelSeguidores() {
+		
+	}
+	
+	// PREMIM: genera un fichero PDF con la lista de seguidores (nombre, email, presentacion)
+	public void generarPdfSeguidores() {
+		
 	}
 	
 	// Getters y Setters

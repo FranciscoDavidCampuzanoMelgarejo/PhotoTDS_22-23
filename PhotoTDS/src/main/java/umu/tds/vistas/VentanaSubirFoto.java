@@ -44,7 +44,9 @@ import java.util.regex.*;
 import javax.swing.JTextField;
 
 public class VentanaSubirFoto {
-
+	
+	private static VentanaSubirFoto instancia = null;
+	
 	private JFrame frame;
 	private CardLayout c1;				// Cardlayout de toda la ventana
 	private CardLayout c2;				// Cardlayout del panel de selección de foto
@@ -66,9 +68,20 @@ public class VentanaSubirFoto {
 	private List<ActionListener> listeners;
 
 	/* Constructor */
-	public VentanaSubirFoto() {
+	private VentanaSubirFoto() {
 		cargarRecursos();
 		initialize();
+	}
+	
+	/* En este caso, queremos que solo haya una instancia pero que cada vez que se pida se cree una nueva */
+	private void destruir() {
+		frame.dispose();
+		instancia = null;
+	}
+	
+	public static VentanaSubirFoto getInstancia() {
+		if(instancia==null) instancia = new VentanaSubirFoto();
+		return instancia;
 	}
 	
 	public void addActionListener(ActionListener a) {
@@ -91,10 +104,6 @@ public class VentanaSubirFoto {
 		frame.setVisible(false);
 	}
 	
-	/* Destruye la ventana */
-	public void destruir() {
-		frame.dispose();
-	}
 	
 	/* Cargar recursos de la ventana */
 	public void cargarRecursos() {
@@ -115,12 +124,6 @@ public class VentanaSubirFoto {
 	/* Dibujado de ventana */
 	private void initialize() {
 		frame = new JFrame();
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent w) {
-				notificacionSubirFoto(new ActionEvent(this, 5, "subirFotoCerrando"));
-			}
-		});
 		frame.setTitle("Nueva publicación");
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 512, 512);
@@ -152,7 +155,7 @@ public class VentanaSubirFoto {
 		
 		JButton botonFilechooser = new JButton("Elegir foto");
 		
-		botonFilechooser.setBackground(new Color(24, 84, 215));
+		botonFilechooser.setBackground(new Color(0xb2, 0x00, 0x9c));
 		botonFilechooser.setFont(new Font("Tahoma", Font.ITALIC, 17));
 		GridBagConstraints gbc_botonFilechooser = new GridBagConstraints();
 		gbc_botonFilechooser.insets = new Insets(0, 0, 5, 0);
@@ -277,7 +280,7 @@ public class VentanaSubirFoto {
 			}
 		});
 		botonContinuar.setFont(new Font("Tahoma", Font.ITALIC, 10));
-		botonContinuar.setBackground(new Color(24, 84, 215));
+		botonContinuar.setBackground(new Color(0xb2, 0x00, 0x9c));
 		panelBotonContinuar.add(botonContinuar);
 		
 					
@@ -298,11 +301,12 @@ public class VentanaSubirFoto {
 					if(textoDescripcion.getText().isEmpty()) { labelDescripcion.setText("Descripcion - campo obligatorio"); labelDescripcion.setForeground(Color.red); }
 				} else {																		// Hacemos la publicación
 					Controlador.getControlador().publicarFoto(filePubli.getAbsolutePath(), textoTitulo.getText(), textoDescripcion.getText(), textoComentario.getText(), null);
-					notificacionSubirFoto(new ActionEvent(this, 4, "fotoSubida"));
+					//notificacionSubirFoto(new ActionEvent(this, 4, "fotoSubida"));
+					destruir();
 				}
 			}
 		});
-		botonPublicacion.setBackground(new Color(24, 84, 215));
+		botonPublicacion.setBackground(new Color(0xb2, 0x00, 0x9c));
 		botonPublicacion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		panelBotonPublicar.add(botonPublicacion);
 		
