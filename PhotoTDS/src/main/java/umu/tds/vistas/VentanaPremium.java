@@ -59,7 +59,7 @@ public class VentanaPremium {
 
 	/* Cargar recursos gráficos */
 	private void cargarRecursos() {
-		try {
+		try { 
 			premiumicon = ImageIO.read(getClass().getResource("/imagenes/dock/premium.png"));
 			nopremiumicon = ImageIO.read(getClass().getResource("/imagenes/dock/nopremium.png"));
 			yapremium = ImageIO.read(getClass().getResource("/imagenes/yapremium.png"));
