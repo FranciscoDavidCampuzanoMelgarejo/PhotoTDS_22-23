@@ -21,6 +21,7 @@ public class RendererLista extends JPanel implements ListCellRenderer<Usuario>, 
 	public Component getListCellRendererComponent(JList<? extends Usuario> list, Usuario value, int index,
 			boolean isSelected, boolean cellHasFocus) {
 		
+		// Obtener la publicacion (value)
 		PanelListaUsuarios panel = new PanelListaUsuarios(value);
 		if(isSelected)
 			panel.setColorClickado();
