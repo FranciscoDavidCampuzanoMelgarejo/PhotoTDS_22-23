@@ -85,7 +85,7 @@ public class TestControlador2 {
 	
 	@Test
 	public void testGeneralPublicacion() {
-		assertTrue(controlador.loginUsuario("Usuario_26", "aA1-"));
+		assertTrue(controlador.loginUsuario("Usuario_26", "cC1-"));
 		
 		Usuario usuario = controlador.getUsuarioLogueado();
 		
@@ -96,6 +96,32 @@ public class TestControlador2 {
 		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\copium.jpg", "COPIUM", "Anestesiado", null, null);
 		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\peepoHey.png", "SALUDO", "Emote de saludo", null, null);
 		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\sadge.png", "SAD", "Emote triste", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\monkas.jpg", "MONKAS", "Sudando",null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\pepoG.jpg", "PepoG", "Tomando notas", null, null);
+		
+		// Otras 6 fotos
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\booba.jpg", "BOOBA", "Ojo saltones", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\copium.jpg", "COPIUM", "Anestesiado", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\peepoHey.png", "SALUDO", "Emote de saludo", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\sadge.png", "SAD", "Emote triste", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\monkas.jpg", "MONKAS", "Sudando",null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\pepoG.jpg", "PepoG", "Tomando notas", null, null);
+		
+		// Otras 6 fotos
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\booba.jpg", "BOOBA", "Ojo saltones", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\copium.jpg", "COPIUM", "Anestesiado", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\peepoHey.png", "SALUDO", "Emote de saludo", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\sadge.png", "SAD", "Emote triste", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\monkas.jpg", "MONKAS", "Sudando",null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\pepoG.jpg", "PepoG", "Tomando notas", null, null);
+		
+		// Otras 6 fotos
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\booba.jpg", "BOOBA", "Ojo saltones", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\copium.jpg", "COPIUM", "Anestesiado", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\peepoHey.png", "SALUDO", "Emote de saludo", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\sadge.png", "SAD", "Emote triste", null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\monkas.jpg", "MONKAS", "Sudando",null, null);
+		controlador.publicarFoto("C:\\Users\\franc\\OneDrive\\Imágenes\\pepoG.jpg", "PepoG", "Tomando notas", null, null);
 		
 	}
 

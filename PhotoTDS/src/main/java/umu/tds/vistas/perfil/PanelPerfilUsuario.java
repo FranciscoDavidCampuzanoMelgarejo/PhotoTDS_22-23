@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -49,20 +51,12 @@ import umu.tds.vistas.seguidores.DialogoSeguidores;
 import javax.swing.JScrollPane;
 import java.awt.Cursor;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
 
 public class PanelPerfilUsuario extends JPanel {
 
 	private static final int ANCHO_FOTO_PERFIL = 150; // Ancho de la foto de perfil en la ventana del perfil del usuario
-
-	private static final int COLUMNAS = 3;
-	private static final int MINIMO_FOTOS_CARGAR = 6; // Numero de fotos del usuario que se cargan en su perfil
-														// inicialmente
-	private static final int ANCHO_FOTO_INICIAL = 198; // Ancho inicial de las fotos que se cargan en el perfil
-
-	private static final int MINIMO_FOTO = 158; // Ancho minimo de las fotos que se cargan
-	private static final int MAXIMO_FOTO = 295; // Ancho maximo de las fotos que se cargan
-
-	private static final double PORCENTAJE_BARRA = 0.9;
 
 	private Usuario usuarioPerfil;
 
@@ -71,18 +65,10 @@ public class PanelPerfilUsuario extends JPanel {
 	private String rutaFotoPerfil;
 	private JLabel lblFotoPerfil;
 
-	// Cargar las fotos del usuario
+	// Panel de scroll que contiene las fotos del perfil del usuario
 	private JScrollPane panelScrollFotos;
-	private JPanel panelFotosUsuario;
-	private GridBagLayout gbl_panelFotosUsuario;
-	private int filasActuales;
-	private int anchoFotoActual; // Ancho que debe de tener cada foto
-	private double anchoPanelActual; // Ancho del panel (cambia al estirarse y estrecharse)
 
 	private List<String> rutasFotos; // Path de cada foto que se va a cargar
-	private Map<JLabel, Image> etiquetasImagenes; // Guarda que imagen corresponde a cada etiqueta
-	private int fotosCargadas, fotosRestantes;
-	private int col, row;
 
 	private FactoriaBotonPerfil factoria;
 
@@ -95,12 +81,6 @@ public class PanelPerfilUsuario extends JPanel {
 		this.fotoPerfil = rutaFotoPerfil == null
 				? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png"))
 				: new ImageIcon(rutaFotoPerfil);
-
-		this.filasActuales = 0;
-		this.fotosCargadas = 0;
-		this.fotosRestantes = usuarioPerfil.numeroPublicaciones();
-		row = col = 0;
-		this.etiquetasImagenes = new HashMap<JLabel, Image>();
 		this.rutasFotos = usuarioPerfil.getRutasFotos();
 
 		// Factoria para crear un boton -> Si el usuario del perfil es el usuario
@@ -134,6 +114,7 @@ public class PanelPerfilUsuario extends JPanel {
 	 */
 	private void initialize() {
 
+		this.setBorder(new LineBorder(Color.yellow));
 		JPanel panelContenedor = new JPanel();
 		add(panelContenedor, BorderLayout.CENTER);
 		GridBagLayout gbl_panelContenedor = new GridBagLayout();
@@ -142,45 +123,6 @@ public class PanelPerfilUsuario extends JPanel {
 		gbl_panelContenedor.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		gbl_panelContenedor.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
 		panelContenedor.setLayout(gbl_panelContenedor);
-
-		// Cada vez que cambie el tamaño de la pantalla (panelContenedor), las fotos
-		// deben reescalar
-		panelContenedor.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				System.out.println("DENTRO");
-				System.out.println(getSize());
-				System.out.println(panelScrollFotos.getSize());
-
-				int anchoFoto = (int) Math.floor(panelScrollFotos.getSize().getWidth() / COLUMNAS) - 12;
-				boolean reescalar = true;
-				if ((anchoFoto < MINIMO_FOTO && anchoFotoActual == MINIMO_FOTO)
-						|| (anchoFoto > MAXIMO_FOTO && anchoFotoActual == MAXIMO_FOTO))
-					reescalar = false;
-				else {
-					anchoFotoActual = anchoFoto;
-					if (anchoFoto <= MINIMO_FOTO)
-						anchoFotoActual = MINIMO_FOTO;
-					if (anchoFoto >= MAXIMO_FOTO)
-						anchoFotoActual = MAXIMO_FOTO;
-				}
-
-				if (panelScrollFotos.getSize().getWidth() != anchoPanelActual && reescalar) {
-					System.out.println("RESIZED");
-					anchoPanelActual = panelScrollFotos.getSize().getWidth();
-					System.out.println("Ancho foto: " + anchoFotoActual);
-
-					for (JLabel label : etiquetasImagenes.keySet()) {
-						ImageIcon icono = new ImageIcon(etiquetasImagenes.get(label).getScaledInstance(anchoFotoActual,
-								anchoFotoActual, Image.SCALE_SMOOTH));
-						label.setIcon(icono);
-
-					}
-					panelScrollFotos.revalidate();
-
-				}
-			}
-		});
 
 		JPanel panelContenedorSuperior = new JPanel();
 		GridBagConstraints gbc_panelContenedorSuperior = new GridBagConstraints();
@@ -379,8 +321,10 @@ public class PanelPerfilUsuario extends JPanel {
 		btnAlbumes.setOpaque(false);
 		panelBotones.add(btnAlbumes);
 
-		panelScrollFotos = new JScrollPane();
-		panelScrollFotos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		System.out.println("me adentro al abismo");
+		System.out.println(framePadre.getSize().width);
+		panelScrollFotos = new PanelScrollFotos(usuarioPerfil.getPublicaciones(), framePadre.getSize().width,
+				rutaFotoPerfil, usuarioPerfil.getUsuario());
 		GridBagConstraints gbc_panelScrollFotos = new GridBagConstraints();
 		gbc_panelScrollFotos.anchor = GridBagConstraints.NORTH;
 		gbc_panelScrollFotos.insets = new Insets(0, 0, 5, 5);
@@ -389,81 +333,6 @@ public class PanelPerfilUsuario extends JPanel {
 		gbc_panelScrollFotos.gridy = 5;
 		panelContenedor.add(panelScrollFotos, gbc_panelScrollFotos);
 
-		// Al desplazar la barra vertical hacia abajo, cargar nuevas fotos
-		panelScrollFotos.getVerticalScrollBar().addAdjustmentListener((AdjustmentEvent e) -> {
-			System.out.println("BARRA");
-			JScrollBar barra = (JScrollBar) e.getAdjustable();
-			int posicionCarga = (int) ((barra.getMaximum() - barra.getModel().getExtent()) * PORCENTAJE_BARRA);
-			System.out.println("Maximo: " + barra.getMaximum());
-			System.out.println("Extent: " + barra.getModel().getExtent());
-			System.out.println("Posicion carga: " + posicionCarga + " Posicion actual: " + barra.getValue());
-
-			if ((fotosRestantes > 0) && (barra.getValue() >= posicionCarga)) {
-				cargarFotos(Math.min(MINIMO_FOTOS_CARGAR, fotosRestantes));
-				System.out.println("FOTOS CARGADAS");
-			}
-
-		});
-
-		panelFotosUsuario = new JPanel();
-		panelScrollFotos.setViewportView(panelFotosUsuario);
-		gbl_panelFotosUsuario = new GridBagLayout();
-		gbl_panelFotosUsuario.columnWidths = new int[] { 0, 0, 0, 0 };
-		gbl_panelFotosUsuario.columnWeights = new double[] { 1.0, 1.0, 1.0, Double.MIN_VALUE };
-		panelFotosUsuario.setLayout(gbl_panelFotosUsuario);
-
-		cargarFotos(Math.min(MINIMO_FOTOS_CARGAR, (fotosRestantes)));
-	}
-
-	private void cargarFotos(int numeroFotos) {
-		System.out.println("cargar");
-		filasActuales = filasActuales + (int) (Math.ceil(numeroFotos / COLUMNAS));
-		gbl_panelFotosUsuario.rowHeights = new int[filasActuales + 1];
-
-		double pesosFilas[] = new double[filasActuales + 1];
-		pesosFilas[filasActuales] = Double.MIN_VALUE;
-		gbl_panelFotosUsuario.rowWeights = pesosFilas;
-
-		System.out.println("Ancho actual: " + anchoPanelActual);
-		int anchoFoto = anchoFotoActual = ANCHO_FOTO_INICIAL;
-
-		for (int i = 0; i < numeroFotos; i++) {
-			Image imagen = new ImageIcon(rutasFotos.get(fotosCargadas++)).getImage();
-			JLabel label = new JLabel(new ImageIcon(imagen.getScaledInstance(anchoFoto, anchoFoto, Image.SCALE_FAST)));
-
-			label.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					// TODO Auto-generated method stub
-					super.mouseEntered(e);
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
-					// TODO Auto-generated method stub
-					super.mouseExited(e);
-				}
-			});
-
-			etiquetasImagenes.put(label, imagen);
-			GridBagConstraints gbc = new GridBagConstraints();
-			gbc.gridx = col;
-			gbc.gridy = row;
-			gbc.fill = GridBagConstraints.NONE;
-			gbc.anchor = GridBagConstraints.NORTH;
-			gbc.insets = new Insets(0, 0, 5, 5);
-			panelFotosUsuario.add(label, gbc);
-			col = (col + 1) % 3;
-			if (col == 0)
-				row++;
-		}
-
-		fotosRestantes -= numeroFotos;
-		// frame.revalidate();
-		anchoPanelActual = panelScrollFotos.getSize().getWidth();
-		System.out.println("Panel Ventana: " + panelScrollFotos.getSize());
-		System.out.println("Panel Fotos: " + panelFotosUsuario.getSize());
-		System.out.println("FIN");
 	}
 
 }
