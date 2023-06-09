@@ -9,10 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import umu.tds.controlador.Controlador;
+import umu.tds.modelo.pojos.Descuento;
+import umu.tds.modelo.pojos.DescuentoEdad;
+import umu.tds.modelo.pojos.DescuentoLikes;
 import umu.tds.modelo.pojos.Usuario;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -25,11 +29,17 @@ import java.awt.Insets;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.JButton;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * @title Ventana de Premium
@@ -38,13 +48,16 @@ import java.awt.event.MouseEvent;
 public class VentanaPremium {
 	private static VentanaPremium instancia = null;
 	private JFrame frame;
+	private JLabel precioLabel;
 	
 	private Usuario usuario;
 	private List<ActionListener> listeners;
+	private List<Descuento> descuentos;
 	
 	private CardLayout c;
 	
 	private BufferedImage premiumicon, nopremiumicon, yapremium, haztepremium;
+	private float precioBase = 10.0f, precio = precioBase;
 
 	/* Listener para la ventana principal */
 	public void addActionListener(ActionListener a) {
@@ -64,12 +77,15 @@ public class VentanaPremium {
 			nopremiumicon = ImageIO.read(getClass().getResource("/imagenes/dock/nopremium.png"));
 			yapremium = ImageIO.read(getClass().getResource("/imagenes/yapremium.png"));
 			haztepremium = ImageIO.read(getClass().getResource("/imagenes/haztepremium.png"));
-		} catch (IOException ioe) { System.err.println("ERR cargando recursos"); }
+		} catch (IOException ioe) { System.err.println("ERR cargando recursos"); System.exit(-1); }
 	}
 	
 	/* Constructor de la instancia */
 	private VentanaPremium() {
 		usuario = Controlador.getControlador().getUsuarioLogueado();
+		Controlador.getControlador().addDescuento(new DescuentoLikes());
+		Controlador.getControlador().addDescuento(new DescuentoEdad());
+		descuentos = Controlador.getControlador().getDescuentos();
 		cargarRecursos();
 		dibujar();
 		if(usuario.getPremium()) c.show(frame.getContentPane(), "siPremium");
@@ -81,7 +97,7 @@ public class VentanaPremium {
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setBounds(100, 100, 480, 512);
+		frame.setBounds(100, 100, 480, 540);
 		if(usuario.getPremium()) {
 			frame.setTitle("Premium");
 			frame.setIconImage(premiumicon);
@@ -99,17 +115,17 @@ public class VentanaPremium {
 		};
 		frame.getContentPane().add(noPremium, "noPremium");
 		GridBagLayout gbl_noPremium = new GridBagLayout();
-		gbl_noPremium.columnWidths = new int[]{0, 0};
+		gbl_noPremium.columnWidths = new int[]{64, 0, 64, 0};
 		gbl_noPremium.rowHeights = new int[]{220, 0, 0};
-		gbl_noPremium.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_noPremium.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_noPremium.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		noPremium.setLayout(gbl_noPremium);
 		
 		JPanel panelImagen1 = new JPanel();
 		GridBagConstraints gbc_panelImagen1 = new GridBagConstraints();
-		gbc_panelImagen1.insets = new Insets(0, 0, 5, 0);
+		gbc_panelImagen1.insets = new Insets(0, 0, 5, 5);
 		gbc_panelImagen1.fill = GridBagConstraints.BOTH;
-		gbc_panelImagen1.gridx = 0;
+		gbc_panelImagen1.gridx = 1;
 		gbc_panelImagen1.gridy = 0;
 		noPremium.add(panelImagen1, gbc_panelImagen1);
 		panelImagen1.setLayout(new BorderLayout(0, 0));
@@ -121,45 +137,77 @@ public class VentanaPremium {
 		
 		JPanel panelInfo1 = new JPanel();
 		GridBagConstraints gbc_panelInfo1 = new GridBagConstraints();
+		gbc_panelInfo1.insets = new Insets(0, 0, 0, 5);
 		gbc_panelInfo1.fill = GridBagConstraints.BOTH;
-		gbc_panelInfo1.gridx = 0;
+		gbc_panelInfo1.gridx = 1;
 		gbc_panelInfo1.gridy = 1;
 		noPremium.add(panelInfo1, gbc_panelInfo1);
 		GridBagLayout gbl_panelInfo1 = new GridBagLayout();
 		gbl_panelInfo1.columnWidths = new int[]{0, 0};
-		gbl_panelInfo1.rowHeights = new int[]{144, 64, 32, 0};
+		gbl_panelInfo1.rowHeights = new int[]{0, 144, 64, 32, 0};
 		gbl_panelInfo1.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_panelInfo1.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelInfo1.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		panelInfo1.setLayout(gbl_panelInfo1);
+		
+		JLabel labelDescuento = new JLabel("Elige un descuento:");
+		labelDescuento.setHorizontalAlignment(SwingConstants.LEFT);
+		labelDescuento.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		GridBagConstraints gbc_labelDescuento = new GridBagConstraints();
+		gbc_labelDescuento.fill = GridBagConstraints.HORIZONTAL;
+		gbc_labelDescuento.insets = new Insets(0, 0, 5, 0);
+		gbc_labelDescuento.gridx = 0;
+		gbc_labelDescuento.gridy = 0;
+		panelInfo1.add(labelDescuento, gbc_labelDescuento);
 		
 		JPanel panelListaDescuentos = new JPanel();
 		GridBagConstraints gbc_panelListaDescuentos = new GridBagConstraints();
 		gbc_panelListaDescuentos.insets = new Insets(0, 0, 5, 0);
 		gbc_panelListaDescuentos.fill = GridBagConstraints.BOTH;
 		gbc_panelListaDescuentos.gridx = 0;
-		gbc_panelListaDescuentos.gridy = 0;
+		gbc_panelListaDescuentos.gridy = 1;
 		panelInfo1.add(panelListaDescuentos, gbc_panelListaDescuentos);
+		panelListaDescuentos.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		panelListaDescuentos.add(scrollPane);
+		
+		DefaultListModel<Descuento> descuentoModel = new DefaultListModel<Descuento>();
+			descuentoModel.addAll(descuentos);
+		JList<Descuento> descuentosJList = new JList<Descuento>(descuentoModel);
+		descuentosJList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent arg0) {
+				Descuento d = descuentosJList.getSelectedValue();
+				precio = d.aplicar(precioBase);
+				precioLabel.setText(precio + " €");
+			}
+		});
+		
+		
+		
+		scrollPane.setViewportView(descuentosJList);
 		
 		JPanel panelPrecio = new JPanel();
 		GridBagConstraints gbc_panelPrecio = new GridBagConstraints();
 		gbc_panelPrecio.insets = new Insets(0, 0, 5, 0);
 		gbc_panelPrecio.fill = GridBagConstraints.BOTH;
 		gbc_panelPrecio.gridx = 0;
-		gbc_panelPrecio.gridy = 1;
+		gbc_panelPrecio.gridy = 2;
 		panelInfo1.add(panelPrecio, gbc_panelPrecio);
 		panelPrecio.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblNewLabel = new JLabel("Precio");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setForeground(new Color(255, 255, 128));
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		panelPrecio.add(lblNewLabel);
+		precioLabel = new JLabel(precio + " €");
+		precioLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		precioLabel.setForeground(new Color(255, 255, 128));
+		precioLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		panelPrecio.add(precioLabel);
 		
 		JPanel panelHacersePremium = new JPanel();
 		GridBagConstraints gbc_panelHacersePremium = new GridBagConstraints();
 		gbc_panelHacersePremium.fill = GridBagConstraints.BOTH;
 		gbc_panelHacersePremium.gridx = 0;
-		gbc_panelHacersePremium.gridy = 2;
+		gbc_panelHacersePremium.gridy = 3;
 		panelInfo1.add(panelHacersePremium, gbc_panelHacersePremium);
 		panelHacersePremium.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		

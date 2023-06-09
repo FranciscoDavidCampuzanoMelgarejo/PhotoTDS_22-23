@@ -23,6 +23,7 @@ import umu.tds.modelo.catalogos.CatalogoPublicaciones;
 import umu.tds.modelo.catalogos.CatalogoUsuarios;
 import umu.tds.modelo.pojos.Album;
 import umu.tds.modelo.pojos.Comentario;
+import umu.tds.modelo.pojos.Descuento;
 import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.PerfilUsuario;
 import umu.tds.modelo.pojos.Publicacion;
@@ -54,6 +55,9 @@ public class Controlador implements FotosListener {
 	// Lista de usuarios a los que sigo
 	List<Usuario> usuariosSeguidos;
 	
+	// Lista de descuentos
+	List<Descuento> descuentos;
+	
 	// Componente Java Bean para cargar las fotos a partir de un fichero XML
 	private CargadorFotos cargador;
 
@@ -71,6 +75,7 @@ public class Controlador implements FotosListener {
 		this.usuariosSeguidos = new LinkedList<Usuario>();
 		this.cargador = new CargadorFotos();
 		this.cargador.addFotosListener(this);
+		this.descuentos = new LinkedList<Descuento>();
 	}
 
 	private void publicar(Publicacion publicacion) {
@@ -94,6 +99,10 @@ public class Controlador implements FotosListener {
 
 	public String getUserNombre() {
 		return usuario.getNombre();
+	}
+	
+	public LocalDate getFechaNacimiento() {
+		return usuario.getFechaNacimiento();
 	}
 
 	public String getUserPresentacion() {
@@ -262,6 +271,15 @@ public class Controlador implements FotosListener {
 	public int numeroSeguidores() {
 		return usuario.numeroSeguidores();
 	}
+	
+	// Devuelve el número de likes en total de todas las fotos del usuario
+	public long numeroLikes() {
+		return catalogoPublicaciones.getAll().stream() 
+											 .filter(p -> p.getClass()==Foto.class)
+											 .filter(p -> p.getUsuario().getId()==usuario.getId())
+											 .map(p -> p.getLikes())
+											 .count();
+	}
 
 	public int numeroUsuariosSeguidos() {
 		return usuariosSeguidos.size();
@@ -283,6 +301,15 @@ public class Controlador implements FotosListener {
 											 .sorted(Comparator.comparing(Publicacion::getFecha))
 											 .limit(20)
 											 .collect(Collectors.toList());
+	}
+	
+	// PREMIUM: el controlador almacena los descuentos que hay hasta ahora implementados
+	public void addDescuento(Descuento d) {
+		descuentos.add(d);
+	}
+	
+	public List<Descuento> getDescuentos(){
+		return descuentos;
 	}
 	
 	// PREMIUM: activa o desactiva el status de premium del usuario

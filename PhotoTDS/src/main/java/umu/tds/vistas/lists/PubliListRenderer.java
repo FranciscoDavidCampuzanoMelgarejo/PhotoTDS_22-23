@@ -47,12 +47,14 @@ public class PubliListRenderer extends JPanel implements ListCellRenderer<Public
 			userpic = (ruta==null) ? ImageIO.read(getClass().getResource("/imagenes/noprofilepic.png")) : ImageIO.read(new File(ruta));
 		} catch (IOException ioe) { System.err.println("ERR cargando publicación '" + publi.toString() + "'"); }
 	}
-	
+		
 	/* Constructor del panel */
 	public PubliListRenderer() {
-		//cargarRecursos();
 		setOpaque(false);
-
+	}
+	
+	/* Dibujado del panel */
+	private void dibujar() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{256, 0, 0};
 		gridBagLayout.rowHeights = new int[]{192, 0};
@@ -84,7 +86,7 @@ public class PubliListRenderer extends JPanel implements ListCellRenderer<Public
 		gbl_infoPubli.rowHeights = new int[]{0, 0, 0};
 		gbl_infoPubli.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_infoPubli.rowWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		infoPubli.setLayout(gbl_infoPubli);
+		infoPubli.setLayout(gbl_infoPubli); 
 		
 		JPanel panelUsuario = new JPanel();
 		GridBagConstraints gbc_panelUsuario = new GridBagConstraints();
@@ -109,17 +111,17 @@ public class PubliListRenderer extends JPanel implements ListCellRenderer<Public
 		gbc_likesComents.gridx = 0;
 		gbc_likesComents.gridy = 1;
 		infoPubli.add(likesComents, gbc_likesComents);
-	}
-	@Override
-	public Component getListCellRendererComponent(JList<? extends Publicacion> list, Publicacion publi, int index, boolean isSelected, boolean cellHasFocus) {
-		this.publi = publi;
-		cargarRecursos();
+		
 		publiIcon.setIcon(new ImageIcon(img.getScaledInstance(PUBLISIZE, PUBLISIZE, Image.SCALE_FAST)));
 		usuarioPic.setIcon(new ImageIcon(userpic.getScaledInstance(32, 32, Image.SCALE_FAST)));
 		usuarioName.setText(foto.getUsuario().getUsuario());
-		//publiIcon.setIcon(new ImageIcon(img));
+	}
+	
+	@Override
+	public Component getListCellRendererComponent(JList<? extends Publicacion> list, Publicacion publi, int index, boolean isSelected, boolean cellHasFocus) {
+		PubliListRenderer cell = new PubliListRenderer();
 		
-		return this;
+		return cell;
 	}
 	
 }

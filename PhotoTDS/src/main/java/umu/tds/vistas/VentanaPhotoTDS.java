@@ -13,6 +13,7 @@ import java.awt.Image;
 import javax.swing.JPanel;
 
 import umu.tds.controlador.Controlador;
+import umu.tds.modelo.pojos.Descuento;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
 import umu.tds.vistas.lists.PubliListRenderer;
@@ -30,6 +31,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ScrollPaneConstants;
+import java.awt.Insets;
 
 
 /**@title Ventana principal de PhotoTDS
@@ -70,6 +72,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	}
 	
 	private void recargarRecientes() {
+		publiListModel.clear();
 		publiListModel.addAll(Controlador.getControlador().getUltimasPublicaciones());
 		publiJList.revalidate();
 	}
@@ -83,6 +86,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	}
 	
 	public VentanaPhotoTDS(int winX, int winY) {
+		Controlador.getControlador().setPremium(false);
 		cargarRecursos();
 		
 		subiendoFoto = false;
@@ -93,9 +97,9 @@ public class VentanaPhotoTDS implements ActionListener{
 			publiListModel.addAll(publiList);
 		
 		layout1 = new GridBagLayout();
-			layout1.columnWidths = new int[]{64, 0, 776, 0, 0};
+			layout1.columnWidths = new int[]{64, 776, 0};
 			layout1.rowHeights = new int[]{0, 0};
-			layout1.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+			layout1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 			layout1.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 			
 		layout2 = new GridBagLayout();
@@ -141,6 +145,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			{ setOpaque(false); } 
 		};
 		GridBagConstraints gbc_panelDock = new GridBagConstraints();
+		gbc_panelDock.insets = new Insets(0, 0, 0, 5);
 		gbc_panelDock.fill = GridBagConstraints.BOTH;
 		gbc_panelDock.gridx = 0;
 		gbc_panelDock.gridy = 0;
@@ -154,7 +159,7 @@ public class VentanaPhotoTDS implements ActionListener{
 		};
 		GridBagConstraints gbc_apprender = new GridBagConstraints();
 		gbc_apprender.fill = GridBagConstraints.BOTH;
-		gbc_apprender.gridx = 2;
+		gbc_apprender.gridx = 1;
 		gbc_apprender.gridy = 0;
 		phototdsrender.add(apprender, gbc_apprender);
 		apprender.setLayout(new CardLayout(0, 0));
