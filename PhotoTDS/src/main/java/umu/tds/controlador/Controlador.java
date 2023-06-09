@@ -73,6 +73,7 @@ public class Controlador implements FotosListener {
 		this.comentarioDAO = factoria.getComentarioDAO();
 
 		this.usuario = null;
+		this.usuariosSeguidos = new LinkedList<Usuario>();
 		this.cargador = new CargadorFotos();
 		this.cargador.addFotosListener(this);
 		this.descuentos = new LinkedList<Descuento>();

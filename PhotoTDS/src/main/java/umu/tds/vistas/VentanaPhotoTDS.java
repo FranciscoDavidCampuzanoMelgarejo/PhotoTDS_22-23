@@ -17,35 +17,13 @@ import umu.tds.modelo.pojos.Descuento;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
 import umu.tds.vistas.lists.PubliListRenderer;
+//import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 import umu.tds.vistas.perfil.PanelPerfilUsuario;
 
 import java.awt.GridBagConstraints;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
-
-import javax.swing.JLabel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.util.LinkedList;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import javax.swing.border.EtchedBorder;
-
-import umu.tds.controlador.Controlador;
-import umu.tds.vistas.perfil.PanelPerfilUsuario;
-
-import java.awt.Insets;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -56,16 +34,12 @@ import javax.swing.ListModel;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Insets;
 
-/**
- * @title Ventana principal de PhotoTDS
+
+/**@title Ventana principal de PhotoTDS
  * @author Francisco & Diego
- */
+ * */
 
-public class VentanaPhotoTDS {
-
-	public static final String PANEL_INICIO = "Panel Inicio";
-	public static final String PANEL_USUARIO = "Panel Usuario";
-	public static final String PANEL_BUSQUEDA = "Panel Busqueda";
+public class VentanaPhotoTDS implements ActionListener{
 
 	private JFrame frame;
 	private JPanel phototdsrender;
@@ -73,11 +47,12 @@ public class VentanaPhotoTDS {
 	private PhotoTDSDock dock;
 	private CardLayout c;
 	private GridBagLayout layout1, layout2;
-
+	
 	private Image fondo, winIcon;
 	private VentanaSubirFoto subirFoto;
 	private boolean subiendoFoto;
-
+	
+	private PanelPerfilUsuario panelUsuario;
 	private boolean viendoperfil;
 	
 	private VentanaAbout about;
@@ -94,7 +69,7 @@ public class VentanaPhotoTDS {
 		try {
 			fondo = ImageIO.read(VentanaPhotoTDS.class.getResource("/imagenes/fondos/bg.png")).getScaledInstance(1920, 1080, Image.SCALE_SMOOTH);
 			winIcon = ImageIO.read(VentanaPhotoTDS.class.getResource("/imagenes/dock/logo1.png"));
-		} catch (Exception e1) { System.err.println("Algo"); }
+		} catch (Exception e1) { e1.printStackTrace(); }
 	}
 	
 	private void recargarRecientes() {
@@ -106,15 +81,15 @@ public class VentanaPhotoTDS {
 	public void mostrar() {
 		frame.setVisible(true);
 	}
-
+	 
 	public void destruir() {
 		frame.dispose();
 	}
-
+	
 	public VentanaPhotoTDS(int winX, int winY) {
 		Controlador.getControlador().setPremium(false);
 		cargarRecursos();
-
+		
 		subiendoFoto = false;
 		viendoperfil = false;
 		publiList = (ArrayList<Publicacion>) Controlador.getControlador().getUltimasFotos();
@@ -128,17 +103,12 @@ public class VentanaPhotoTDS {
 			layout1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 			layout1.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 			
-		layout1.columnWidths = new int[] { 64, 0, 776, 0, 0 };
-		layout1.rowHeights = new int[] { 0, 0 };
-		layout1.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
-		layout1.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
-
 		layout2 = new GridBagLayout();
-		layout2.columnWidths = new int[] { 200, 0, 640, 0, 0 };
-		layout2.rowHeights = new int[] { 0, 0 };
-		layout2.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
-		layout2.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
-
+			layout2.columnWidths = new int[]{200, 0, 640, 0, 0};
+			layout2.rowHeights = new int[]{0, 0};
+			layout2.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
+			layout2.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+			
 		dibujar(winX, winY);
 		dock.recargarImagenUsuario();
 		dock.recargarPremium();
@@ -151,13 +121,10 @@ public class VentanaPhotoTDS {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("PhotoTDS");
 		frame.setIconImage(winIcon);
-
+		
 		phototdsrender = new JPanel() {
 			private static final long serialVersionUID = 1L;
-			{
-				setOpaque(false);
-			}
-
+			{setOpaque(false);} 
 			@Override
 			public void paintComponent(Graphics g) {
 				float ww = frame.getWidth(), wh = frame.getHeight(), iw = fondo.getWidth(null), ih = fondo.getHeight(null);
@@ -167,32 +134,28 @@ public class VentanaPhotoTDS {
 						g.drawImage(fondo, x*(int)iw, y*(int)ih, null);
 			}
 		};
-
+		
 		frame.setContentPane(phototdsrender);
 		phototdsrender.setLayout(layout1);
-
+		
 		dock = new PhotoTDSDock();
-
+			dock.addActionListener(this);
+		
 		JPanel panelDock = new JPanel() {
 			private static final long serialVersionUID = 1L;
-			{
-				setOpaque(false);
-			}
+			{ setOpaque(false); } 
 		};
 		GridBagConstraints gbc_panelDock = new GridBagConstraints();
-		gbc_panelDock.insets = new Insets(0, 0, 0, 5);
 		gbc_panelDock.fill = GridBagConstraints.BOTH;
 		gbc_panelDock.gridx = 0;
 		gbc_panelDock.gridy = 0;
 		phototdsrender.add(panelDock, gbc_panelDock);
 		panelDock.setLayout(new BorderLayout(0, 0));
 		panelDock.add(dock);
-
-		apprender = new JPanel() {
+		
+		apprender = new JPanel() { 
 			private static final long serialVersionUID = 1L;
-			{
-				setOpaque(false);
-			}
+			{setOpaque(false);} 
 		};
 		GridBagConstraints gbc_apprender = new GridBagConstraints();
 		gbc_apprender.fill = GridBagConstraints.BOTH;
@@ -220,16 +183,58 @@ public class VentanaPhotoTDS {
 			};
 			publiJList.setCellRenderer(new PubliListRenderer());
 			panelPubliList.add(publiJList, BorderLayout.CENTER);
-
-		JPanel panelInicio = new JPanel();
-		panelInicio.setBackground(Color.RED);
-		apprender.add(panelInicio, "panelInicio");
-		panelInicio.setLayout(new BorderLayout(0, 0));
-
-		JPanel panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
-		apprender.add(panelUsuario, PANEL_USUARIO);
-
-		JPanel panelBusqueda = new JPanel();
-		apprender.add(panelBusqueda, PANEL_BUSQUEDA);
+			
+			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
+			apprender.add(panelUsuario, "panelUsuario");
 	}
+
+	/* La ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String comando = e.getActionCommand();
+		
+		switch(comando) {
+			case "home" :					// Publicaciones recientes
+				recargarRecientes();
+				c.show(apprender, "panelInicio");
+				System.out.println(Controlador.getControlador().getUltimasPublicaciones());
+				break; 
+			case "finder" : 				// Búsqueda de publicaciones por usuaro y etiqueta
+				c.show(apprender, "panelBusqueda"); 
+				break; 
+			case "publi" : {				// Subir nueva publicación
+				VentanaSubirFoto.getInstancia().mostrar();	
+				break;
+			}
+			case "user" : {					// Perfil de usuario
+				c.show(apprender, "panelUsuario");
+				break;
+			}
+			case "cambioFotoPerfil" : {		// Notificación para actualizar perfil en el dock
+				dock.recargarImagenUsuario();
+				break;
+			}
+			case "about" :					// Ventana "Acerca de"
+				about = VentanaAbout.getInstancia();
+				about.mostrar();
+				break;
+			case "premium":					// Mostrar ventana de premium
+				premium = VentanaPremium.getInstancia();
+				premium.mostrar();
+				premium.addActionListener(this);
+				break;
+			case "cambioPremium" :			// Notifiación para actualizar premium en el dock
+				Controlador.getControlador().setPremium(true);
+				dock.recargarPremium();
+				break;
+			case "cambioNoPremium" :
+				Controlador.getControlador().setPremium(false);
+				dock.recargarPremium();
+				break;
+		}
+		
+	}
+
+
+
 }
