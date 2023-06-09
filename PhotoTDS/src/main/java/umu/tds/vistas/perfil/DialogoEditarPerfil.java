@@ -16,6 +16,8 @@ import javax.swing.ScrollPaneConstants;
 import java.awt.GridBagLayout;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -23,6 +25,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 
@@ -32,20 +35,20 @@ public class DialogoEditarPerfil extends JDialog {
 	private static final String PANEL_PERFIL = "Panel Perfil";
 	private static final String PANEL_PASSWORD = "Panel Password";
 
-	private JFrame framePadre;
+	private int altura;
 
 	// Representa el ContentPane del Frame padre
-	// private Container contenedor;
+	private Component componente;
 
 	private PanelPerfil panelPerfil;
 	private PanelPassword panelPassword;
 	private JPanel panelContenido;
 	private CardLayout cardLayout;
 
-	public DialogoEditarPerfil(JFrame frame, BufferedImage imagenPerfil, String rutaImagenPerfil) {
-		this.framePadre = frame;
-		this.panelPerfil = new PanelPerfil(this, new ImageIcon(imagenPerfil), rutaImagenPerfil,
-				Controlador.getControlador().getUserPresentacion());
+	public DialogoEditarPerfil(int altura, Component componente, Icon fotoPerfil, String rutaFotoPerfil) {
+		this.altura = altura - 40;
+		this.componente = componente;
+		this.panelPerfil = new PanelPerfil(this, fotoPerfil, rutaFotoPerfil);
 
 		// Viola el patron experto
 		this.panelPassword = new PanelPassword(this, Controlador.getControlador().getUsuarioLogueado().getPassword());
@@ -65,10 +68,8 @@ public class DialogoEditarPerfil extends JDialog {
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-		int alturaDialogo = framePadre.getContentPane().getSize().height - 40; // 20 pixeles por arriba y 20 pixeles por
-																				// abajo
-		setSize(new Dimension(ANCHO_DIALOGO, alturaDialogo));
-		setLocationRelativeTo(framePadre.getContentPane());
+		setSize(new Dimension(ANCHO_DIALOGO, altura));
+		setLocationRelativeTo(componente);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);

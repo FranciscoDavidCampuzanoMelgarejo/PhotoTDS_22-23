@@ -120,6 +120,9 @@ public class PubliListRenderer extends JPanel implements ListCellRenderer<Public
 	@Override
 	public Component getListCellRendererComponent(JList<? extends Publicacion> list, Publicacion publi, int index, boolean isSelected, boolean cellHasFocus) {
 		PubliListRenderer cell = new PubliListRenderer();
+		cell.publi = publi;
+		cell.cargarRecursos();
+		cell.dibujar();
 		
 		return cell;
 	}

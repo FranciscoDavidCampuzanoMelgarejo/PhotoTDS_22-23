@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import java.util.EventObject;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -72,7 +73,6 @@ public class Controlador implements FotosListener {
 		this.comentarioDAO = factoria.getComentarioDAO();
 
 		this.usuario = null;
-		this.usuariosSeguidos = new LinkedList<Usuario>();
 		this.cargador = new CargadorFotos();
 		this.cargador.addFotosListener(this);
 		this.descuentos = new LinkedList<Descuento>();
@@ -159,7 +159,7 @@ public class Controlador implements FotosListener {
 		}
 
 	}
-	
+
 	public void cargarFotos(String ruta) {
 		this.cargador.setFicheroFotos(ruta);
 	}
@@ -197,13 +197,6 @@ public class Controlador implements FotosListener {
 			// Necesito obtener el usuario de la base de datos para que este persistido
 			// this.usuario = usuarioDAO.findBy(usuarioLogueado.getId());
 			this.usuario = usuarioLogueado;
-
-			// Obtener los usuarios a los que sigue el usuario logueado
-			for (Usuario u : catalogoUsuarios.getAll()) {
-				if (u.isSeguido(usuarioLogueado)) {
-					usuariosSeguidos.add(u);
-				}
-			}
 			return true;
 		}
 		return false;
@@ -214,19 +207,18 @@ public class Controlador implements FotosListener {
 
 		usuarioDAO.update(usuario);
 	}
-	
+
 	public void cambiarPassword(String nuevaPassword) {
 		usuario.setPassword(nuevaPassword);
 		usuarioDAO.update(usuario);
 	}
-	
+
 	public void seguir(String nombreUsuario) {
 
 		// Obtener el usuario al que se quiere seguir
 		Usuario usuarioSeguido = catalogoUsuarios.get(nombreUsuario);
 
 		// Nos añadimos a la lista de seguidores del usuario seguido
-		usuariosSeguidos.add(usuarioSeguido);
 		usuarioSeguido.addSeguidor(this.usuario);
 		usuarioDAO.update(usuarioSeguido);
 	}
@@ -237,7 +229,6 @@ public class Controlador implements FotosListener {
 		Usuario usuarioSeguido = catalogoUsuarios.get(nombreUsuario);
 
 		// Nos elmininamos de la lista de seguidores del usuario seguido
-		usuariosSeguidos.remove(usuarioSeguido);
 		usuarioSeguido.removeSeguidor(this.usuario);
 		usuarioDAO.update(usuarioSeguido);
 	}
@@ -268,6 +259,21 @@ public class Controlador implements FotosListener {
 		publicacionDAO.update(publicacion);
 	}
 
+	// Metodo que devuelve una lista de los Usuarios seguidos por el Usuario usuario
+	public Set<Usuario> getUsuariosSeguidos(Usuario usuario) {
+		return catalogoUsuarios.getAll().stream()
+				.filter((Usuario u) -> u.isSeguido(usuario))
+				.collect(Collectors.toSet());
+	}
+	
+	// Metodo que devuelve el numero de Usuarios seguidos por el Usuario usuario
+	public int getNumeroUsuariosSeguidos(Usuario usuario) {
+		return (int) catalogoUsuarios.getAll().stream()
+				.filter((Usuario u) -> u.isSeguido(usuario))
+				.count();
+	}
+
+
 	public int numeroSeguidores() {
 		return usuario.numeroSeguidores();
 	}
@@ -281,9 +287,6 @@ public class Controlador implements FotosListener {
 											 .count();
 	}
 
-	public int numeroUsuariosSeguidos() {
-		return usuariosSeguidos.size();
-	}
 
 	// Devuelve las últimas 20 publicaciones de usuarios que seguimos, desde la fecha actual
 	public List<Publicacion> getUltimasPublicaciones(){
