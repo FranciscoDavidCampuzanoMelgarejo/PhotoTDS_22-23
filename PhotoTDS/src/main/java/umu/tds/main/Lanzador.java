@@ -15,6 +15,7 @@ import umu.tds.vistas.*;
 
 public class Lanzador {
 	
+	
 	public static void main(final String[] args) {	
 		EventQueue.invokeLater(new Runnable() {	
 			@Override
