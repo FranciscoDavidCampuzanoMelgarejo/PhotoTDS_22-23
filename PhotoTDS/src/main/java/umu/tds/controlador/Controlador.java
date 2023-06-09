@@ -3,12 +3,15 @@ package umu.tds.controlador;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+
 import java.util.EventObject;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -21,6 +24,7 @@ import umu.tds.modelo.catalogos.CatalogoPublicaciones;
 import umu.tds.modelo.catalogos.CatalogoUsuarios;
 import umu.tds.modelo.pojos.Album;
 import umu.tds.modelo.pojos.Comentario;
+import umu.tds.modelo.pojos.Descuento;
 import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.PerfilUsuario;
 import umu.tds.modelo.pojos.Publicacion;
@@ -49,6 +53,12 @@ public class Controlador implements FotosListener {
 	// Usuario logueado
 	private Usuario usuario;
 
+	// Lista de usuarios a los que sigo
+	List<Usuario> usuariosSeguidos;
+	
+	// Lista de descuentos
+	List<Descuento> descuentos;
+	
 	// Componente Java Bean para cargar las fotos a partir de un fichero XML
 	private CargadorFotos cargador;
 
@@ -63,8 +73,10 @@ public class Controlador implements FotosListener {
 		this.comentarioDAO = factoria.getComentarioDAO();
 
 		this.usuario = null;
+		this.usuariosSeguidos = new LinkedList<Usuario>();
 		this.cargador = new CargadorFotos();
 		this.cargador.addFotosListener(this);
+		this.descuentos = new LinkedList<Descuento>();
 	}
 
 	private void publicar(Publicacion publicacion) {
@@ -89,6 +101,10 @@ public class Controlador implements FotosListener {
 	public String getUserNombre() {
 		return usuario.getNombre();
 	}
+	
+	public LocalDate getFechaNacimiento() {
+		return usuario.getFechaNacimiento();
+	}
 
 	public String getUserPresentacion() {
 		return usuario.getPerfil().getPresentacion();
@@ -97,6 +113,16 @@ public class Controlador implements FotosListener {
 	public String getUserPicture() {
 		System.out.println(usuario.getPerfil());
 		return usuario.getPerfil().getFoto();
+	}
+	
+	/* Devuelve la ruta de la foto de perfil de un usuario */
+	public String getUserPicture(String username) {
+		Usuario u = catalogoUsuarios.get(username);
+		return (u==null) ? null : u.getPerfil().getFoto();
+	}
+	
+	public boolean isPremium() {
+		return usuario.getPremium();
 	}
 
 	@Override
@@ -252,8 +278,70 @@ public class Controlador implements FotosListener {
 	public int numeroSeguidores() {
 		return usuario.numeroSeguidores();
 	}
+	
+	// Devuelve el número de likes en total de todas las fotos del usuario
+	public long numeroLikes() {
+		return catalogoPublicaciones.getAll().stream() 
+											 .filter(p -> p.getClass()==Foto.class)
+											 .filter(p -> p.getUsuario().getId()==usuario.getId())
+											 .map(p -> p.getLikes())
+											 .count();
+	}
 
 
+	// Devuelve las últimas 20 publicaciones de usuarios que seguimos, desde la fecha actual
+	public List<Publicacion> getUltimasPublicaciones(){
+		return catalogoPublicaciones.getAll().stream()
+											 .sorted(Comparator.comparing(Publicacion::getFecha))
+											 .limit(20)
+											 .collect(Collectors.toList());
+	}
+	
+	// Devuelve las últimas 20 fotos de todos los usuarios que seguimos y nosotros mismos
+	public List<Publicacion> getUltimasFotos(){
+		return catalogoPublicaciones.getAll().stream()
+											 .filter(publi -> publi.getClass()==Foto.class)
+											 .filter(publi -> usuariosSeguidos.contains(publi.getUsuario()) || publi.getUsuario().getId()==usuario.getId())
+											 .sorted(Comparator.comparing(Publicacion::getFecha))
+											 .limit(20)
+											 .collect(Collectors.toList());
+	}
+	
+	// PREMIUM: el controlador almacena los descuentos que hay hasta ahora implementados
+	public void addDescuento(Descuento d) {
+		descuentos.add(d);
+	}
+	
+	public List<Descuento> getDescuentos(){
+		return descuentos;
+	}
+	
+	// PREMIUM: activa o desactiva el status de premium del usuario
+	public void setPremium(boolean value) {
+		usuario.setPremium(value);
+		usuarioDAO.update(usuario);
+	}
+	
+	// PREMIUM: devuelve las 10 fotos con más me gusta del usuario actual
+	public List<Publicacion> getMasMeGusta(){
+		return catalogoPublicaciones.getAll().stream()
+											 .filter(publi -> publi.getUsuario().getId()==usuario.getId())
+											 .filter(publi -> publi.getClass()==Foto.class)
+										     .sorted(Comparator.comparing(Publicacion::getLikes))
+										     .limit(10)
+										     .collect(Collectors.toList());
+	}
+	
+	// PREMIUM: genera un fichero EXCEL con la lista de seguidores (nombre, email, presentacion)
+	public void generarExcelSeguidores() {
+		
+	}
+	
+	// PREMIM: genera un fichero PDF con la lista de seguidores (nombre, email, presentacion)
+	public void generarPdfSeguidores() {
+		
+	}
+	
 	// Getters y Setters
 	public Usuario getUsuarioLogueado() {
 		return this.usuario;

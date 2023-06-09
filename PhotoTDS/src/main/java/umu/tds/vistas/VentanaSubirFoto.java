@@ -44,11 +44,13 @@ import java.util.regex.*;
 import javax.swing.JTextField;
 
 public class VentanaSubirFoto {
-
+	
+	private static VentanaSubirFoto instancia = null;
+	
 	private JFrame frame;
 	private CardLayout c1;				// Cardlayout de toda la ventana
 	private CardLayout c2;				// Cardlayout del panel de selección de foto
-	private Image fotoPubli;
+	private Image fotoPubli;			// Imagen tal cual el archivo
 	private File filePubli;
 	
 	JLabel labelTitulo;
@@ -66,9 +68,20 @@ public class VentanaSubirFoto {
 	private List<ActionListener> listeners;
 
 	/* Constructor */
-	public VentanaSubirFoto() {
+	private VentanaSubirFoto() {
 		cargarRecursos();
 		initialize();
+	}
+	
+	/* En este caso, queremos que solo haya una instancia pero que cada vez que se pida se cree una nueva */
+	private void destruir() {
+		frame.dispose();
+		instancia = null;
+	}
+	
+	public static VentanaSubirFoto getInstancia() {
+		if(instancia==null) instancia = new VentanaSubirFoto();
+		return instancia;
 	}
 	
 	public void addActionListener(ActionListener a) {
@@ -91,10 +104,6 @@ public class VentanaSubirFoto {
 		frame.setVisible(false);
 	}
 	
-	/* Destruye la ventana */
-	public void destruir() {
-		frame.dispose();
-	}
 	
 	/* Cargar recursos de la ventana */
 	public void cargarRecursos() {
@@ -115,15 +124,9 @@ public class VentanaSubirFoto {
 	/* Dibujado de ventana */
 	private void initialize() {
 		frame = new JFrame();
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent w) {
-				notificacionSubirFoto(new ActionEvent(this, 5, "subirFotoCerrando"));
-			}
-		});
 		frame.setTitle("Nueva publicación");
 		frame.setResizable(false);
-		frame.setBounds(100, 100, 512, 480);
+		frame.setBounds(100, 100, 512, 512);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
@@ -152,7 +155,7 @@ public class VentanaSubirFoto {
 		
 		JButton botonFilechooser = new JButton("Elegir foto");
 		
-		botonFilechooser.setBackground(new Color(24, 84, 215));
+		botonFilechooser.setBackground(new Color(0xb2, 0x00, 0x9c));
 		botonFilechooser.setFont(new Font("Tahoma", Font.ITALIC, 17));
 		GridBagConstraints gbc_botonFilechooser = new GridBagConstraints();
 		gbc_botonFilechooser.insets = new Insets(0, 0, 5, 0);
@@ -189,7 +192,10 @@ public class VentanaSubirFoto {
 					List<File> archivos = (List<File>) devent.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 					filePubli = archivos.get(0);
 					fotoPubli = ImageIO.read(archivos.get(0));
-					fotoElegida.setIcon(new ImageIcon(fotoPubli));
+					
+					float iw = fotoPubli.getWidth(null), ih = fotoPubli.getHeight(null), s = 1.0f;
+					s = (iw>ih) ? (384/iw) : (384/ih);
+					fotoElegida.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH)));
 					c2.show(paneldndfoto, "fotoElegida");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -208,7 +214,9 @@ public class VentanaSubirFoto {
 				} catch (Exception e1) { e1.printStackTrace(); }
 				 
 				if(fotoPubli!=null) { 
-					fotoElegida.setIcon(new ImageIcon(fotoPubli));
+					float iw = fotoPubli.getWidth(null), ih = fotoPubli.getHeight(null), s = 1.0f;
+					s = (iw>ih) ? (384/iw) : (384/ih);
+					fotoElegida.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH)));
 					c2.show(paneldndfoto, "fotoElegida");
 				}
 				
@@ -227,7 +235,9 @@ public class VentanaSubirFoto {
 					filePubli = archivos.get(0);
 					fotoPubli = ImageIO.read(filePubli);
 					
-					if(fotoPubli!=null) fotoElegida.setIcon(new ImageIcon(fotoPubli));
+					float iw = fotoPubli.getWidth(null), ih = fotoPubli.getHeight(null), s = 1.0f;
+					s = (iw>ih) ? (384/iw) : (384/ih);
+					if(fotoPubli!=null) fotoElegida.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -248,8 +258,9 @@ public class VentanaSubirFoto {
 		botonContinuar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				frame.setBounds(frame.getX(), frame.getY(), frame.getWidth(), 720);
+				frame.setBounds(frame.getX(), frame.getY(), frame.getWidth(), 768);
 				
+				/*
 				float nw = fotoPubli.getWidth(null), nh = fotoPubli.getHeight(null);
 				
 				if(fotoPubli.getWidth(null)>=480) nw = (float) (fotoPubli.getWidth(null) * 0.5);
@@ -257,10 +268,19 @@ public class VentanaSubirFoto {
 				
 				vistaPreviaLabel.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)nw, (int)nh, Image.SCALE_SMOOTH)));
 				c1.show(frame.getContentPane(), "panelNuevaPublicacion");
+				*/
+				
+				// Escalamos hasta que la dimensión coincida con el tamaño de la imagen de preview
+				float iw = fotoPubli.getWidth(null), ih = fotoPubli.getHeight(null), s = 1.0f;
+				s = (iw>ih) ? (512/iw) : (512/ih);
+				
+				vistaPreviaLabel.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH)));
+				
+				c1.show(frame.getContentPane(), "panelNuevaPublicacion");
 			}
 		});
 		botonContinuar.setFont(new Font("Tahoma", Font.ITALIC, 10));
-		botonContinuar.setBackground(new Color(24, 84, 215));
+		botonContinuar.setBackground(new Color(0xb2, 0x00, 0x9c));
 		panelBotonContinuar.add(botonContinuar);
 		
 					
@@ -281,19 +301,22 @@ public class VentanaSubirFoto {
 					if(textoDescripcion.getText().isEmpty()) { labelDescripcion.setText("Descripcion - campo obligatorio"); labelDescripcion.setForeground(Color.red); }
 				} else {																		// Hacemos la publicación
 					Controlador.getControlador().publicarFoto(filePubli.getAbsolutePath(), textoTitulo.getText(), textoDescripcion.getText(), textoComentario.getText(), null);
-					notificacionSubirFoto(new ActionEvent(this, 4, "fotoSubida"));
+					//notificacionSubirFoto(new ActionEvent(this, 4, "fotoSubida"));
+					destruir();
 				}
 			}
 		});
-		botonPublicacion.setBackground(new Color(24, 84, 215));
+		botonPublicacion.setBackground(new Color(0xb2, 0x00, 0x9c));
 		botonPublicacion.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 		panelBotonPublicar.add(botonPublicacion);
 		
+		
+		// PANEL PUBLICACION
 		JPanel panelPublicacion = new JPanel();
 		panelNuevaPublicacion.add(panelPublicacion, BorderLayout.CENTER);
 		GridBagLayout gbl_panelPublicacion = new GridBagLayout();
 		gbl_panelPublicacion.columnWidths = new int[]{0, 0};
-		gbl_panelPublicacion.rowHeights = new int[]{256, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panelPublicacion.rowHeights = new int[]{512, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelPublicacion.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_panelPublicacion.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
 		panelPublicacion.setLayout(gbl_panelPublicacion);

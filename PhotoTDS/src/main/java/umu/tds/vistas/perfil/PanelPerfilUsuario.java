@@ -93,7 +93,7 @@ public class PanelPerfilUsuario extends JPanel {
 
 		System.out.println(rutaFotoPerfil);
 		this.fotoPerfil = rutaFotoPerfil == null
-				? new ImageIcon(getClass().getResource("/imagenes/noPerfilPicture.jpg"))
+				? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png"))
 				: new ImageIcon(rutaFotoPerfil);
 
 		this.filasActuales = 0;

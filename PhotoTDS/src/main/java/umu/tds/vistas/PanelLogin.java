@@ -9,36 +9,54 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.URL;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import umu.tds.controlador.Controlador;
+import javax.swing.SwingConstants;
 
+/***
+ * @title Panel de login
+ * @author diego
+ *
+ */
 public class PanelLogin extends JPanel {
-
+	private static final long serialVersionUID = 1L;
+	
+	private Image intro;
 	private JLabel lblErrorUsuario;
 	private JTextField campoUsuario;
-
 	private JLabel lblErrorPassword;
 	private JPasswordField campoPassword;
-	
 	private JFrame frmLoginRegistro;
 
-
+	private void cargarRecursos() {
+		URL p = this.getClass().getResource("/imagenes/intro.png");
+		try {
+			intro = ImageIO.read(p);
+			float s = intro.getWidth(null) * (150.0f / intro.getWidth(null));
+			intro = intro.getScaledInstance((int)s, (int)s, Image.SCALE_SMOOTH);
+			
+		} catch (Exception ioe) { System.err.println("PHOTOTDS !> Error cargando '" + p.toString() + "'"); }
+	}
+	
 	public PanelLogin(JFrame frame) {
 		this.frmLoginRegistro = frame;
+		this.cargarRecursos();
 		this.crearPanel();
 	}
 
@@ -66,20 +84,22 @@ public class PanelLogin extends JPanel {
 
 		GridBagLayout gbl_panelFormulario = new GridBagLayout();
 		gbl_panelFormulario.columnWidths = new int[] { 40, 340, 40, 0 };
-		gbl_panelFormulario.rowHeights = new int[] { 50, 0, 0, 0, 0, 0, 0, 20, 0 };
+		gbl_panelFormulario.rowHeights = new int[] { 100, 0, 0, 0, 0, 0, 20, 0 };
 		gbl_panelFormulario.columnWeights = new double[] { 1.0, 1.0, 0.0, Double.MIN_VALUE };
-		gbl_panelFormulario.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
+		gbl_panelFormulario.rowWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		panelFormulario.setLayout(gbl_panelFormulario);
 
-		JLabel lblNewLabel = new JLabel("PhotoTDS");
-		lblNewLabel.setIcon(null);
-		lblNewLabel.setForeground(new Color(244, 244, 244));
-		lblNewLabel.setFont(new Font("Palatino Linotype", Font.ITALIC, 25));
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.insets = new Insets(10, 0, 25, 5);
-		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 1;
-		panelFormulario.add(lblNewLabel, gbc_lblNewLabel);
+		JLabel introLabel = new JLabel();
+		introLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		introLabel.setIcon(new ImageIcon(intro));
+		introLabel.setForeground(new Color(244, 244, 244));
+		introLabel.setFont(new Font("Palatino Linotype", Font.ITALIC, 25));
+		GridBagConstraints gbc_introLabel = new GridBagConstraints();
+		gbc_introLabel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_introLabel.insets = new Insets(10, 0, 25, 5);
+		gbc_introLabel.gridx = 1;
+		gbc_introLabel.gridy = 0;
+		panelFormulario.add(introLabel, gbc_introLabel);
 
 		JPanel panelCampoUsuario = new JPanel();
 		FlowLayout flowLayout_1 = (FlowLayout) panelCampoUsuario.getLayout();
@@ -89,10 +109,10 @@ public class PanelLogin extends JPanel {
 		gbc_panelCampoUsuario.insets = new Insets(0, 0, 5, 5);
 		gbc_panelCampoUsuario.fill = GridBagConstraints.BOTH;
 		gbc_panelCampoUsuario.gridx = 1;
-		gbc_panelCampoUsuario.gridy = 2;
+		gbc_panelCampoUsuario.gridy = 1;
 		panelFormulario.add(panelCampoUsuario, gbc_panelCampoUsuario);
 
-		JLabel lblUsuario = new JLabel("Usuario o Correo Electrónico");
+		JLabel lblUsuario = new JLabel("Usuario o correo");
 		lblUsuario.setFont(new Font("Georgia", Font.PLAIN, 13));
 		panelCampoUsuario.add(lblUsuario);
 
@@ -111,7 +131,7 @@ public class PanelLogin extends JPanel {
 		gbc_loginUser.ipady = 4;
 		gbc_loginUser.insets = new Insets(0, 0, 15, 5);
 		gbc_loginUser.gridx = 1;
-		gbc_loginUser.gridy = 3;
+		gbc_loginUser.gridy = 2;
 		panelFormulario.add(campoUsuario, gbc_loginUser);
 
 		JPanel panelCampoPassword = new JPanel();
@@ -122,7 +142,7 @@ public class PanelLogin extends JPanel {
 		gbc_panelCampoPassword.insets = new Insets(0, 0, 5, 5);
 		gbc_panelCampoPassword.fill = GridBagConstraints.BOTH;
 		gbc_panelCampoPassword.gridx = 1;
-		gbc_panelCampoPassword.gridy = 4;
+		gbc_panelCampoPassword.gridy = 3;
 		panelFormulario.add(panelCampoPassword, gbc_panelCampoPassword);
 
 		JLabel lblPassword = new JLabel("Contraseña");
@@ -144,20 +164,20 @@ public class PanelLogin extends JPanel {
 		gbc_loginPasswd.ipady = 4;
 		gbc_loginPasswd.insets = new Insets(0, 0, 15, 5);
 		gbc_loginPasswd.gridx = 1;
-		gbc_loginPasswd.gridy = 5;
+		gbc_loginPasswd.gridy = 4;
 		panelFormulario.add(campoPassword, gbc_loginPasswd);
 
 		// Boton de Inicio de Sesion
 		JButton btnIniciarSesion = new JButton("Iniciar Sesión");
 		btnIniciarSesion.setFont(new Font("Georgia", Font.PLAIN, 14));
 		btnIniciarSesion.setForeground(new Color(200, 200, 200));
-		btnIniciarSesion.setBackground(new Color(28, 84, 215));
+		btnIniciarSesion.setBackground(new Color(0xb2, 0x00, 0x9c));
 		GridBagConstraints gbc_btnIniciarSesion = new GridBagConstraints();
 		gbc_btnIniciarSesion.ipady = 8;
 		gbc_btnIniciarSesion.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnIniciarSesion.insets = new Insets(0, 0, 5, 5);
 		gbc_btnIniciarSesion.gridx = 1;
-		gbc_btnIniciarSesion.gridy = 6;
+		gbc_btnIniciarSesion.gridy = 5;
 		panelFormulario.add(btnIniciarSesion, gbc_btnIniciarSesion);
 
 		btnIniciarSesion.addActionListener((ActionEvent e) -> {
@@ -222,14 +242,14 @@ public class PanelLogin extends JPanel {
 		gbc_panelCrearCuenta.insets = new Insets(0, 0, 0, 5);
 		gbc_panelCrearCuenta.fill = GridBagConstraints.BOTH;
 		gbc_panelCrearCuenta.gridx = 1;
-		gbc_panelCrearCuenta.gridy = 7;
+		gbc_panelCrearCuenta.gridy = 6;
 		panelFormulario.add(panelCrearCuenta, gbc_panelCrearCuenta);
 
 		JLabel lblnoTienesCuenta = new JLabel("¿No tienes cuenta?");
 		panelCrearCuenta.add(lblnoTienesCuenta);
 
 		JLabel lblRegstrate = new JLabel("Regístrate");
-		lblRegstrate.setForeground(new Color(0, 128, 255));
+		lblRegstrate.setForeground(new Color(0xb2, 0x00, 0x9c));
 		lblRegstrate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblRegstrate.addMouseListener(new MouseListener() {
 			

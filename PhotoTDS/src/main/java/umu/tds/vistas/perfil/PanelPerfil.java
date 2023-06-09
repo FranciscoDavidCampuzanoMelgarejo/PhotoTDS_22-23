@@ -44,8 +44,7 @@ public class PanelPerfil extends JPanel {
 	private static final int SIZE_ICONO_OPTION_PANE = 40;
 	private static final int ANCHO_FOTO_PERFIL = 175;
 
-	private Icon fotoPerfil; // Esta varible guarda la ultima foto de perfil que ha sido guardada (boton de
-										// guardar clickado)
+	private Icon fotoPerfil; 
 	private String rutaFotoPerfil;
 	private String presentacion;
 
@@ -59,8 +58,8 @@ public class PanelPerfil extends JPanel {
 	private JTextArea areaPresentacion;
 	private JLabel lblContadorLetras;
 	private boolean cambioFoto = false; // Para saber si se ha cambiado la foto antes de guardarla
-
-	private String rutaImagenPerfilIncial = Controlador.getControlador().getUserPicture();
+	
+	private String rutaImagenPerfilInicial = Controlador.getControlador().getUserPicture();
 
 	public PanelPerfil(JDialog dialogo, Icon fotoPerfil, String rutaFotoPerfil) {
 		this.dialogoPadre = dialogo;
@@ -71,6 +70,7 @@ public class PanelPerfil extends JPanel {
 		this.iconoCamara = new ImageIcon(new ImageIcon(getClass().getResource("/imagenes/camara-fotografica.png"))
 				.getImage().getScaledInstance(SIZE_ICONO_OPTION_PANE, SIZE_ICONO_OPTION_PANE, Image.SCALE_SMOOTH));
 		this.fileChooser = new JFileChooser();
+		rutaImagenPerfilInicial = (rutaImagenPerfilInicial==null) ? " " : rutaImagenPerfilInicial;
 		crearPanel();
 	}
 
@@ -179,7 +179,8 @@ public class PanelPerfil extends JPanel {
 			}
 		});
 
-		lblContadorLetras = new JLabel(presentacion.length() + " / 200");
+		//lblContadorLetras = new JLabel(presentacion.length() + " / 200");
+		lblContadorLetras = (presentacion==null) ? new JLabel("0 / 200") : new JLabel(presentacion.length() + " / 200");
 		lblContadorLetras.setHorizontalAlignment(SwingConstants.LEFT);
 		GridBagConstraints gbc_lblContadorLetras = new GridBagConstraints();
 		gbc_lblContadorLetras.anchor = GridBagConstraints.NORTHWEST;
@@ -204,7 +205,9 @@ public class PanelPerfil extends JPanel {
 		// Al clickar en el boton, indicar que los cambios se han guardado (no de
 		// momento en base de datos)
 		btnGuardar.addActionListener((ActionEvent e) -> {
+			/*
 			boolean presentacionModificada = false;
+			if(presentacion==null)
 			if (!presentacion.equals(areaPresentacion.getText())) {
 				presentacionModificada = true;
 				presentacion = areaPresentacion.getText();
@@ -219,11 +222,22 @@ public class PanelPerfil extends JPanel {
 						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconoReescalado));
 				cambioFoto = false;
 			}
-
+			*/
+			String nuevaPresentacion = areaPresentacion.getText();
+			boolean presentacionModificada = (nuevaPresentacion!=null) ? true : false;
+			
+			if(cambioFoto || presentacionModificada) {
+				Controlador.getControlador().editarPerfil(rutaImagenPerfilInicial, nuevaPresentacion);
+				Image iconoReescalado = new ImageIcon(getClass().getResource("/imagenes/check-mark.png")).getImage()
+						.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+				JOptionPane.showMessageDialog(this, "Los cambios han sido guardados exitosamente", "Cambios Guardados",
+						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconoReescalado));
+				cambioFoto = false;
+			}
 		});
 	}
 
 	public boolean cambiarFotoPerfil() {
-		return (!rutaImagenPerfilIncial.equals(rutaFotoPerfil));
+		return (!rutaImagenPerfilInicial.equals(rutaFotoPerfil));
 	}
 }
