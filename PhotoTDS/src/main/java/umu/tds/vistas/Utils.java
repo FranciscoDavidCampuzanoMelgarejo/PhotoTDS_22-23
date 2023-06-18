@@ -79,7 +79,7 @@ public class Utils {
 			buff.getGraphics().drawImage(img, 0,0, null);
 			
 		WritableRaster raster = buff.getRaster();
-		int[] pixel = new int[4];
+		float[] pixel = new float[4];
 		for(int y=0;y<img.getHeight(null);y++) {
 			for(int x=0;x<img.getWidth(null);x++) {
 				raster.getPixel(x, y, pixel);

@@ -83,7 +83,8 @@ public class PhotoTDSDock extends JPanel{
 			try {
 				Image pic = ImageIO.read(new File(path));
 				ImageIcon i = new ImageIcon(pic);
-				dock1usericon.setIcon(new ImageIcon(Utils.redondearImagen(DOCKICONSIZE1, i)));
+				user = Utils.redondearImagen(DOCKICONSIZE1, i);
+				dock1usericon.setIcon(new ImageIcon(user));
 			} catch (IOException ioe) { System.err.println("PHOTOTDS !> error cargando '" + path + "'"); }
 		} else { user = nouser; dock1usericon.setIcon(nousericon); }
 	}

@@ -202,38 +202,20 @@ public class PanelPerfil extends JPanel {
 		gbc_btnGuardar.gridy = 5;
 		add(btnGuardar, gbc_btnGuardar);
 
-		// Al clickar en el boton, indicar que los cambios se han guardado (no de
-		// momento en base de datos)
+		// Al clickar en el boton, indicar que los cambios se han guardado 
 		btnGuardar.addActionListener((ActionEvent e) -> {
-			/*
-			boolean presentacionModificada = false;
-			if(presentacion==null)
-			if (!presentacion.equals(areaPresentacion.getText())) {
-				presentacionModificada = true;
-				presentacion = areaPresentacion.getText();
-			}
-
-			if (cambioFoto || presentacionModificada) {
-				Controlador.getControlador().editarPerfil(rutaFotoPerfil, presentacion);
-				this.fotoPerfil = lblFotoPerfil.getIcon();
-				Image iconoReescalado = new ImageIcon(getClass().getResource("/imagenes/check-mark.png")).getImage()
-						.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-				JOptionPane.showMessageDialog(this, "Los cambios han sido guardados exitosamente", "Cambios Guardados",
-						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconoReescalado));
-				cambioFoto = false;
-			}
-			*/
 			String nuevaPresentacion = areaPresentacion.getText();
-			boolean presentacionModificada = (nuevaPresentacion!=null) ? true : false;
+			boolean presentacionModificada = true;//(nuevaPresentacion!=null) ? true : false;
 			
 			if(cambioFoto || presentacionModificada) {
-				Controlador.getControlador().editarPerfil(rutaImagenPerfilInicial, nuevaPresentacion);
+				Controlador.getControlador().editarPerfil(rutaFotoPerfil, nuevaPresentacion);
 				Image iconoReescalado = new ImageIcon(getClass().getResource("/imagenes/check-mark.png")).getImage()
 						.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 				JOptionPane.showMessageDialog(this, "Los cambios han sido guardados exitosamente", "Cambios Guardados",
 						JOptionPane.INFORMATION_MESSAGE, new ImageIcon(iconoReescalado));
 				cambioFoto = false;
 			}
+			
 		});
 	}
 

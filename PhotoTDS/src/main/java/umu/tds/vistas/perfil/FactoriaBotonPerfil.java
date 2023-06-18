@@ -1,6 +1,11 @@
 package umu.tds.vistas.perfil;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -12,12 +17,26 @@ public class FactoriaBotonPerfil {
 	private JFrame frame;
 	private Icon fotoPerfil;
 	private String rutaFotoPerfil;
+	
+	private List<ActionListener> listeners;
 
 	private FactoriaBotonPerfil(FactoriaBotonPerfilBuilder builder) {
 		this.estado = builder.estado;
 		this.frame = builder.frame;
 		this.fotoPerfil = builder.fotoPerfil;
 		this.rutaFotoPerfil = builder.rutaFotoPerfil;
+		listeners = new LinkedList<ActionListener>();
+	}
+	
+	/* Listener del botón */
+	public void addActionListener(ActionListener a) {
+		if(listeners==null) listeners = new LinkedList<ActionListener>();
+		listeners.add(a);
+	}
+	
+	/* Acción */
+	public void notificacionActualizarFotoPerfil(ActionEvent a) {
+		if(listeners!=null) listeners.stream().forEach(l -> l.actionPerformed(a));
 	}
 
 	public JButton crearBoton() {
@@ -29,6 +48,13 @@ public class FactoriaBotonPerfil {
 				DialogoEditarPerfil dialogo = new DialogoEditarPerfil(frame.getSize().height, frame.getContentPane(),
 						fotoPerfil, rutaFotoPerfil);
 				dialogo.mostrarDialogo();
+				dialogo.addWindowListener(new WindowAdapter() {
+						@Override 
+						public void windowClosed(WindowEvent e) {
+							notificacionActualizarFotoPerfil(new ActionEvent(this, 6, "cambioFotoPerfil"));
+							
+						}
+				});
 			});
 			break;
 		case SEGUIR:
@@ -46,6 +72,7 @@ public class FactoriaBotonPerfil {
 		return boton;
 	}
 
+	
 	public static class FactoriaBotonPerfilBuilder {
 		private final EstadoBotonPerfil estado;
 		private JFrame frame;

@@ -15,6 +15,9 @@ import javax.swing.JPanel;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Descuento;
+import umu.tds.modelo.pojos.DescuentoEdad;
+import umu.tds.modelo.pojos.DescuentoJo;
+import umu.tds.modelo.pojos.DescuentoLikes;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
 import umu.tds.vistas.lists.PubliListRenderer;
@@ -88,8 +91,11 @@ public class VentanaPhotoTDS implements ActionListener{
 	}
 	
 	public VentanaPhotoTDS(int winX, int winY) {
-		Controlador.getControlador().setPremium(false);
 		cargarRecursos();
+		
+		Controlador.getControlador().addDescuento(new DescuentoLikes());
+		Controlador.getControlador().addDescuento(new DescuentoEdad());
+		Controlador.getControlador().addDescuento(new DescuentoJo());
 		
 		subiendoFoto = false;
 		viendoperfil = false;
@@ -186,6 +192,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			panelPubliList.add(publiJList, BorderLayout.CENTER);
 			
 			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
+				panelUsuario.addActionListener(this);
 			apprender.add(panelUsuario, "panelUsuario");
 	}
 
