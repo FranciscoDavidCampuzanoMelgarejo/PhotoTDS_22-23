@@ -19,6 +19,8 @@ import umu.tds.modelo.pojos.Descuento;
 import umu.tds.modelo.pojos.DescuentoEdad;
 import umu.tds.modelo.pojos.DescuentoLikes;
 import umu.tds.modelo.pojos.Usuario;
+import umu.tds.vistas.premium.VentanaTopFotos;
+
 import java.awt.CardLayout;
 import java.awt.Color;
 
@@ -411,7 +413,7 @@ public class VentanaPremium {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println(Controlador.getControlador().getMasMeGusta().toString());
+				VentanaTopFotos.getInstancia().mostrar();
 			}
 		});
 		panelTopFotos.setLayout(new BorderLayout(0, 0));

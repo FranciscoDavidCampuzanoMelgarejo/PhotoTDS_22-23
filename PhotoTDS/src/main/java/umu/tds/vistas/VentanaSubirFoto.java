@@ -210,7 +210,7 @@ public class VentanaSubirFoto {
 				
 				try {
 					filePubli = chooser.getSelectedFile();
-					fotoPubli = ImageIO.read(filePubli);
+					if(filePubli!=null) fotoPubli = ImageIO.read(filePubli);
 				} catch (Exception e1) { e1.printStackTrace(); }
 				 
 				if(fotoPubli!=null) { 
@@ -301,7 +301,7 @@ public class VentanaSubirFoto {
 					if(textoDescripcion.getText().isEmpty()) { labelDescripcion.setText("Descripcion - campo obligatorio"); labelDescripcion.setForeground(Color.red); }
 				} else {																		// Hacemos la publicación
 					Controlador.getControlador().publicarFoto(filePubli.getAbsolutePath(), textoTitulo.getText(), textoDescripcion.getText(), textoComentario.getText(), null);
-					//notificacionSubirFoto(new ActionEvent(this, 4, "fotoSubida"));
+					notificacionSubirFoto(new ActionEvent(this, 9, "fotoSubida"));
 					destruir();
 				}
 			}

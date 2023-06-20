@@ -136,6 +136,13 @@ public class Controlador implements FotosListener {
 		return (u==null) ? null : u.getPerfil().getFoto();
 	}
 	
+	// Devuelve los IDS de los seguidores
+	public List<Integer> getIDSeguidos(){
+		return getUsuariosSeguidos(usuario).stream()
+							   			   .map(s -> s.getId())
+							   			   .collect(Collectors.toList());
+	}
+	
 	public boolean isPremium() {
 		return usuario.getPremium();
 	}
@@ -250,7 +257,7 @@ public class Controlador implements FotosListener {
 	}
 
 	public void publicarFoto(String ruta, String titulo, String descripcion, String comentario, List<String> hashtags) {
-
+		
 		Foto foto = new Foto(titulo, descripcion, ruta, new Comentario(comentario, usuario), hashtags);
 		publicar(foto);
 
@@ -314,15 +321,13 @@ public class Controlador implements FotosListener {
 	
 	// Devuelve las últimas 20 fotos de todos los usuarios que seguimos y nosotros mismos
 	public List<Publicacion> getUltimasFotos(){
-		List<Integer> seguidos = usuariosSeguidos.stream()
-												 .map(u -> u.getId())
-												 .collect(Collectors.toList());
 		return catalogoPublicaciones.getAll().stream()
-											 .filter(publi -> publi.getClass()==Foto.class)
-											 .filter(publi -> seguidos.contains(publi.getUsuario().getId()) || publi.getUsuario().getId()==usuario.getId())
-											 .sorted(Comparator.comparing(Publicacion::getFecha))
+											 .filter(p -> p.getClass()==Foto.class)
+											 .filter(p -> getIDSeguidos().contains(p.getUsuario().getId()) || p.getUsuario().getId()==usuario.getId())
+											 .sorted(Comparator.comparing(Publicacion::getFecha).reversed())
 											 .limit(20)
 											 .collect(Collectors.toList());
+		
 	}
 	
 	// PREMIUM: el controlador almacena los descuentos que hay hasta ahora implementados
@@ -345,7 +350,7 @@ public class Controlador implements FotosListener {
 		return catalogoPublicaciones.getAll().stream()
 											 .filter(publi -> publi.getUsuario().getId()==usuario.getId())
 											 .filter(publi -> publi.getClass()==Foto.class)
-										     .sorted(Comparator.comparing(Publicacion::getLikes))
+										     .sorted(Comparator.comparing(Publicacion::getLikes).reversed())
 										     .limit(10)
 										     .collect(Collectors.toList());
 	}

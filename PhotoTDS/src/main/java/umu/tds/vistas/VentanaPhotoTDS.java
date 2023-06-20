@@ -20,6 +20,7 @@ import umu.tds.modelo.pojos.DescuentoJo;
 import umu.tds.modelo.pojos.DescuentoLikes;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
+import umu.tds.vistas.lists.PubliListPanel;
 import umu.tds.vistas.lists.PubliListRenderer;
 //import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 import umu.tds.vistas.perfil.PanelPerfilUsuario;
@@ -37,6 +38,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 /**@title Ventana principal de PhotoTDS
@@ -53,11 +56,8 @@ public class VentanaPhotoTDS implements ActionListener{
 	private GridBagLayout layout1, layout2;
 	
 	private Image fondo, winIcon;
-	private VentanaSubirFoto subirFoto;
-	private boolean subiendoFoto;
 	
 	private PanelPerfilUsuario panelUsuario;
-	private boolean viendoperfil;
 	
 	private VentanaAbout about;
 	
@@ -78,7 +78,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	
 	private void recargarRecientes() {
 		publiListModel.clear();
-		publiListModel.addAll(Controlador.getControlador().getUltimasPublicaciones());
+		publiListModel.addAll(Controlador.getControlador().getUltimasFotos());
 		publiJList.revalidate();
 	}
 	
@@ -96,9 +96,6 @@ public class VentanaPhotoTDS implements ActionListener{
 		Controlador.getControlador().addDescuento(new DescuentoLikes());
 		Controlador.getControlador().addDescuento(new DescuentoEdad());
 		Controlador.getControlador().addDescuento(new DescuentoJo());
-		
-		subiendoFoto = false;
-		viendoperfil = false;
 		publiList = (ArrayList<Publicacion>) Controlador.getControlador().getUltimasFotos();
 		System.out.println(publiList.toString());
 		publiListModel = new DefaultListModel<Publicacion>();
@@ -188,7 +185,7 @@ public class VentanaPhotoTDS implements ActionListener{
 				private static final long serialVersionUID = 1L;
 				{setOpaque(false);} 
 			};
-			publiJList.setCellRenderer(new PubliListRenderer());
+			publiJList.setCellRenderer(new PubliListRenderer(192));
 			panelPubliList.add(publiJList, BorderLayout.CENTER);
 			
 			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
@@ -212,6 +209,7 @@ public class VentanaPhotoTDS implements ActionListener{
 				break; 
 			case "publi" : {				// Subir nueva publicación
 				VentanaSubirFoto.getInstancia().mostrar();	
+				VentanaSubirFoto.getInstancia().addActionListener(this);
 				break;
 			}
 			case "user" : {					// Perfil de usuario
@@ -238,6 +236,9 @@ public class VentanaPhotoTDS implements ActionListener{
 			case "cambioNoPremium" :
 				Controlador.getControlador().setPremium(false);
 				dock.recargarPremium();
+				break;
+			case "fotoSubida" :
+				recargarRecientes();
 				break;
 		}
 		
