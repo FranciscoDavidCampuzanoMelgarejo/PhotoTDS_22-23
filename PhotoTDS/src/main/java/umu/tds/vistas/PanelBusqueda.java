@@ -7,6 +7,8 @@ import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
+import java.util.ResourceBundle.Control;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.awt.CardLayout;
 import java.awt.BorderLayout;
@@ -69,7 +71,8 @@ public class PanelBusqueda extends JPanel{
 
 	
 	private void recargarListaHashtags(String hashtags) {
-		List<String> hs = Controlador.getControlador().getHashtagList(barraBusqueda.getText());
+		List<String> hs = Controlador.getControlador().getHashtagList(hashtags);
+		System.err.println(hs);
 		if(!hs.isEmpty()) {
 			layout.show(panelResultado, "panelHashtags");
 			hashListModel.clear();

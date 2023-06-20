@@ -338,18 +338,23 @@ public class Controlador implements FotosListener {
 										.collect(Collectors.toList());
 	}
 	
-	/* Devuelve una lista de hashtags que casan con la expresión regular */
-	public List<String> getHashtagList(String patron){
-		Pattern pat = Pattern.compile(patron);
-		catalogoPublicaciones.getAll().stream()
-									  .forEach(p -> System.out.println(p.getHashtags()));
+	private List<String> getHashtags(){
 		return catalogoPublicaciones.getAll().stream()
 											 .flatMap(p -> p.getHashtags().stream())
-											 .filter(s -> pat.matcher(s).find())
-										     .collect(Collectors.toList());
-		
+											 .collect(Collectors.toList());
 	}
 	
+	/* Devuelve la lista de hashtags que casan con los hashtags de patron */
+	public List<String> getHashtagList(String patron){
+		List<String> lista = new LinkedList<String>(), hs = getHashtags();
+		Pattern p1 = Pattern.compile("#[^ ]*");
+		Matcher m1 = p1.matcher(patron);
+		while(m1.find()) {
+			Pattern p2 = Pattern.compile(m1.group());
+			lista.addAll(hs.stream().filter(h -> p2.matcher(h).find()).collect(Collectors.toList()));
+		}
+		return lista;
+	}
 	
 	
 	// PREMIUM: el controlador almacena los descuentos que hay hasta ahora implementados
