@@ -1,5 +1,6 @@
 package umu.tds.vistas.lists;
 import umu.tds.modelo.pojos.*;
+import umu.tds.vistas.publicaciones.DialogoPublicacion;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -22,7 +23,9 @@ public class PubliListRenderer implements ListCellRenderer<Publicacion>{
 	public Component getListCellRendererComponent(JList<? extends Publicacion> list, Publicacion publi, int index, boolean isSelected, boolean cellHasFocus) {
 		PubliListPanel panel = new PubliListPanel(publi, alto);
 		
-		if(isSelected) panel.setBackground(new Color(0x3c-10, 0x3f-10, 0x41-10));
+		if(isSelected) {
+			panel.setBackground(new Color(0x3c-10, 0x3f-10, 0x41-10));
+		}
 		
 		return panel;
 	}

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.regex.*;
 
 import javax.swing.ImageIcon;
 
@@ -37,6 +38,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import umu.tds.componente.CargadorFotos;
 import umu.tds.componente.FotosEvent;
 import umu.tds.componente.FotosListener;
+import umu.tds.fotos.HashTag;
 import umu.tds.modelo.catalogos.CatalogoPublicaciones;
 import umu.tds.modelo.catalogos.CatalogoUsuarios;
 import umu.tds.modelo.pojos.Album;
@@ -50,7 +52,6 @@ import umu.tds.persistencia.FactoriaDAO;
 import umu.tds.persistencia.IComentarioDAO;
 import umu.tds.persistencia.IPublicacionDAO;
 import umu.tds.persistencia.IUsuarioDAO;
-import umu.tds.vistas.Utils;
 
 public class Controlador implements FotosListener {
 
@@ -329,6 +330,27 @@ public class Controlador implements FotosListener {
 											 .collect(Collectors.toList());
 		
 	}
+	
+	/* Devuelve una lista de usuarios cuyo nombre o correo casan con la expresión regular */
+	public List<Usuario> getUsersByER(Pattern pat){
+		return catalogoUsuarios.getAll().stream()
+										.filter(u -> pat.matcher(u.getNombre()).find() | pat.matcher(u.getEmail()).find())
+										.collect(Collectors.toList());
+	}
+	
+	/* Devuelve una lista de hashtags que casan con la expresión regular */
+	public List<String> getHashtagList(String patron){
+		Pattern pat = Pattern.compile(patron);
+		catalogoPublicaciones.getAll().stream()
+									  .forEach(p -> System.out.println(p.getHashtags()));
+		return catalogoPublicaciones.getAll().stream()
+											 .flatMap(p -> p.getHashtags().stream())
+											 .filter(s -> pat.matcher(s).find())
+										     .collect(Collectors.toList());
+		
+	}
+	
+	
 	
 	// PREMIUM: el controlador almacena los descuentos que hay hasta ahora implementados
 	public void addDescuento(Descuento d) {

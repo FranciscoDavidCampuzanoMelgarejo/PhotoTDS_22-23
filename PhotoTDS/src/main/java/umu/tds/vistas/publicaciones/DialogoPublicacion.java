@@ -27,7 +27,7 @@ import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.Publicacion;
 
 public class DialogoPublicacion extends JDialog {
-
+	private static final long serialVersionUID = 1L;
 	// Constantes
 	private static final double PORCENTAJE_ANCHO_FOTO = 0.45; // Porcentaje del ancho de la ventana que ocupara la foto
 																// del perfil

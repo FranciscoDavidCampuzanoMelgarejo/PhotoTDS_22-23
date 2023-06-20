@@ -309,7 +309,7 @@ public class VentanaPremium {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				fotoPDF.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, pdf.getScaledInstance(84, 84, Image.SCALE_SMOOTH))));
+				fotoPDF.setIcon(new ImageIcon(Utils.cambiarBrillo(0.7f, pdf.getScaledInstance(84, 84, Image.SCALE_SMOOTH))));
 			}
 			
 			@Override 
@@ -356,7 +356,7 @@ public class VentanaPremium {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				fotoExcel.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, excel.getScaledInstance(84, 84, Image.SCALE_SMOOTH))));
+				fotoExcel.setIcon(new ImageIcon(Utils.cambiarBrillo(0.7f, excel.getScaledInstance(84, 84, Image.SCALE_SMOOTH))));
 			}
 			
 			@Override 
@@ -403,7 +403,7 @@ public class VentanaPremium {
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				fotoTopFotos.setIcon(new ImageIcon(Utils.cambiarBrillo(0.5f, topfotos.getScaledInstance(100, 100, Image.SCALE_SMOOTH))));
+				fotoTopFotos.setIcon(new ImageIcon(Utils.cambiarBrillo(0.7f, topfotos.getScaledInstance(100, 100, Image.SCALE_SMOOTH))));
 			}
 			
 			@Override 

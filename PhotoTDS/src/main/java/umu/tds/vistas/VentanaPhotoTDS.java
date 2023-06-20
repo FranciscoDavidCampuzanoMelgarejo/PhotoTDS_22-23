@@ -47,7 +47,6 @@ import java.awt.event.MouseEvent;
  * */
 
 public class VentanaPhotoTDS implements ActionListener{
-
 	private JFrame frame;
 	private JPanel phototdsrender;
 	private JPanel apprender;
@@ -58,6 +57,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	private Image fondo, winIcon;
 	
 	private PanelPerfilUsuario panelUsuario;
+	private PanelBusqueda panelBusqueda;
 	
 	private VentanaAbout about;
 	
@@ -66,7 +66,6 @@ public class VentanaPhotoTDS implements ActionListener{
 	private ArrayList<Publicacion> publiList;
 	private DefaultListModel<Publicacion> publiListModel;
 	private JScrollPane panelInicio;
-	private JPanel panelPubliList;
 	private JList<Publicacion> publiJList;
 
 	private void cargarRecursos() {
@@ -168,29 +167,25 @@ public class VentanaPhotoTDS implements ActionListener{
 		phototdsrender.add(apprender, gbc_apprender);
 		apprender.setLayout(new CardLayout(0, 0));
 			c = (CardLayout)apprender.getLayout();
+			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
+				panelUsuario.addActionListener(this);
+			apprender.add(panelUsuario, "panelUsuario");
+			
+			panelBusqueda = new PanelBusqueda();
+			apprender.add(panelBusqueda, "panelBusqueda");
 			
 			panelInicio = new JScrollPane();
-			panelInicio.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			panelInicio.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			apprender.add(panelInicio, "panelInicio");
-			
-			panelPubliList = new JPanel() {
-				private static final long serialVersionUID = 1L;
-				{setOpaque(false);} 
-			};
-			panelInicio.setViewportView(panelPubliList);
-			panelPubliList.setLayout(new BorderLayout(0, 0));
 			
 			publiJList = new JList<Publicacion>(publiListModel) {
 				private static final long serialVersionUID = 1L;
 				{setOpaque(false);} 
 			};
 			publiJList.setCellRenderer(new PubliListRenderer(192));
-			panelPubliList.add(publiJList, BorderLayout.CENTER);
+			panelInicio.setViewportView(publiJList);
 			
-			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
-				panelUsuario.addActionListener(this);
-			apprender.add(panelUsuario, "panelUsuario");
+			
 	}
 
 	/* La ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
@@ -229,7 +224,7 @@ public class VentanaPhotoTDS implements ActionListener{
 				premium.mostrar();
 				premium.addActionListener(this);
 				break;
-			case "cambioPremium" :			// Notifiación para actualizar premium en el dock
+			case "cambioPremium" :			// Notificación para actualizar premium en el dock
 				Controlador.getControlador().setPremium(true);
 				dock.recargarPremium();
 				break;

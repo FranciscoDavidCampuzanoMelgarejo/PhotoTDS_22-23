@@ -62,8 +62,8 @@ public class PubliListPanel extends JPanel{
 		} catch (IOException ioe) { System.err.print("PHOTOTDS !> Error cargando publi '" + publi.toString() + "'\n"); }
 		
 		layout1 = new GridBagLayout();
-		layout1.columnWidths = new int[]{alto+8, 0, 0};
-		layout1.rowHeights = new int[]{alto+8, 0};
+		layout1.columnWidths = new int[]{alto, 0, 0};
+		layout1.rowHeights = new int[]{alto, 0};
 		layout1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		layout1.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		setLayout(layout1);
@@ -162,9 +162,9 @@ public class PubliListPanel extends JPanel{
 		gbc_panelLikes.gridy = 1;
 		panelDrc.add(panelLikes, gbc_panelLikes);
 		GridBagLayout gbl_panelLikes = new GridBagLayout();
-		gbl_panelLikes.columnWidths = new int[]{18, 56, 0};
+		gbl_panelLikes.columnWidths = new int[]{16, 18, 56, 0};
 		gbl_panelLikes.rowHeights = new int[]{0, 0};
-		gbl_panelLikes.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelLikes.columnWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelLikes.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panelLikes.setLayout(gbl_panelLikes);
 		
@@ -175,7 +175,7 @@ public class PubliListPanel extends JPanel{
 		GridBagConstraints gbc_panelLikesIcon = new GridBagConstraints();
 		gbc_panelLikesIcon.insets = new Insets(0, 0, 0, 5);
 		gbc_panelLikesIcon.fill = GridBagConstraints.BOTH;
-		gbc_panelLikesIcon.gridx = 0;
+		gbc_panelLikesIcon.gridx = 1;
 		gbc_panelLikesIcon.gridy = 0;
 		panelLikes.add(panelLikesIcon, gbc_panelLikesIcon);
 		panelLikesIcon.setLayout(new BorderLayout(0, 0));
@@ -191,7 +191,7 @@ public class PubliListPanel extends JPanel{
 		};
 		GridBagConstraints gbc_panelLikesData = new GridBagConstraints();
 		gbc_panelLikesData.fill = GridBagConstraints.BOTH;
-		gbc_panelLikesData.gridx = 1;
+		gbc_panelLikesData.gridx = 2;
 		gbc_panelLikesData.gridy = 0;
 		panelLikes.add(panelLikesData, gbc_panelLikesData);
 		panelLikesData.setLayout(new BorderLayout(0, 0));
@@ -214,9 +214,9 @@ public class PubliListPanel extends JPanel{
 		gbc_panelComments.gridy = 2;
 		panelDrc.add(panelComments, gbc_panelComments);
 		GridBagLayout gbl_panelComments = new GridBagLayout();
-		gbl_panelComments.columnWidths = new int[]{18, 0, 0};
+		gbl_panelComments.columnWidths = new int[]{16, 18, 0, 0};
 		gbl_panelComments.rowHeights = new int[]{0, 0};
-		gbl_panelComments.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelComments.columnWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelComments.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panelComments.setLayout(gbl_panelComments);
 		
@@ -227,7 +227,7 @@ public class PubliListPanel extends JPanel{
 		GridBagConstraints gbc_panelCommIcon = new GridBagConstraints();
 		gbc_panelCommIcon.insets = new Insets(0, 0, 0, 5);
 		gbc_panelCommIcon.fill = GridBagConstraints.BOTH;
-		gbc_panelCommIcon.gridx = 0;
+		gbc_panelCommIcon.gridx = 1;
 		gbc_panelCommIcon.gridy = 0;
 		panelComments.add(panelCommIcon, gbc_panelCommIcon);
 		panelCommIcon.setLayout(new BorderLayout(0, 0));
@@ -242,7 +242,7 @@ public class PubliListPanel extends JPanel{
 		};
 		GridBagConstraints gbc_panelCommData = new GridBagConstraints();
 		gbc_panelCommData.fill = GridBagConstraints.BOTH;
-		gbc_panelCommData.gridx = 1;
+		gbc_panelCommData.gridx = 2;
 		gbc_panelCommData.gridy = 0;
 		panelComments.add(panelCommData, gbc_panelCommData);
 		panelCommData.setLayout(new BorderLayout(0, 0));

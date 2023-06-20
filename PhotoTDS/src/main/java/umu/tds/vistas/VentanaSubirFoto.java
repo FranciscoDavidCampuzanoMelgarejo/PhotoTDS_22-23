@@ -93,6 +93,17 @@ public class VentanaSubirFoto {
 		if(listeners!=null) listeners.stream().forEach(l -> l.actionPerformed(e));
 	}
 	
+	/* Parsea un comentario en búsqueda de hashtags */
+	public List<String> parseHashtags(String comentario){
+		List<String> l = new LinkedList<String>();
+		Pattern p = Pattern.compile("#[^ ]*");
+		Matcher m = p.matcher(comentario);
+		while(m.find()) {
+			l.add(m.group());
+		}
+		return l;
+	}
+	
 	
 	/* Mostrar ventana */
 	public void mostrar() {
@@ -260,16 +271,6 @@ public class VentanaSubirFoto {
 			public void mouseClicked(MouseEvent e) {
 				frame.setBounds(frame.getX(), frame.getY(), frame.getWidth(), 768);
 				
-				/*
-				float nw = fotoPubli.getWidth(null), nh = fotoPubli.getHeight(null);
-				
-				if(fotoPubli.getWidth(null)>=480) nw = (float) (fotoPubli.getWidth(null) * 0.5);
-				if(fotoPubli.getHeight(null)>=360) nh = (float) (fotoPubli.getHeight(null) * 0.5);
-				
-				vistaPreviaLabel.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)nw, (int)nh, Image.SCALE_SMOOTH)));
-				c1.show(frame.getContentPane(), "panelNuevaPublicacion");
-				*/
-				
 				// Escalamos hasta que la dimensión coincida con el tamaño de la imagen de preview
 				float iw = fotoPubli.getWidth(null), ih = fotoPubli.getHeight(null), s = 1.0f;
 				s = (iw>ih) ? (512/iw) : (512/ih);
@@ -300,7 +301,7 @@ public class VentanaSubirFoto {
 					if(textoTitulo.getText().isEmpty()) { labelTitulo.setText("Titulo - campo obligatorio"); labelTitulo.setForeground(Color.red); }
 					if(textoDescripcion.getText().isEmpty()) { labelDescripcion.setText("Descripcion - campo obligatorio"); labelDescripcion.setForeground(Color.red); }
 				} else {																		// Hacemos la publicación
-					Controlador.getControlador().publicarFoto(filePubli.getAbsolutePath(), textoTitulo.getText(), textoDescripcion.getText(), textoComentario.getText(), null);
+					Controlador.getControlador().publicarFoto(filePubli.getAbsolutePath(), textoTitulo.getText(), textoDescripcion.getText(), textoComentario.getText(), parseHashtags(textoComentario.getText()));
 					notificacionSubirFoto(new ActionEvent(this, 9, "fotoSubida"));
 					destruir();
 				}
