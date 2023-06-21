@@ -51,6 +51,12 @@ public class VentanaTopFotos {
 			fondo = ImageIO.read(getClass().getResource("/imagenes/fondos/bg.png"));
 		} catch (IOException ioe) { ioe.printStackTrace(); }
 	}
+	
+	private void recargarLista() {
+		listmodel.clear();
+		listmodel.addAll(Controlador.getControlador().getMasMeGusta());
+		publiJList.revalidate();
+	}
 
 	/* Dibujado de la ventana */
 	private void dibujar() {
@@ -105,6 +111,7 @@ public class VentanaTopFotos {
 	/* Devuelve la instancia única */
 	public static VentanaTopFotos getInstancia() {
 		if(instancia==null) instancia = new VentanaTopFotos();
+		instancia.recargarLista();
 		return instancia;
 	}
 	
