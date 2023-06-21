@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.BorderLayout;
+import java.awt.Graphics;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -22,12 +24,13 @@ import umu.tds.vistas.lists.PubliListRenderer;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import java.awt.Color;
 
 public class VentanaTopFotos {
 	private static VentanaTopFotos instancia = null;
 	private JFrame frame;
 	
-	private BufferedImage encabezado, winIcon;
+	private BufferedImage encabezado, winIcon, fondo;
 	private JList<Publicacion> publiJList;
 	private DefaultListModel<Publicacion> listmodel;
 	
@@ -45,12 +48,14 @@ public class VentanaTopFotos {
 		try {
 			encabezado = ImageIO.read(getClass().getResource("/imagenes/premium/topfotosintro.png"));
 			winIcon = ImageIO.read(getClass().getResource("/imagenes/premium/topfotos.png"));
+			fondo = ImageIO.read(getClass().getResource("/imagenes/fondos/bg.png"));
 		} catch (IOException ioe) { ioe.printStackTrace(); }
 	}
 
 	/* Dibujado de la ventana */
 	private void dibujar() {
 		frame = new JFrame();
+		frame.setBackground(Color.MAGENTA);
 		frame.setBounds(100, 100, 512, 640);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -78,6 +83,7 @@ public class VentanaTopFotos {
 		panelIntro.add(introIcon, BorderLayout.CENTER);
 		
 		JScrollPane scrollFotos = new JScrollPane();
+		scrollFotos.setOpaque(false);
 		GridBagConstraints gbc_scrollFotos = new GridBagConstraints();
 		gbc_scrollFotos.fill = GridBagConstraints.BOTH;
 		gbc_scrollFotos.gridx = 0;
@@ -85,10 +91,12 @@ public class VentanaTopFotos {
 		frame.getContentPane().add(scrollFotos, gbc_scrollFotos);
 		
 		JPanel panelLista = new JPanel();
+		panelLista.setOpaque(false);
 		scrollFotos.setViewportView(panelLista);
 		panelLista.setLayout(new BorderLayout(0, 0));
 		
 		publiJList = new JList<Publicacion>();
+			publiJList.setOpaque(false);
 			publiJList.setModel(listmodel);
 			publiJList.setCellRenderer(new PubliListRenderer(128));
 		panelLista.add(publiJList, BorderLayout.CENTER);

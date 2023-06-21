@@ -353,7 +353,16 @@ public class Controlador implements FotosListener {
 			Pattern p2 = Pattern.compile(m1.group());
 			lista.addAll(hs.stream().filter(h -> p2.matcher(h).find()).collect(Collectors.toList()));
 		}
-		return lista;
+		return lista.stream().distinct().collect(Collectors.toList());
+	}
+	
+	/* Devuelve una lista de fotos con ese hashtag */
+	public List<Publicacion> getPublisHashtag(String hashtag){
+		return catalogoPublicaciones.getAll().stream()
+											 .filter(p -> p.getClass()==Foto.class)
+											 .filter(p -> p.getHashtags().contains(hashtag))
+											 .sorted(Comparator.comparing(Publicacion::getFecha).reversed())
+											 .collect(Collectors.toList());
 	}
 	
 	

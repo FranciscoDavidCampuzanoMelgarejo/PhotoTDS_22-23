@@ -36,7 +36,10 @@ import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ListSelectionEvent;
+
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -65,8 +68,10 @@ public class VentanaPhotoTDS implements ActionListener{
 	
 	private ArrayList<Publicacion> publiList;
 	private DefaultListModel<Publicacion> publiListModel;
-	private JScrollPane panelInicio;
 	private JList<Publicacion> publiJList;
+	private JPanel panelInicio;
+	private JScrollPane scrollPubliList;
+	private JList list;
 
 	private void cargarRecursos() {
 		try {
@@ -169,23 +174,32 @@ public class VentanaPhotoTDS implements ActionListener{
 			c = (CardLayout)apprender.getLayout();
 			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
 				panelUsuario.addActionListener(this);
-			apprender.add(panelUsuario, "panelUsuario");
 			
-			panelBusqueda = new PanelBusqueda();
-			apprender.add(panelBusqueda, "panelBusqueda");
-			
-			panelInicio = new JScrollPane();
-			panelInicio.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			panelInicio = new JPanel() { 
+				private static final long serialVersionUID = 1L;
+				{setOpaque(false);} 
+			};
 			apprender.add(panelInicio, "panelInicio");
+			panelInicio.setLayout(new BorderLayout(0, 0));
 			
+			scrollPubliList = new JScrollPane();
+			scrollPubliList.setOpaque(false);
+			scrollPubliList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			panelInicio.add(scrollPubliList, BorderLayout.CENTER);
 			publiJList = new JList<Publicacion>(publiListModel) {
 				private static final long serialVersionUID = 1L;
 				{setOpaque(false);} 
 			};
-			publiJList.setCellRenderer(new PubliListRenderer(192));
-			panelInicio.setViewportView(publiJList);
+			publiJList.setCellRenderer(new PubliListRenderer(128));
+			publiJList.setSelectedIndex(ListSelectionModel.SINGLE_SELECTION);
+			scrollPubliList.setViewportView(publiJList);
+			scrollPubliList.setViewportBorder(null);
+			scrollPubliList.getViewport().setOpaque(false);
+			apprender.add(panelUsuario, "panelUsuario");
 			
 			
+			panelBusqueda = new PanelBusqueda();
+			apprender.add(panelBusqueda, "panelBusqueda");			
 	}
 
 	/* La ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
