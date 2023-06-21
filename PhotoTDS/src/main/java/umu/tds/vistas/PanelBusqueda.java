@@ -26,6 +26,7 @@ import umu.tds.vistas.lists.UserListRenderer;
 import java.awt.Font;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -39,6 +40,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.Color;
+import javax.swing.border.LineBorder;
+import javax.swing.border.EmptyBorder;
 
 /**
  * @title Panel de búsqueda
@@ -220,6 +223,7 @@ public class PanelBusqueda extends JPanel{
 			private static final long serialVersionUID = 1L;
 			{setOpaque(false);}
 		};
+		userJList.setBorder(new EmptyBorder(0, 0, 0, 0));
 			userJList.setCellRenderer(new UserListRenderer());
 			userJList.setModel(userListModel);
 		
@@ -229,7 +233,16 @@ public class PanelBusqueda extends JPanel{
 		};
 		panelResultado.add(panelUsuarios, "panelUsuarios");
 		panelUsuarios.setLayout(new BorderLayout(0, 0));
-		panelUsuarios.add(userJList, BorderLayout.CENTER);
+		
+		JScrollPane scrollUsuariosList = new JScrollPane();
+		scrollUsuariosList.setBorder(BorderFactory.createEmptyBorder());
+		scrollUsuariosList.setOpaque(false);
+		scrollUsuariosList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollUsuariosList.setViewportBorder(BorderFactory.createEmptyBorder());
+		scrollUsuariosList.setViewportView(userJList);
+		scrollUsuariosList.getViewport().setOpaque(false);
+		panelUsuarios.add(scrollUsuariosList, BorderLayout.CENTER);
+		
 
 		
 		JPanel panelHashtags = new JPanel() {
@@ -264,6 +277,8 @@ public class PanelBusqueda extends JPanel{
 		JScrollPane scrollListaHash = new JScrollPane();
 		scrollListaHash.setOpaque(false);
 		scrollListaHash.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollListaHash.setBorder(BorderFactory.createEmptyBorder());
+		scrollListaHash.setViewportBorder(BorderFactory.createEmptyBorder());
 		GridBagConstraints gbc_scrollListaHash = new GridBagConstraints();
 		gbc_scrollListaHash.fill = GridBagConstraints.BOTH;
 		gbc_scrollListaHash.gridx = 1;
@@ -271,6 +286,7 @@ public class PanelBusqueda extends JPanel{
 		panelListaHashtags.add(scrollListaHash, gbc_scrollListaHash);
 		
 		hashJList = new JList<String>();
+		hashJList.setBorder(null);
 		hashJList.setOpaque(false);
 		hashJList.setModel(hashListModel);
 		hashJList.setCellRenderer(new HashListRenderer());
@@ -341,13 +357,15 @@ public class PanelBusqueda extends JPanel{
 		panelJooInfo.add(lblNewLabel, BorderLayout.NORTH);
 		
 		hashPubliJList = new JList<Publicacion>();
+		hashPubliJList.setBorder(BorderFactory.createEmptyBorder());
 		hashPubliJList.setCellRenderer(new PubliListRenderer(128));
 		hashPubliJList.setModel(hashPubliListModel);
 		hashPubliJList.setOpaque(false);
 		
 		JScrollPane panelHashPubliList = new JScrollPane();
 		panelHashPubliList.setOpaque(false);
-		panelHashPubliList.setViewportBorder(null);
+		panelHashPubliList.setBorder(BorderFactory.createEmptyBorder());
+		panelHashPubliList.setViewportBorder(BorderFactory.createEmptyBorder());
 		panelHashPubliList.setViewportView(hashPubliJList);
 		panelHashPubliList.getViewport().setOpaque(false);
 		panelHashPubliList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);

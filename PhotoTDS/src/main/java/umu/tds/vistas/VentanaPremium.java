@@ -181,6 +181,7 @@ public class VentanaPremium {
 		DefaultListModel<Descuento> descuentoModel = new DefaultListModel<Descuento>();
 			descuentoModel.addAll(descuentos);
 		JList<Descuento> descuentosJList = new JList<Descuento>(descuentoModel);
+		descuentosJList.setOpaque(false);
 		descuentosJList.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -189,8 +190,6 @@ public class VentanaPremium {
 				precioLabel.setText(precio + " €");
 			}
 		});
-		
-		
 		
 		scrollPane.setViewportView(descuentosJList);
 		

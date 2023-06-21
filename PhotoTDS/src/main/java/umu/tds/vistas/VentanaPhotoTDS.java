@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Graphics;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 
@@ -193,8 +194,9 @@ public class VentanaPhotoTDS implements ActionListener{
 			publiJList.setCellRenderer(new PubliListRenderer(128));
 			publiJList.setSelectedIndex(ListSelectionModel.SINGLE_SELECTION);
 			scrollPubliList.setViewportView(publiJList);
-			scrollPubliList.setViewportBorder(null);
 			scrollPubliList.getViewport().setOpaque(false);
+			scrollPubliList.setViewportBorder(BorderFactory.createEmptyBorder());
+			scrollPubliList.setBorder(BorderFactory.createEmptyBorder());
 			apprender.add(panelUsuario, "panelUsuario");
 			
 			
