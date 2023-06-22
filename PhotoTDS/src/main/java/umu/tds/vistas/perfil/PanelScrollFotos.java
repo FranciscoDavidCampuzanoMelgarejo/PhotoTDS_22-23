@@ -146,8 +146,8 @@ public class PanelScrollFotos extends JScrollPane {
 		System.out.println(anchoFoto);
 		for (int i = 0; i < numeroFotos; i++) {
 
-			String ruta = ((Foto) fotos.get(fotosCargadas)).getRuta();
-			JLabel lblCelda = new EtiquetaFotoPerfil(ruta, iconoLike, iconoComentario, anchoFoto);
+			Foto foto = (Foto) fotos.get(fotosCargadas);
+			JLabel lblCelda = new EtiquetaFotoPerfil(foto.getRuta(), iconoLike, iconoComentario, foto.getLikes(), foto.getComentarios().size(), anchoFoto);
 			mapaEtiquetas.put(lblCelda, fotosCargadas++);
 			
 			// Añadir MouseListener a la etiqueta
