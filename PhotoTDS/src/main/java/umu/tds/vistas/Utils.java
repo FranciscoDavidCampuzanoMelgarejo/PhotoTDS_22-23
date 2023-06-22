@@ -71,6 +71,35 @@ public class Utils {
 		return masked;
 
 	}
+	
+	/* Redondear imagen pero la entrada es una BufferedImage */
+	public static BufferedImage redondear(int ancho, BufferedImage img) {
+		BufferedImage mask = new BufferedImage(ancho, ancho, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = (Graphics2D) mask.getGraphics();
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			g2d.fillOval(1, 1, ancho-2, ancho-2);
+			g2d.dispose();
+		
+			BufferedImage masked = new BufferedImage(ancho, ancho, BufferedImage.TYPE_INT_ARGB);
+				g2d = (Graphics2D) masked.getGraphics();
+				g2d.drawImage(img, 1, 1, ancho-2, ancho-2, null);
+				g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
+				g2d.drawImage(mask, 0, 0, null);
+				g2d.dispose();
+			return masked;
+	}
+	
+	/* Reescala una imagen a un tamaño */
+	public static BufferedImage reescalar(int ancho, int alto, BufferedImage imagen) {
+		BufferedImage img = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = (Graphics2D) img.getGraphics();
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g2d.drawImage(imagen, 0,0, ancho, alto, null);
+			g2d.dispose();
+		return img;
+	}
 
 	
 	/* Método para cambiar el brillo una imagen */
@@ -79,7 +108,7 @@ public class Utils {
 			buff.getGraphics().drawImage(img, 0,0, null);
 			
 		WritableRaster raster = buff.getRaster();
-		int[] pixel = new int[4];
+		float[] pixel = new float[4];
 		for(int y=0;y<img.getHeight(null);y++) {
 			for(int x=0;x<img.getWidth(null);x++) {
 				raster.getPixel(x, y, pixel);
@@ -91,6 +120,24 @@ public class Utils {
 		}
 		
 		return buff;
+	}
+	
+	/* Devuelve la misma imagen pero con un efecto de zoom al centro y cuadrada */
+	public static BufferedImage cuadrarZoom(int lado, BufferedImage imagen) {
+		float w = imagen.getWidth(), h = imagen.getHeight(), diff;
+		BufferedImage zoom = (w>h) ? Utils.reescalar((int)(w * lado/h), lado, imagen) 
+								   : Utils.reescalar(lado, (int)(h * lado/w), imagen);
+		w = zoom.getWidth(); h = zoom.getHeight();
+		diff = (w>h) ? Math.abs(w-lado) : Math.abs(h-lado);
+		BufferedImage nueva = new BufferedImage(lado, lado, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = (Graphics2D) nueva.getGraphics();
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+		
+		if(w>h) g2d.drawImage(zoom, -(int)(diff/2), 0, null);
+		else g2d.drawImage(zoom, 0, -(int)(diff/2), null);
+		g2d.dispose();
+		return nueva;
 	}
 
 	/* Método para crear un mosaico de imágenes 

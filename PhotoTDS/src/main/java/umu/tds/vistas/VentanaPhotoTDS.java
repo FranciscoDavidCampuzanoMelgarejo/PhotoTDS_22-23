@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Graphics;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 
@@ -15,8 +16,12 @@ import javax.swing.JPanel;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Descuento;
+import umu.tds.modelo.pojos.DescuentoEdad;
+import umu.tds.modelo.pojos.DescuentoJo;
+import umu.tds.modelo.pojos.DescuentoLikes;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
+import umu.tds.vistas.lists.PubliListPanel;
 import umu.tds.vistas.lists.PubliListRenderer;
 //import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 import umu.tds.vistas.perfil.PanelPerfilUsuario;
@@ -32,8 +37,13 @@ import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.ListSelectionEvent;
+
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 /**@title Ventana principal de PhotoTDS
@@ -41,7 +51,6 @@ import java.awt.Insets;
  * */
 
 public class VentanaPhotoTDS implements ActionListener{
-
 	private JFrame frame;
 	private JPanel phototdsrender;
 	private JPanel apprender;
@@ -50,11 +59,9 @@ public class VentanaPhotoTDS implements ActionListener{
 	private GridBagLayout layout1, layout2;
 	
 	private Image fondo, winIcon;
-	private VentanaSubirFoto subirFoto;
-	private boolean subiendoFoto;
 	
 	private PanelPerfilUsuario panelUsuario;
-	private boolean viendoperfil;
+	private PanelBusqueda panelBusqueda;
 	
 	private VentanaAbout about;
 	
@@ -62,9 +69,10 @@ public class VentanaPhotoTDS implements ActionListener{
 	
 	private ArrayList<Publicacion> publiList;
 	private DefaultListModel<Publicacion> publiListModel;
-	private JScrollPane panelInicio;
-	private JPanel panelPubliList;
 	private JList<Publicacion> publiJList;
+	private JPanel panelInicio;
+	private JScrollPane scrollPubliList;
+	private JList list;
 
 	private void cargarRecursos() {
 		try {
@@ -75,7 +83,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	
 	private void recargarRecientes() {
 		publiListModel.clear();
-		publiListModel.addAll(Controlador.getControlador().getUltimasPublicaciones());
+		publiListModel.addAll(Controlador.getControlador().getUltimasFotos());
 		publiJList.revalidate();
 	}
 	
@@ -88,11 +96,11 @@ public class VentanaPhotoTDS implements ActionListener{
 	}
 	
 	public VentanaPhotoTDS(int winX, int winY) {
-		Controlador.getControlador().setPremium(false);
 		cargarRecursos();
 		
-		subiendoFoto = false;
-		viendoperfil = false;
+		Controlador.getControlador().addDescuento(new DescuentoLikes());
+		Controlador.getControlador().addDescuento(new DescuentoEdad());
+		Controlador.getControlador().addDescuento(new DescuentoJo());
 		publiList = (ArrayList<Publicacion>) Controlador.getControlador().getUltimasFotos();
 		System.out.println(publiList.toString());
 		publiListModel = new DefaultListModel<Publicacion>();
@@ -165,28 +173,35 @@ public class VentanaPhotoTDS implements ActionListener{
 		phototdsrender.add(apprender, gbc_apprender);
 		apprender.setLayout(new CardLayout(0, 0));
 			c = (CardLayout)apprender.getLayout();
+			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
+				panelUsuario.addActionListener(this);
 			
-			panelInicio = new JScrollPane();
-			panelInicio.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-			panelInicio.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			apprender.add(panelInicio, "panelInicio");
-			
-			panelPubliList = new JPanel() {
+			panelInicio = new JPanel() { 
 				private static final long serialVersionUID = 1L;
 				{setOpaque(false);} 
 			};
-			panelInicio.setViewportView(panelPubliList);
-			panelPubliList.setLayout(new BorderLayout(0, 0));
+			apprender.add(panelInicio, "panelInicio");
+			panelInicio.setLayout(new BorderLayout(0, 0));
 			
+			scrollPubliList = new JScrollPane();
+			scrollPubliList.setOpaque(false);
+			scrollPubliList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			panelInicio.add(scrollPubliList, BorderLayout.CENTER);
 			publiJList = new JList<Publicacion>(publiListModel) {
 				private static final long serialVersionUID = 1L;
 				{setOpaque(false);} 
 			};
-			publiJList.setCellRenderer(new PubliListRenderer());
-			panelPubliList.add(publiJList, BorderLayout.CENTER);
-			
-			panelUsuario = new PanelPerfilUsuario(frame, Controlador.getControlador().getUsuarioLogueado());
+			publiJList.setCellRenderer(new PubliListRenderer(128));
+			publiJList.setSelectedIndex(ListSelectionModel.SINGLE_SELECTION);
+			scrollPubliList.setViewportView(publiJList);
+			scrollPubliList.getViewport().setOpaque(false);
+			scrollPubliList.setViewportBorder(BorderFactory.createEmptyBorder());
+			scrollPubliList.setBorder(BorderFactory.createEmptyBorder());
 			apprender.add(panelUsuario, "panelUsuario");
+			
+			
+			panelBusqueda = new PanelBusqueda();
+			apprender.add(panelBusqueda, "panelBusqueda");			
 	}
 
 	/* La ventana principal escucha cambios en el Dock --> selección de distintas pantallas */
@@ -205,6 +220,7 @@ public class VentanaPhotoTDS implements ActionListener{
 				break; 
 			case "publi" : {				// Subir nueva publicación
 				VentanaSubirFoto.getInstancia().mostrar();	
+				VentanaSubirFoto.getInstancia().addActionListener(this);
 				break;
 			}
 			case "user" : {					// Perfil de usuario
@@ -224,13 +240,16 @@ public class VentanaPhotoTDS implements ActionListener{
 				premium.mostrar();
 				premium.addActionListener(this);
 				break;
-			case "cambioPremium" :			// Notifiación para actualizar premium en el dock
+			case "cambioPremium" :			// Notificación para actualizar premium en el dock
 				Controlador.getControlador().setPremium(true);
 				dock.recargarPremium();
 				break;
 			case "cambioNoPremium" :
 				Controlador.getControlador().setPremium(false);
 				dock.recargarPremium();
+				break;
+			case "fotoSubida" :
+				recargarRecientes();
 				break;
 		}
 		

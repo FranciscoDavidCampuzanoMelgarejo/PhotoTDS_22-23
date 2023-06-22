@@ -23,6 +23,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -33,6 +34,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.awt.Font;
@@ -46,6 +48,9 @@ import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
 import umu.tds.vistas.Utils;
+import umu.tds.vistas.VentanaAbout;
+import umu.tds.vistas.VentanaPremium;
+import umu.tds.vistas.VentanaSubirFoto;
 import umu.tds.vistas.seguidores.DialogoSeguidores;
 
 import javax.swing.JScrollPane;
@@ -54,7 +59,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-public class PanelPerfilUsuario extends JPanel {
+public class PanelPerfilUsuario extends JPanel implements ActionListener{
 
 	private static final int ANCHO_FOTO_PERFIL = 150; // Ancho de la foto de perfil en la ventana del perfil del usuario
 
@@ -64,6 +69,19 @@ public class PanelPerfilUsuario extends JPanel {
 	private Icon fotoPerfil; // Foto de perfil sin retocar
 	private String rutaFotoPerfil;
 	private JLabel lblFotoPerfil;
+	
+	private List<ActionListener> listeners;
+	
+	/* Listener para la ventana principal */
+	public void addActionListener(ActionListener a) {
+		if(listeners==null) listeners = new LinkedList<ActionListener>();
+		listeners.add(a);
+	}
+	
+	/* Notificación de nueva foto de perfil a la ventana principal para que actualice la del Dock */
+	public void notificarCambioFotoPerfil(ActionEvent a) {
+		listeners.stream().forEach(l -> l.actionPerformed(a));
+	}
 
 	// Panel de scroll que contiene las fotos del perfil del usuario
 	private JScrollPane panelScrollFotos;
@@ -76,11 +94,15 @@ public class PanelPerfilUsuario extends JPanel {
 		this.framePadre = framePadre;
 		this.usuarioPerfil = usuario;
 		this.rutaFotoPerfil = usuarioPerfil.getPerfil().getFoto();
+		listeners = new LinkedList<ActionListener>();
 
 		System.out.println(rutaFotoPerfil);
+		/*
 		this.fotoPerfil = rutaFotoPerfil == null
 				? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png"))
 				: new ImageIcon(rutaFotoPerfil);
+				*/
+		this.fotoPerfil = (rutaFotoPerfil==null) ? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png")) : new ImageIcon(rutaFotoPerfil);
 		this.rutasFotos = usuarioPerfil.getRutasFotos();
 
 		// Factoria para crear un boton -> Si el usuario del perfil es el usuario
@@ -97,7 +119,7 @@ public class PanelPerfilUsuario extends JPanel {
 					.dialogo(framePadre, fotoPerfil, rutaFotoPerfil).build();
 		else
 			factoria = new FactoriaBotonPerfil.FactoriaBotonPerfilBuilder(estado).build();
-
+		factoria.addActionListener(this);
 		initialize();
 	}
 
@@ -107,6 +129,8 @@ public class PanelPerfilUsuario extends JPanel {
 
 		BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
 		this.lblFotoPerfil.setIcon(new ImageIcon(masked));
+		
+		notificarCambioFotoPerfil(new ActionEvent(this, 6, "cambioFotoPerfil"));
 	}
 
 	/**
@@ -222,7 +246,8 @@ public class PanelPerfilUsuario extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				DialogoSeguidores dialogoSeguidores = new DialogoSeguidores("Seguidores", usuarioPerfil.getSeguidores(),
 						framePadre.getSize().height, framePadre.getContentPane());
-				dialogoSeguidores.mostrar();
+						dialogoSeguidores.mostrar();
+						
 			}
 		});
 
@@ -236,7 +261,7 @@ public class PanelPerfilUsuario extends JPanel {
 		gbc_lblSeguidos.gridy = 2;
 		panelPerfil.add(lblSeguidos, gbc_lblSeguidos);
 
-		// Al clickar en los usuarios seguids, se debe abrir un dialogo con una lista de
+		// Al clickar en los usuarios seguidos, se debe abrir un dialogo con una lista de
 		// los usuarios a los que sigue el usuario logueado
 
 		lblSeguidos.addMouseListener(new MouseAdapter() {
@@ -333,6 +358,11 @@ public class PanelPerfilUsuario extends JPanel {
 		gbc_panelScrollFotos.gridy = 5;
 		panelContenedor.add(panelScrollFotos, gbc_panelScrollFotos);
 
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		notificarCambioFotoPerfil(e);
 	}
 
 }
