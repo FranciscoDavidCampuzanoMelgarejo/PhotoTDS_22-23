@@ -35,7 +35,7 @@ public class PanelScrollFotos extends JScrollPane {
 	private static final int COLUMNAS = 3;
 	private static final int NUMERO_FOTOS_CARGAR = 6;
 	private static final double PORCENTAJE_BARRA = 0.95;
-	private static final double PORCENTAJE_VENTANA = 0.85;
+	private static final double PORCENTAJE_VENTANA = 0.8;
 
 	// Ancho de la ventana maximo permitido para reescalar
 	private final int maximoPermitido = (int) (Toolkit.getDefaultToolkit().getScreenSize().width * PORCENTAJE_VENTANA);
@@ -128,6 +128,15 @@ public class PanelScrollFotos extends JScrollPane {
 				System.out.println("FOTOS CARGADAS");
 			}
 		});
+	}
+	
+	
+	public void cargarFotos(List<Publicacion> publicaciones) {
+		this.fotos = publicaciones;
+		this.fotosCargadas = 0;
+		this.fotosRestantes = fotos.size();
+		this.row = this.col = 0;
+		cargar(Math.min(NUMERO_FOTOS_CARGAR, fotosRestantes));
 	}
 
 	// Metodos auxiliares (privados)

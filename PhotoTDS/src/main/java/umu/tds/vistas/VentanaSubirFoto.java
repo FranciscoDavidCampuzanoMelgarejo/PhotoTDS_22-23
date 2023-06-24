@@ -21,6 +21,7 @@ import java.awt.CardLayout;
 import javax.swing.SwingConstants;
 
 import umu.tds.controlador.Controlador;
+import umu.tds.vistas.album.DialogoCrearAlbum;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
@@ -150,14 +151,15 @@ public class VentanaSubirFoto {
 		JPanel iconoDropFoto = new JPanel();
 		panelDropFoto.add(iconoDropFoto, BorderLayout.NORTH);
 		GridBagLayout gbl_iconoDropFoto = new GridBagLayout();
-		gbl_iconoDropFoto.columnWidths = new int[]{0, 0};
+		gbl_iconoDropFoto.columnWidths = new int[]{0, 0, 0};
 		gbl_iconoDropFoto.rowHeights = new int[]{80, 10, 10, 0};
-		gbl_iconoDropFoto.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_iconoDropFoto.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 		gbl_iconoDropFoto.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		iconoDropFoto.setLayout(gbl_iconoDropFoto);
 		
 		JLabel nuevapubliicon = new JLabel("");
 		GridBagConstraints gbc_nuevapubliicon = new GridBagConstraints();
+		gbc_nuevapubliicon.gridwidth = 2;
 		gbc_nuevapubliicon.insets = new Insets(0, 0, 10, 0);
 		gbc_nuevapubliicon.gridx = 0;
 		gbc_nuevapubliicon.gridy = 0;
@@ -169,14 +171,30 @@ public class VentanaSubirFoto {
 		botonFilechooser.setBackground(new Color(0xb2, 0x00, 0x9c));
 		botonFilechooser.setFont(new Font("Tahoma", Font.ITALIC, 17));
 		GridBagConstraints gbc_botonFilechooser = new GridBagConstraints();
-		gbc_botonFilechooser.insets = new Insets(0, 0, 5, 0);
+		gbc_botonFilechooser.insets = new Insets(0, 0, 5, 5);
 		gbc_botonFilechooser.gridx = 0;
 		gbc_botonFilechooser.gridy = 1;
 		iconoDropFoto.add(botonFilechooser, gbc_botonFilechooser);
 		
+		JButton btnCrearAlbum = new JButton("Crear album");
+		btnCrearAlbum.setBackground(new Color(0xb2, 0x00, 0x9c));
+		btnCrearAlbum.setFont(new Font("Tahoma", Font.ITALIC, 17));
+		GridBagConstraints gbc_btnCrearAlbum = new GridBagConstraints();
+		gbc_btnCrearAlbum.insets = new Insets(0, 0, 5, 0);
+		gbc_btnCrearAlbum.gridx = 1;
+		gbc_btnCrearAlbum.gridy = 1;
+		iconoDropFoto.add(btnCrearAlbum, gbc_btnCrearAlbum);
+		
+		// Al pulsar el boto para añadir foto, abrir el dialogo oportuno
+		btnCrearAlbum.addActionListener((ActionEvent e) -> {
+			DialogoCrearAlbum dialogo = new DialogoCrearAlbum(frame);
+			dialogo.mostrar();
+		});
+		
 		JLabel lblNewLabel = new JLabel("O bien arrástrala aquí abajo");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 2;
 		iconoDropFoto.add(lblNewLabel, gbc_lblNewLabel);

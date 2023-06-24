@@ -5,9 +5,11 @@ import java.awt.image.WritableRaster;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import java.util.EventObject;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -264,10 +266,20 @@ public class Controlador implements FotosListener {
 
 	}
 
-	public void publicarAlbum(String titulo, String descripcion, String comentario, List<String> hashtags,
-			Set<Foto> fotos) {
-
-		Album album = new Album(titulo, descripcion, new Comentario(comentario, usuario), hashtags, fotos);
+	public void publicarAlbum(String titulo, String descripcion, String comentario, List<String> fotos, List<String> hashtags) {
+		
+		// Crear cada una de las fotos y añadirlas al album
+		// Crear el album 
+		
+		Set<Foto> fotosAlbum = new HashSet<Foto>(fotos.size());
+		fotos.stream()
+			.forEach((String ruta) -> {
+				Foto foto = new Foto(titulo, descripcion, ruta, null, null);
+				foto.setUsuario(usuario);
+				fotosAlbum.add(foto);
+			});
+		
+		Album album = new Album(titulo, descripcion, new Comentario(comentario, this.usuario), hashtags, fotosAlbum);
 		publicar(album);
 	}
 
@@ -334,7 +346,7 @@ public class Controlador implements FotosListener {
 	/* Devuelve una lista de usuarios cuyo nombre o correo casan con la expresión regular */
 	public List<Usuario> getUsersByER(Pattern pat){
 		return catalogoUsuarios.getAll().stream()
-										.filter(u -> pat.matcher(u.getNombre()).find() | pat.matcher(u.getEmail()).find())
+										.filter(u -> pat.matcher(u.getNombre()).find() || pat.matcher(u.getEmail()).find())
 										.collect(Collectors.toList());
 	}
 	
@@ -359,7 +371,7 @@ public class Controlador implements FotosListener {
 	/* Devuelve una lista de fotos con ese hashtag */
 	public List<Publicacion> getPublisHashtag(String hashtag){
 		return catalogoPublicaciones.getAll().stream()
-											 .filter(p -> p.getClass()==Foto.class)
+											 //.filter(p -> p.getClass()==Foto.class)
 											 .filter(p -> p.getHashtags().contains(hashtag))
 											 .sorted(Comparator.comparing(Publicacion::getFecha).reversed())
 											 .collect(Collectors.toList());

@@ -123,6 +123,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 		initialize();
 	}
 
+	/*
 	private void cambiarFotoPerfil() {
 		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
 		this.fotoPerfil = new ImageIcon(rutaFotoPerfil);
@@ -132,6 +133,8 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 		
 		notificarCambioFotoPerfil(new ActionEvent(this, 6, "cambioFotoPerfil"));
 	}
+	*/
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -139,6 +142,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 	private void initialize() {
 
 		this.setBorder(new LineBorder(Color.yellow));
+		setLayout(new BorderLayout(0, 0));
 		JPanel panelContenedor = new JPanel();
 		add(panelContenedor, BorderLayout.CENTER);
 		GridBagLayout gbl_panelContenedor = new GridBagLayout();
@@ -351,18 +355,37 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 		panelScrollFotos = new PanelScrollFotos(usuarioPerfil.getPublicaciones(), framePadre.getSize().width,
 				rutaFotoPerfil, usuarioPerfil.getUsuario());
 		GridBagConstraints gbc_panelScrollFotos = new GridBagConstraints();
-		gbc_panelScrollFotos.anchor = GridBagConstraints.NORTH;
 		gbc_panelScrollFotos.insets = new Insets(0, 0, 5, 5);
 		gbc_panelScrollFotos.fill = GridBagConstraints.BOTH;
 		gbc_panelScrollFotos.gridx = 1;
 		gbc_panelScrollFotos.gridy = 5;
 		panelContenedor.add(panelScrollFotos, gbc_panelScrollFotos);
+		
 
+	}
+	
+	public void cambiarFotoPerfil() {
+		if (!rutaFotoPerfil.equals(usuarioPerfil.getPerfil().getFoto())) {
+			this.rutaFotoPerfil = usuarioPerfil.getPerfil().getFoto();
+			this.fotoPerfil = new ImageIcon(rutaFotoPerfil);
+			
+			BufferedImage fotoRedondeada = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
+			lblFotoPerfil.setIcon(new ImageIcon(fotoRedondeada));
+			factoria.setFotoPerfil(fotoPerfil);
+			factoria.setRutaFotoPerfil(rutaFotoPerfil);
+			
+		}
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		notificarCambioFotoPerfil(e);
+	}
+	
+	// Metodo que se llama cuando un usuario sube una foto -> Se debe actualizar el panel
+	public void actualizarPerfil() {
+		this.usuarioPerfil = Controlador.getControlador().getUsuarioLogueado();
+		((PanelScrollFotos)this.panelScrollFotos).cargarFotos(usuarioPerfil.getPublicaciones());
 	}
 
 }
