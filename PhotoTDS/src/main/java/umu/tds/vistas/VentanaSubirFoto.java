@@ -262,7 +262,7 @@ public class VentanaSubirFoto {
 		panelfotoElegida.add(panelBotonContinuar, BorderLayout.SOUTH);
 		
 		// Donde se muestra la vista previa
-		JLabel vistaPreviaLabel = new JLabel("");
+		JLabel vistaPreviaLabel = new JLabel();
 		vistaPreviaLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JButton botonContinuar = new JButton("Continuar con esta foto");
@@ -273,7 +273,7 @@ public class VentanaSubirFoto {
 				
 				// Escalamos hasta que la dimensión coincida con el tamaño de la imagen de preview
 				float iw = fotoPubli.getWidth(null), ih = fotoPubli.getHeight(null), s = 1.0f;
-				s = (iw>ih) ? (512/iw) : (512/ih);
+				s = (iw>ih) ? (384/iw) : (384/ih);
 				
 				vistaPreviaLabel.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH)));
 				
@@ -317,7 +317,7 @@ public class VentanaSubirFoto {
 		panelNuevaPublicacion.add(panelPublicacion, BorderLayout.CENTER);
 		GridBagLayout gbl_panelPublicacion = new GridBagLayout();
 		gbl_panelPublicacion.columnWidths = new int[]{0, 0};
-		gbl_panelPublicacion.rowHeights = new int[]{512, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panelPublicacion.rowHeights = new int[]{384, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelPublicacion.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_panelPublicacion.rowWeights = new double[]{0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
 		panelPublicacion.setLayout(gbl_panelPublicacion);
