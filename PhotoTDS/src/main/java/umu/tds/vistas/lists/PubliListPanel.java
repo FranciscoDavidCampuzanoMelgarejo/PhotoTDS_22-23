@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
@@ -53,8 +55,20 @@ public class PubliListPanel extends JPanel{
 		this.publi = publi;
 		
 		try {
-			Foto foto = (Foto)publi;
-			img = ImageIO.read(new File(foto.getRuta()));
+			// CAMBIAR PARA ALBUMES
+			
+			
+			if(publi.getClass()!=Foto.class) {	// Si es un album, ponemos de foto un mosaico
+				Album album = (Album) publi;
+				LinkedList<Foto> lFotos = new LinkedList<Foto>(album.getFotos());
+				//int ancho = (lFotos.size()==1) ? img = Utils. 
+				img = Utils.crearMosaico(alto, alto, lFotos.size(), lFotos);
+				
+			} else {							// Si es una foto, pues la foto jaja
+				Foto foto = (Foto)publi;
+				img = ImageIO.read(new File(foto.getRuta()));
+			}
+			
 			String ruta = publi.getUsuario().getPerfil().getFoto();
 			userpic = (ruta==null) ? ImageIO.read(getClass().getResource("/imagenes/noprofilepic.png")) : ImageIO.read(new File(ruta));
 			like = ImageIO.read(getClass().getResource("/imagenes/like.png"));
@@ -80,9 +94,10 @@ public class PubliListPanel extends JPanel{
 		panelIzq.setLayout(new BorderLayout(0, 0));
 		
 		
-		// Para la vista previa hacemos zoom a la imagen para que cuadre en 192x192
+		// Para la vista previa de la foto hacemos zoom a la imagen para que cuadre en 192x192
 		imgicon = new JLabel();
-		imgicon.setIcon(new ImageIcon(Utils.cuadrarZoom(alto, img)));
+		if(publi.getClass()!=Album.class) imgicon.setIcon(new ImageIcon(Utils.cuadrarZoom(alto, img)));
+		else imgicon.setIcon(new ImageIcon(img));
 		panelIzq.add(imgicon, BorderLayout.CENTER);
 		
 		JPanel panelDrc = new JPanel() {

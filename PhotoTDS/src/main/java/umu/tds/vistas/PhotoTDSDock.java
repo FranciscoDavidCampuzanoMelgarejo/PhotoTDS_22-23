@@ -24,6 +24,8 @@ import java.awt.event.*;
 import java.awt.Insets;
 import javax.swing.SwingConstants;
 
+import pulsador.Luz;
+
 /***
  * @title PhotoTDS dock
  * @author diego
@@ -351,7 +353,7 @@ public class PhotoTDSDock extends JPanel{
 			{ setOpaque(false); }
 		};
 		GridBagConstraints gbc_dockpremium = new GridBagConstraints();
-		gbc_dockpremium.fill = GridBagConstraints.BOTH;
+		gbc_dockpremium.fill = GridBagConstraints.VERTICAL;
 		gbc_dockpremium.gridx = 0;
 		gbc_dockpremium.gridy = 7;
 		dock1.add(dockpremium, gbc_dockpremium);

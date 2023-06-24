@@ -345,8 +345,9 @@ public class Controlador implements FotosListener {
 	
 	/* Devuelve una lista de usuarios cuyo nombre o correo casan con la expresión regular */
 	public List<Usuario> getUsersByER(Pattern pat){
+
 		return catalogoUsuarios.getAll().stream()
-										.filter(u -> pat.matcher(u.getNombre()).find() || pat.matcher(u.getEmail()).find())
+										.filter(u -> pat.matcher(u.getNombre()).find() || pat.matcher(u.getEmail()).find() || pat.matcher(u.getUsuario()).find())
 										.collect(Collectors.toList());
 	}
 	

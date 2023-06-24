@@ -9,8 +9,11 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -18,10 +21,13 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
+
+import umu.tds.modelo.pojos.Foto;
 
 public class Utils {
 
@@ -146,32 +152,56 @@ public class Utils {
 	 *  z --> ancho y alto del mosaico; z imagenes x z imagenes
 	 *  imgs --> lista de imágenes
 	 * */
-	public static BufferedImage crearMosaico(int w, int h, int z, List<Image> imgs) {
+	public static BufferedImage crearMosaico(int w, int h, int z, List<Foto> fotos) {
+		List<BufferedImage> imgs = new LinkedList<BufferedImage>();
+		for(Foto f : fotos) {
+			try {
+				imgs.add(ImageIO.read(new File(f.getRuta())));
+			} catch (IOException ioe) { ioe.printStackTrace(); System.exit(-1); }
+		}
+		
 		BufferedImage buff = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		
 		int iw = w/z, ih = h/z;			// Ancho y alto de las imágenes del mosaico.
-		Iterator<Image> it = imgs.iterator();
+		Iterator<BufferedImage> it = imgs.iterator();
 		Graphics g = buff.getGraphics();
 		
 		// Recorremos el mosaico y ponemos una imagen en cada casilla
 		for(int y=0; y<z; y++) {
 			for(int x=0; x<z; x++) {
 				if(it.hasNext()) {
-					Image img = it.next();
+					BufferedImage img = it.next();
 					if(img.getWidth(null)!=img.getHeight(null)) {
 						int imgw = img.getWidth(null), imgh = img.getHeight(null);
-						img = img.getScaledInstance(imgw/3, imgh/3, Image.SCALE_SMOOTH);
+						//img = img.getScaledInstance(imgw/3, imgh/3, Image.SCALE_SMOOTH);
+						img = Utils.reescalar(imgw/3, imgh/3, img);
 						int xori = img.getWidth(null)/2 - (iw/2) - 1;
 						int yori = img.getHeight(null)/2 - (ih/2) - 1;
 						BufferedImage buff2 = new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB);
 						buff2.getGraphics().drawImage(img, -xori, -yori, null);
 						g.drawImage(buff2, (iw*x)-1, (ih*y)-1, null);
-					} else g.drawImage(img.getScaledInstance(iw, ih, Image.SCALE_SMOOTH), (iw*x)-1, (ih*y)-1, null);
+					} else g.drawImage(Utils.reescalar(iw, ih, img), (iw*x)-1, (ih*y)-1, null);
+					// Utils.reescalar(iw, ih, img)
 				}
 			}
 		}
 		
 		
 		return buff;
+	}
+	
+	/* Inserta un pequeño icono en la esquina inferior derecha de una BufferedImage para distinguirla como album */
+	public static BufferedImage crearFotoAlbum(BufferedImage img) {
+		BufferedImage nueva = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB), icono;
+		Graphics2D g2d = (Graphics2D) nueva.getGraphics();
+		try{
+			icono = ImageIO.read(VentanaPhotoTDS.class.getResource("/imagenes/folder.png"));
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g2d.drawImage(img, 0,0, null);
+			g2d.drawImage(icono, img.getWidth()-icono.getWidth()-8, img.getHeight()-icono.getHeight()-8, null);
+			g2d.dispose();
+		} catch (IOException ioe) { ioe.printStackTrace(); System.exit(-1); }
+		return nueva;
 	}
 }
