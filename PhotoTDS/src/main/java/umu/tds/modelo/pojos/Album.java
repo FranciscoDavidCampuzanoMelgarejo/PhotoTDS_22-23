@@ -44,6 +44,10 @@ public class Album extends Publicacion {
 		}
 	}
 	
+	public void addFoto(Foto foto) {
+		fotos.add(foto);
+	}
+	
 	@Override
 	public void darLike() {
 		this.likes++;

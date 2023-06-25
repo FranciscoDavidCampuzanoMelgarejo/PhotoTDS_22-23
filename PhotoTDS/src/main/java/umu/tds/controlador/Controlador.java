@@ -282,11 +282,30 @@ public class Controlador implements FotosListener {
 		Album album = new Album(titulo, descripcion, new Comentario(comentario, this.usuario), hashtags, fotosAlbum);
 		publicar(album);
 	}
+	
+	public Publicacion addFotoToAlbum(Album album, String ruta) {
+		Foto foto = new Foto(album.getTitulo(), album.getDescripcion(), ruta, null, null);
+		foto.setUsuario(usuario);
+		album.addFoto(foto);
+		publicacionDAO.update(album);
+		return album;
+	}
 
-	public void elminarPublicacion(Integer id) {
+	public void eliminarPublicacion(Integer id) {
 		Publicacion publicacion = catalogoPublicaciones.get(id);
 		catalogoPublicaciones.remove(publicacion);
 		publicacionDAO.delete(publicacion);
+		
+	}
+	
+	public Comentario comentar(Integer id, String texto) {
+		Publicacion publicacion = catalogoPublicaciones.get(id);
+		Comentario comentario = new Comentario(texto, usuario);
+		comentarioDAO.save(comentario);
+		publicacion.addComentario(comentario);
+		publicacionDAO.update(publicacion);
+		return comentario;
+		
 	}
 
 	public void darLike(Integer id) {
