@@ -82,12 +82,18 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 	private JLabel lblPublicaciones, lblSeguidores, lblSeguidos;
 
 	private List<ActionListener> listeners;
+	
+	private EstadoBotonPerfil estado;
 
 	/* Listener para la ventana principal */
 	public void addActionListener(ActionListener a) {
 		if (listeners == null)
 			listeners = new LinkedList<ActionListener>();
 		listeners.add(a);
+	}
+	
+	public void notificarSeguimiento(ActionEvent a) {
+		listeners.stream().forEach(l -> l.actionPerformed(a));
 	}
 
 	/*
@@ -131,7 +137,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		// logueado (Editar Perfil)
 		// si el usuario logueado no sigue al usuario del perfil (Seguir)
 		// si el usuario logueado siguel al usuario del perfil (Siguiendo)
-		EstadoBotonPerfil estado = Controlador.getControlador().getUsuarioLogueado().equals(usuario)
+		estado = Controlador.getControlador().getUsuarioLogueado().equals(usuario)
 				? EstadoBotonPerfil.EDITAR_PERFIL
 				: (usuario.isSeguido(Controlador.getControlador().getUsuarioLogueado()) ? EstadoBotonPerfil.SIGUIENDO
 						: EstadoBotonPerfil.SEGUIR);
@@ -240,7 +246,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		gbc_panelNombreUsuario.gridy = 0;
 		panelPerfil.add(panelNombreUsuario, gbc_panelNombreUsuario);
 
-		JLabel lblNombreUsuario = new JLabel(Controlador.getControlador().getUsername());
+		JLabel lblNombreUsuario = new JLabel(usuarioPerfil.getUsuario());
 		lblNombreUsuario.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		panelNombreUsuario.add(lblNombreUsuario);
 
@@ -249,10 +255,21 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 
 		// Boton para editar perfil, seguir a un usuario, o dejar de seguirlo
 		JButton botonPerfil = factoria.crearBoton();
+		botonPerfil.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(estado.equals(EstadoBotonPerfil.SEGUIR)) {
+					Controlador.getControlador().seguir(usuarioPerfil.getUsuario());
+					notificarSeguimiento(new ActionEvent(this, 0, null));
+				}
+					
+			}
+		});
 		panelNombreUsuario.add(botonPerfil);
 
-		lblPublicaciones = new JLabel(
-				Controlador.getControlador().getUsuarioLogueado().numeroPublicaciones() + " Publicaciones");
+		lblPublicaciones = new JLabel();
+				//Controlador.getControlador().getUsuarioLogueado().numeroPublicaciones() + " Publicaciones");
+		lblPublicaciones.setText(usuarioPerfil.getPublicaciones().size() + " publicaciones");
 		lblPublicaciones.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblPublicaciones = new GridBagConstraints();
 		gbc_lblPublicaciones.insets = new Insets(0, 10, 5, 25);
@@ -308,7 +325,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 			}
 		});
 
-		JLabel lblNombreCompleto = new JLabel(Controlador.getControlador().getUserNombre());
+		JLabel lblNombreCompleto = new JLabel(usuarioPerfil.getNombre());
 		lblNombreCompleto.setFont(new Font("Tahoma", Font.BOLD, 14));
 		GridBagConstraints gbc_lblNombreCompleto = new GridBagConstraints();
 		gbc_lblNombreCompleto.anchor = GridBagConstraints.NORTHWEST;
@@ -318,7 +335,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		gbc_lblNombreCompleto.gridy = 4;
 		panelPerfil.add(lblNombreCompleto, gbc_lblNombreCompleto);
 
-		JLabel lblCorreo = new JLabel(Controlador.getControlador().getUsuarioLogueado().getEmail());
+		JLabel lblCorreo = new JLabel(usuarioPerfil.getEmail());
 		lblCorreo.setFont(new Font("Tahoma", Font.BOLD, 14));
 		GridBagConstraints gbc_lblCorreo = new GridBagConstraints();
 		gbc_lblCorreo.gridwidth = 3;
