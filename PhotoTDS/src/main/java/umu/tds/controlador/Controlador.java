@@ -400,7 +400,6 @@ public class Controlador implements FotosListener {
 	/* Devuelve una lista de fotos con ese hashtag */
 	public List<Publicacion> getPublisHashtag(String hashtag){
 		return catalogoPublicaciones.getAll().stream()
-											 //.filter(p -> p.getClass()==Foto.class)
 											 .filter(p -> p.getHashtags().contains(hashtag))
 											 .sorted(Comparator.comparing(Publicacion::getFecha).reversed())
 											 .collect(Collectors.toList());

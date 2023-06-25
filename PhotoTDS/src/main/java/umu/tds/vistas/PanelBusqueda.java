@@ -357,6 +357,18 @@ public class PanelBusqueda extends JPanel{
 		panelJooInfo.add(lblNewLabel, BorderLayout.NORTH);
 		
 		hashPubliJList = new JList<Publicacion>();
+		hashPubliJList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(!e.getValueIsAdjusting()) {
+					Publicacion p = hashPubliJList.getSelectedValue();
+					if(p!=null) {
+						System.out.println(p.toString());
+						VentanaPubli v = new VentanaPubli(p);
+						v.mostrar();
+					}
+				}
+			}
+		});
 		hashPubliJList.setBorder(BorderFactory.createEmptyBorder());
 		hashPubliJList.setCellRenderer(new PubliListRenderer(128));
 		hashPubliJList.setModel(hashPubliListModel);

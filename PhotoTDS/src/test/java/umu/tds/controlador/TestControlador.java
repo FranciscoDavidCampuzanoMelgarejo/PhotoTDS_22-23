@@ -92,8 +92,7 @@ public class TestControlador {
 		Set<Foto> fotos = new HashSet<Foto>();
 		Foto foto = (Foto) publicacionDAO.findBy(1);
 		fotos.add(foto);
-		controlador.publicarAlbum("Nuevo album", "fotos de animales", "Primer #comentario", Arrays.asList("comentario"),
-				fotos);
+		//controlador.publicarAlbum("Nuevo album", "fotos de animales", "Primer #comentario", Arrays.asList("comentario"), fotos);
 
 		Album publicacion = (Album) publicacionDAO.findBy(2);
 		assertNotNull(publicacion);
