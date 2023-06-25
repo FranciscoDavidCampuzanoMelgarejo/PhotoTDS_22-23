@@ -77,7 +77,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	private JList<Publicacion> publiJList;
 	private JPanel panelInicio;
 	private JScrollPane scrollPubliList;
-	private JList list;
+
 
 	private void cargarRecursos() {
 		try {
@@ -194,17 +194,15 @@ public class VentanaPhotoTDS implements ActionListener{
 			scrollPubliList.setOpaque(false);
 			scrollPubliList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			panelInicio.add(scrollPubliList, BorderLayout.CENTER);
-			publiJList = new JList<Publicacion>(publiListModel) {
-				private static final long serialVersionUID = 1L;
-				{setOpaque(false);} 
-			};
+			publiJList = new JList<Publicacion>();
+			publiJList.setOpaque(false);
+			publiJList.setModel(publiListModel);
 			publiJList.clearSelection();
 			publiJList.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
 					if(!e.getValueIsAdjusting()) {
 						Publicacion p = publiJList.getSelectedValue();
 						if(p!=null) {
-							System.out.println(p.toString());
 							VentanaPubli v = new VentanaPubli(p);
 							v.mostrar();
 						}

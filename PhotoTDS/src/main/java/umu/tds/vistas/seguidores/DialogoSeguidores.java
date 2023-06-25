@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 
 import umu.tds.modelo.pojos.Usuario;
+import umu.tds.vistas.VentanaPerfil;
+
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -26,10 +28,13 @@ import java.awt.Image;
 import java.awt.Dialog.ModalityType;
 
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.Color;
 
 public class DialogoSeguidores extends JDialog {
-
+	private static final long serialVersionUID = 1L;
 	private static final int ANCHO_DIALOGO = 400;
 	private static final double PORCENTAJE_ALTURA = 0.6;
 
@@ -113,6 +118,17 @@ public class DialogoSeguidores extends JDialog {
 				RendererLista render = (RendererLista) lista.getCellRenderer();
 				render.setHoverIndex(-1);
 				lista.repaint();
+			}
+		});
+		
+		lista.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				Usuario u = lista.getSelectedValue();
+				if(!e.getValueIsAdjusting() && u!=null) {
+					VentanaPerfil vp = new VentanaPerfil(lista.getSelectedValue());
+					dispose();
+					vp.mostrar();
+				}
 			}
 		});
 

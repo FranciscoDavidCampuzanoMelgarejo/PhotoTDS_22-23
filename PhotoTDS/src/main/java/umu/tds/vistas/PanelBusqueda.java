@@ -223,6 +223,16 @@ public class PanelBusqueda extends JPanel{
 			private static final long serialVersionUID = 1L;
 			{setOpaque(false);}
 		};
+		userJList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				Usuario u = userJList.getSelectedValue();
+				if(!e.getValueIsAdjusting() && u!=null) {
+					userJList.clearSelection();
+					VentanaPerfil vp = new VentanaPerfil(u);
+					vp.mostrar();
+				}
+			}
+		});
 		userJList.setBorder(new EmptyBorder(0, 0, 0, 0));
 			userJList.setCellRenderer(new UserListRenderer());
 			userJList.setModel(userListModel);
