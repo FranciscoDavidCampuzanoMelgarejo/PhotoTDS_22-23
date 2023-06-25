@@ -98,13 +98,9 @@ public class PanelScrollFotos extends JScrollPane {
 
 			@Override
 			public void componentResized(ComponentEvent e) {
-				System.out.println("Componente Resized");
-				System.out.println("Tamaño maximo del frame: " + Toolkit.getDefaultToolkit().getScreenSize().width);
-				System.out.println("Tamaño del viewport: " + PanelScrollFotos.this.getViewport().getWidth());
 
 				int anchoVentanaActual = SwingUtilities.getWindowAncestor(PanelScrollFotos.this).getSize().width;
 				int anchoFoto = getAnchoFoto();
-				System.out.println("Ancho foto: " + anchoFoto);
 
 				if ((anchoVentanaActual > maximoPermitido && anchoVentana < maximoPermitido)
 						|| (anchoVentanaActual <= maximoPermitido)) {
@@ -116,16 +112,11 @@ public class PanelScrollFotos extends JScrollPane {
 		});
 
 		this.getVerticalScrollBar().addAdjustmentListener((AdjustmentEvent e) -> {
-			System.out.println("BARRA");
 			JScrollBar barra = (JScrollBar) e.getAdjustable();
 			int posicionCarga = (int) ((barra.getMaximum() - barra.getModel().getExtent()) * PORCENTAJE_BARRA);
-			System.out.println("Maximo: " + barra.getMaximum());
-			System.out.println("Extent: " + barra.getModel().getExtent());
-			System.out.println("Posicion carga: " + posicionCarga + " Posicion actual: " + barra.getValue());
 
 			if ((fotosRestantes > 0) && (barra.getValue() >= posicionCarga)) {
 				cargar(Math.min(NUMERO_FOTOS_CARGAR, fotosRestantes));
-				System.out.println("FOTOS CARGADAS");
 			}
 		});
 	}
@@ -146,7 +137,6 @@ public class PanelScrollFotos extends JScrollPane {
 
 	// Metodo para cargar las fotos del usuario
 	private void cargar(int numeroPublicaciones) {
-		System.out.println("Cargar Fotos");
 		filasActuales = filasActuales + (int) (Math.ceil(numeroPublicaciones / COLUMNAS));
 		gbl_panelFotos.rowHeights = new int[filasActuales + 1];
 
@@ -155,7 +145,6 @@ public class PanelScrollFotos extends JScrollPane {
 		gbl_panelFotos.rowWeights = pesosFilas;
 
 		int anchoFoto = getAnchoFoto();
-		System.out.println(anchoFoto);
 		for (int i = 0; i < numeroPublicaciones; i++) {
 
 			Foto foto;
@@ -197,7 +186,6 @@ public class PanelScrollFotos extends JScrollPane {
 		reescalar(anchoFoto);
 		panelFotos.revalidate();
 		panelFotos.repaint();
-		System.out.println("FIN CARGAR FOTOS");
 	}
 
 	// Metodo para calcular el ancho de la foto en funcion del tamaño de la ventana

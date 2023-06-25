@@ -85,7 +85,6 @@ public class PanelBusqueda extends JPanel{
 	
 	private void recargarListaHashtags(String hashtags) {
 		List<String> hs = Controlador.getControlador().getHashtagList(hashtags);
-		System.err.println(hs);
 		if(!hs.isEmpty()) {
 			layout1.show(panelResultado, "panelHashtags");
 			hashListModel.clear();
@@ -96,7 +95,6 @@ public class PanelBusqueda extends JPanel{
 	
 	private void recargarListPublis(String hashtag) {
 		List<Publicacion> ps = Controlador.getControlador().getPublisHashtag(hashtag);
-		System.err.println(ps);
 		if(!ps.isEmpty()) {
 			layout2.show(panelHashPublis, "panelHashPubliList");
 			hashPubliListModel.clear();
@@ -372,7 +370,6 @@ public class PanelBusqueda extends JPanel{
 				if(!e.getValueIsAdjusting()) {
 					Publicacion p = hashPubliJList.getSelectedValue();
 					if(p!=null) {
-						System.out.println(p.toString());
 						VentanaPubli v = new VentanaPubli(p);
 						v.mostrar();
 					}

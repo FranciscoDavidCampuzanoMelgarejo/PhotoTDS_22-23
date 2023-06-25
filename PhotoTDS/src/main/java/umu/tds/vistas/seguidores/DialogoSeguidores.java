@@ -62,7 +62,6 @@ public class DialogoSeguidores extends JDialog {
 	}
 
 	private void crearDialogo() {
-		System.out.println("CREANDO DIALOGO");
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -131,8 +130,6 @@ public class DialogoSeguidores extends JDialog {
 				}
 			}
 		});
-
-		System.out.println("FIN CREAR DIALOGO");
 
 	}
 

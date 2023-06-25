@@ -205,7 +205,6 @@ public class PanelDescripcionAlbum extends JPanel {
 		add(btnAddFoto, gbc_btnAddFoto);
 
 		btnAddFoto.addActionListener((ActionEvent e) -> {
-			System.out.println("Añadir Foto");
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			// fileChooser.setFileFilter(new FileNameExtensionFilter("Imagenes", "png, jpg,
@@ -258,7 +257,6 @@ public class PanelDescripcionAlbum extends JPanel {
 			}
 			
 			if(comentario != null && !validarHashtags(comentario)) {
-				System.out.println("Error hashtags");
 				camposCorrectos = false;
 				lblComentarioError.setVisible(true);
 			}
@@ -289,10 +287,8 @@ public class PanelDescripcionAlbum extends JPanel {
 	// Metodo que comprueba los hashtags del comentario y si son validos. Si hay
 	// algun hashtag invalido devuelve false
 	private boolean validarHashtags(String texto) {
-		System.out.println("Valida hashtagas");
 		int contador = 0;
 		//texto = texto.replaceAll("\\s+", "");
-		System.out.println(texto);
 		for(int i = 0; i < texto.length(); i++) {
 			char car = texto.charAt(i);
 			
@@ -308,7 +304,6 @@ public class PanelDescripcionAlbum extends JPanel {
 				i += longitud;
 			}
 		}
-		System.out.println(hashtags);
 		return true;
 	}
 	

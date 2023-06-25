@@ -123,12 +123,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		this.rutaFotoPerfil = usuarioPerfil.getPerfil().getFoto();
 		listeners = new LinkedList<ActionListener>();
 
-		System.out.println(rutaFotoPerfil);
-		/*
-		 * this.fotoPerfil = rutaFotoPerfil == null ? new
-		 * ImageIcon(getClass().getResource("/imagenes/noprofilepic.png")) : new
-		 * ImageIcon(rutaFotoPerfil);
-		 */
+		
 		this.fotoPerfil = (rutaFotoPerfil == null) ? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png"))
 				: new ImageIcon(rutaFotoPerfil);
 		this.rutasFotos = usuarioPerfil.getRutasFotos();
@@ -385,14 +380,12 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		JButton btnFotos = new JButton("FOTOS") {
 			@Override
 			protected void paintComponent(Graphics g) {
-				System.out.println("Dibujando el boton de fotos");
 				super.paintComponent(g);
 
 				if (fotosSeleccionado) {
 					int ancho = getWidth();
 					int alto = getHeight();
-					System.out.println(ancho);
-					System.out.println(alto);
+					
 					// Dibujar una linea inferior
 					g.setColor(Color.white);
 					g.drawLine(0, alto - 1, ancho - 1, alto - 1);
@@ -471,9 +464,6 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		panelFotosAlbumes.add(panelFotos, PANEL_FOTOS);
 		panelFotosAlbumes.add(panelAlbumes, PANEL_ALBUMES);
 
-		System.out.println("me adentro al abismo");
-		System.out.println(framePadre.getSize().width);
-
 	}
 
 	public void cambiarFotoPerfil() {
@@ -500,15 +490,6 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		List<Publicacion> albumes = usuarioPerfil.getPublicaciones().stream().filter((Publicacion p) -> p instanceof Album)
 				.collect(Collectors.toList());
 		
-		/*
-		System.out.println("Actualizar Perfil");
-		System.out.println(fotos);
-		System.out.println(fotos.size());
-		System.out.println(albumes);
-		System.out.println(albumes.size());
-		System.out.println("Comentarios: " + albumes.get(0).getComentarios().size());
-		*/
-		
 		this.panelFotos.cargarFotos(fotos);
 		this.panelAlbumes.cargarFotos(albumes);
 	}
@@ -517,13 +498,5 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		notificarCambioFotoPerfil(e);
 	}
-
-	// Metodo que se llama cuando un usuario sube una foto -> Se debe actualizar el
-	// panel
-	/*
-	 * public void actualizarPerfil() { this.usuarioPerfil =
-	 * Controlador.getControlador().getUsuarioLogueado(); ((PanelScrollFotos)
-	 * this.panelScrollFotos).cargarFotos(usuarioPerfil.getPublicaciones()); }
-	 */
 
 }

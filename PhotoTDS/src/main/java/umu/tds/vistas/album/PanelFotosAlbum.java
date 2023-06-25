@@ -31,7 +31,6 @@ public class PanelFotosAlbum extends JPanel {
 	}
 
 	private void inicializar() {
-		System.out.println(getSize());
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 10, 0, 0, 0, 0, 10, 0 };
@@ -44,7 +43,6 @@ public class PanelFotosAlbum extends JPanel {
 	}
 
 	public void setFoto(String ruta) {
-		System.out.println("Añadiendo foto");
 		Image imagen = new ImageIcon(ruta).getImage().getScaledInstance(anchoImagen, altoImagen, Image.SCALE_SMOOTH);
 		JLabel lblImagen = new JLabel(new ImageIcon(imagen));
 

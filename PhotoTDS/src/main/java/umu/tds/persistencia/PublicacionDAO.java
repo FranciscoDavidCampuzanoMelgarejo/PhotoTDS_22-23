@@ -87,7 +87,6 @@ public class PublicacionDAO implements IPublicacionDAO {
 	public void delete(Publicacion publicacion) {
 		EntityManager em = emf.createEntityManager();
 		try {
-			System.out.println(em.contains(publicacion));
 			em.getTransaction().begin();
 			
 			if(!em.contains(publicacion)) {

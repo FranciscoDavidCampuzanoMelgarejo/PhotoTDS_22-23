@@ -145,7 +145,6 @@ public abstract class Publicacion implements Serializable {
 	}
 
 	public void setComentarios(Set<Comentario> comentarios) {
-		System.out.println("Añadiendo el comentario");
 		addComentarios(comentarios);
 	}
 

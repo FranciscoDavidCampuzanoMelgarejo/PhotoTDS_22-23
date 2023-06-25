@@ -210,14 +210,12 @@ public class PanelLogin extends JPanel {
 			if (noVacios) {
 				// Si no he podido loguearme (no existe el usuario)
 				if (!Controlador.getControlador().loginUsuario(usuario, password)) {
-					System.out.println("No existe el usuario: " + usuario);
 					// Indicar al cliente que no existe ningun usuario con esas credenciales
 					lblErrorUsuario.setText(" - El usuario o la contraseña no son válidos ");
 					lblErrorUsuario.setVisible(true);
 					lblErrorPassword.setText(" - El usuario o la contraseña no son válidos ");
 					lblErrorPassword.setVisible(true);
 				} else {
-					System.out.println("Exito al loguearse");
 					limpiarPanel();
 					
 					//VentanaPrincipal ventana = new VentanaPrincipal();

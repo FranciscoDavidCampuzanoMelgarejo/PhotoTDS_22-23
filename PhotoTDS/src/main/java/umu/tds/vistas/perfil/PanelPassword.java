@@ -247,12 +247,9 @@ public class PanelPassword extends JPanel {
 			JPasswordField campo = campos.get(i);
 			JLabel etiqueta = etiquetas.get(i);
 			etiqueta.setVisible(false);
-			System.out.println(campo.getPassword());
-			System.out.println(etiqueta.getText());
 
 			try {
 				texto = String.valueOf(campo.getPassword());
-				System.out.println(texto);
 				Utils.campoVacio(texto);
 				Utils.formatoErroneo(texto, "(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[-_$?!%.]).*");
 			} catch (CampoVacioException ex1) {

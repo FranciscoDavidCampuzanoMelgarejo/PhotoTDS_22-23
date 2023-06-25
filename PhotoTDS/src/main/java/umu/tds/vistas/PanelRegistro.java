@@ -243,11 +243,9 @@ public class PanelRegistro extends JScrollPane {
 				JFileChooser chooser = new JFileChooser();
 				chooser.showOpenDialog(lblFoto);
 				File archivo = chooser.getSelectedFile();
-				System.err.println(archivo.getPath());
 				if (archivo != null) {
 					try{
 						Image pic = ImageIO.read(archivo);
-						System.err.println(pic);
 						float iw = pic.getWidth(null), ih = pic.getHeight(null), s;
 						s = (iw>ih) ? 200/iw : 200/ih;
 						//ImageIcon i = new ImageIcon(pic.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH));
@@ -620,7 +618,6 @@ public class PanelRegistro extends JScrollPane {
 				String subText = text;
 				if (text != null) {
 					int longitudActual = (fb.getDocument().getLength() - length);
-					// System.out.println(longitudActual);
 					if (longitudActual + text.length() > MAX_CARACTERES) {
 						int caracteresFaltantes = MAX_CARACTERES - longitudActual;
 						subText = new String(text.substring(0, caracteresFaltantes));
@@ -713,7 +710,6 @@ public class PanelRegistro extends JScrollPane {
 			boolean camposCorrectos = nombreApellidosValido && usuarioValido && correoValido && passwordValido;
 
 			if (noVacios && camposCorrectos) {
-				System.out.println("DENTRO");
 
 				LocalDate fechaCambiada = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 				// Si ya existe un usuario con el mismo nombre de usuario o correo electronico
@@ -724,7 +720,6 @@ public class PanelRegistro extends JScrollPane {
 					cambiarEtiquetas(lblErrorCorreo, lblIconoCorreo, USUARIO_EXISTENTE, iconoError);
 
 				} else {
-					System.out.println("Exito al registrarse");
 					limpiarPanel();
 					CardLayout c = (CardLayout) frmLoginRegistro.getContentPane().getLayout();
 					c.show(frmLoginRegistro.getContentPane(), VentanaLoginRegistro.PANEL_LOGIN);

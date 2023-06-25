@@ -47,7 +47,6 @@ public class PanelListaUsuarios extends JPanel {
 	}
 
 	private void crearPanel() {
-		System.out.println("Creando panel");
 		FlowLayout flowLayout = (FlowLayout) getLayout();
 		flowLayout.setVgap(10);
 		flowLayout.setHgap(10);
@@ -72,7 +71,6 @@ public class PanelListaUsuarios extends JPanel {
 
 		JLabel lblNombre = new JLabel(usuario.getNombre());
 		panelNombres.add(lblNombre);
-		System.out.println("Fin de crear el panel");
 	}
 
 }

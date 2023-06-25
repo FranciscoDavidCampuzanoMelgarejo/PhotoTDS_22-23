@@ -26,7 +26,6 @@ public class DialogoCrearAlbum extends JDialog {
 	private void inicializar() {
 		setResizable(false);
 		setSize(anchoDialogo, altoDialogo);
-		//setSize(600, 600);
 		getContentPane().setLayout(new GridLayout(1, 2, 5, 0));
 		panelDerecho = new PanelFotosAlbum((int)anchoDialogo/8 - 10, (int)altoDialogo/4);
 		panelIzquierdo = new PanelDescripcionAlbum(panelDerecho);

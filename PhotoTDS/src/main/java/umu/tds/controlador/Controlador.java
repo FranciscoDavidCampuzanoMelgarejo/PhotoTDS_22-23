@@ -135,7 +135,6 @@ public class Controlador implements FotosListener {
 	}
 
 	public String getUserPicture() {
-		System.out.println(usuario.getPerfil());
 		return usuario.getPerfil().getFoto();
 	}
 	
@@ -177,11 +176,6 @@ public class Controlador implements FotosListener {
 						sb.append("\n");
 						textoComentario = sb.toString();
 
-						System.out.println("HASHTAGS");
-						hashtags.stream().forEach(h -> System.out.println(h));
-
-						System.out.println("COMENTARIO");
-						System.out.println(textoComentario);
 					}
 
 					publicarFoto(foto.getPath(), foto.getTitulo(), foto.getDescripcion(), textoComentario, hashtags);
@@ -199,7 +193,6 @@ public class Controlador implements FotosListener {
 	public boolean registrarUsuario(String nombre, String email, String nombreUsuario, String password,
 			LocalDate fechaNacimiento, String presentacion, String foto) {
 
-		//System.out.println(foto);
 
 		if (!catalogoUsuarios
 				.existeUsuario((Usuario u) -> u.getEmail().equals(email) || u.getUsuario().equals(nombreUsuario))) {
@@ -207,11 +200,6 @@ public class Controlador implements FotosListener {
 			PerfilUsuario perfil = new PerfilUsuario(presentacion, foto);
 			Usuario usuario = new Usuario(nombre, email, nombreUsuario, password, fechaNacimiento, perfil);
 
-			/*
-			 * IMPORTANTE: Guardar primero el usuario en la base de datos. De esta forma, se
-			 * genera el id de la entidad automaticamente y podemos guardarlo en el
-			 * catalogo.
-			 */
 			usuarioDAO.save(usuario);
 			catalogoUsuarios.add(usuario);
 			return true;
@@ -276,7 +264,6 @@ public class Controlador implements FotosListener {
 		
 		// Crear cada una de las fotos y añadirlas al album
 		// Crear el album 
-		System.out.println(fotos);
 		Set<Foto> fotosAlbum = new HashSet<Foto>(fotos.size());
 		fotos.stream()
 			.forEach((String ruta) -> {
@@ -321,7 +308,6 @@ public class Controlador implements FotosListener {
 	public void darLike(Integer id) {
 		Publicacion publicacion = catalogoPublicaciones.get(id);
 		publicacion.darLike();
-		System.out.println("Dar Like: " + publicacion);
 		publicacionDAO.update(publicacion);
 	}
 

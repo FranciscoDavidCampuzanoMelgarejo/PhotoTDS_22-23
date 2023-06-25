@@ -24,19 +24,16 @@ public class FiltroTextField extends DocumentFilter {
 	@Override
 	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
 			throws BadLocationException {
-		// System.out.println("REPLACE");
 		if ((text != null) && (!text.equals(""))) {
 			String textoCompleto = (fb.getDocument().getText(0, fb.getDocument().getLength() - length) + text);
 			try {
 				Utils.formatoErroneo(textoCompleto, patron);
 				if (estado == null || (!estado)) {
-					// System.out.println("Formato correcto: cambio de estado");
 					estado = true;
 					filterListener.notificarFormatoCorrecto();
 				}
 			} catch (FormatoNoAdecuadoException e) {
 				if (estado == null || estado) {
-					// System.out.println("Formato incorreco: cambio de estado");
 					estado = false;
 					filterListener.notificarFormatoErroneo(MENSAJE);
 				}
@@ -50,27 +47,21 @@ public class FiltroTextField extends DocumentFilter {
 
 	@Override
 	public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-		// System.out.println("REMOVE");
 		if (offset > 0) {
 			String textoCompleto = fb.getDocument().getText(0, offset);
-			// System.out.println("OFFSET: " + offset);
-			// System.out.println(textoCompleto);
 			try {
 				Utils.formatoErroneo(textoCompleto, patron);
 				if (!estado) {
-					// System.out.println("Formato correcto: cambio de estado");
 					estado = true;
 					filterListener.notificarFormatoCorrecto();
 				}
 			} catch (FormatoNoAdecuadoException e) {
 				if (estado) {
-					// System.out.println("Formato incorrecto: cambio de estado");
 					estado = false;
 					filterListener.notificarFormatoErroneo(MENSAJE);
 				}
 			}
 		} else {
-			// System.out.println("Estado Inicial");
 			estado = null;
 			filterListener.notificarCampoVacio();
 		}

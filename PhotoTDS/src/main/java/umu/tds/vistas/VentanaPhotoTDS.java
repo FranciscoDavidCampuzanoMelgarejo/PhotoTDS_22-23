@@ -108,7 +108,6 @@ public class VentanaPhotoTDS implements ActionListener{
 		Controlador.getControlador().addDescuento(new DescuentoEdad());
 		Controlador.getControlador().addDescuento(new DescuentoJo());
 		publiList = (ArrayList<Publicacion>) Controlador.getControlador().getUltimasFotos();
-		System.out.println(publiList.toString());
 		publiListModel = new DefaultListModel<Publicacion>();
 			publiListModel.addAll(publiList);
 		
@@ -226,13 +225,11 @@ public class VentanaPhotoTDS implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
-		System.out.println(comando);
 		
 		switch(comando) {
 			case "home" :					// Publicaciones recientes
 				recargarRecientes();
 				c.show(apprender, "panelInicio");
-				System.out.println("PHOTOTDS> Ultimas publicacion: " + Controlador.getControlador().getUltimasPublicaciones());
 				break; 
 			case "finder" : 				// Búsqueda de publicaciones por usuaro y etiqueta
 				c.show(apprender, "panelBusqueda"); 
@@ -240,7 +237,6 @@ public class VentanaPhotoTDS implements ActionListener{
 			case "publi" : {				// Subir nueva publicación
 				VentanaSubirFoto.getInstancia().mostrar();	
 				VentanaSubirFoto.getInstancia().addActionListener(this);
-				System.out.println("PHOTOTDS> Nueva publicacion");
 				break;
 			}
 			case "user" : {					// Perfil de usuario

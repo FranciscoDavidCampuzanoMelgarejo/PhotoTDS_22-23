@@ -26,7 +26,6 @@ public class PanelCeldaComentario extends JPanel {
 
 	public PanelCeldaComentario(String rutaFotoPerfil, String nickname, String comentario) {
 		setBorder(new LineBorder(new Color(0x3c-10, 0x3f-10, 0x41-10)));
-		System.out.println("Renderizando el panel");
 		this.fotoPerfil = Utils.redondearImagen(ANCHO_FOTO_PERFIL, new ImageIcon(rutaFotoPerfil));
 		this.nickname = nickname;
 		this.comentario = comentario;

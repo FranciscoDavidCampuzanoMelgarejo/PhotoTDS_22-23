@@ -160,7 +160,6 @@ public class PanelPerfil extends JPanel {
 				String subText = text;
 				if (text != null) {
 					int longitudActual = (fb.getDocument().getLength() - length);
-					System.out.println(longitudActual);
 					if (longitudActual + text.length() > MAX_CARACTERES) {
 						int caracteresFaltantes = MAX_CARACTERES - longitudActual;
 						subText = new String(text.substring(0, caracteresFaltantes));

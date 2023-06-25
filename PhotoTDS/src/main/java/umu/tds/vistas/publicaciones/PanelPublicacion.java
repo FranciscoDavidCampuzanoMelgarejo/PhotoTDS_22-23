@@ -78,8 +78,6 @@ public class PanelPublicacion extends JPanel {
 
 	public void setPublicacion(Publicacion publicacion) {
 		this.publicacion = publicacion;
-		System.out.println("Cambiando de publicacion");
-		System.out.println(publicacion);
 		this.indice = 0;
 		if (publicacion instanceof Album) {
 			this.fotos = new ArrayList<Foto>(((Album) publicacion).getFotos());
@@ -95,7 +93,6 @@ public class PanelPublicacion extends JPanel {
 		lblPrev = new JLabel(new ImageIcon(imagenPrev)) {
 			@Override
 			protected void paintComponent(Graphics g) {
-				System.out.println("Label Prev");
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
