@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import umu.tds.modelo.pojos.Album;
 import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.Publicacion;
 
@@ -31,19 +32,9 @@ public class DialogoPublicacion extends JDialog {
 	// Constantes
 	private static final double PORCENTAJE_ANCHO_FOTO = 0.45; // Porcentaje del ancho de la ventana que ocupara la foto
 																// del perfil
-	private static final int ANCHO_ICONO_CROSS = 20; // Ancho de la imagen 'cross' para cerrar el dialogo
-	private static final float GROSOR_CIRCUNFERENCIA = 1.25f; // Grosor de la circunferencia que rodea el circulo
-	private static final int ANCHO_ICONO_FLECHA = 24; // Ancho de las imagenes 'prev' y 'next' usadas para pasar entre
-														// fotos
-
-	// Calcular la diagonal (diametro de la circunferencia) del icono 'cross'
-	private static final int DIAMETRO_ICONO_CROSS = (int) Math
-			.ceil(Math.sqrt(2 * ANCHO_ICONO_CROSS * ANCHO_ICONO_CROSS));
-
-	// Calcular la diagonal (diametro de la circunferencia) de los iconos de 'prev'
-	// y 'next'
-	private static final int DIAMETRO_ICONO_FLECHA = (int) Math
-			.ceil(Math.sqrt(2 * ANCHO_ICONO_FLECHA * ANCHO_ICONO_FLECHA));
+	private static final int ANCHO_ICONO_CROSS = 25; // Ancho de la imagen 'cross' para cerrar el dialogo
+	private static final int ANCHO_ICONO_FLECHA = 35; // Ancho de las imagenes 'prev' y 'next' usadas para pasar entre
+														// publicaciones
 	
 	
 	private final Color colorLabelFlecha = new Color(81, 83, 86);
@@ -60,28 +51,30 @@ public class DialogoPublicacion extends JDialog {
 	private boolean overPrev, overCross, overNext;
 	private boolean clickPrev, clickCross, clickNext;
 
+	
+	private PanelPublicacion panelPublicacion;
 	private JLabel lblFoto;
 	private final int anchoFoto;
-	private Publicacion fotoActual;
+	private Publicacion publicacionActual;
 	private int indice;
-	private List<Publicacion> fotos;
+	private List<Publicacion> publicaciones;
 
 	private String rutaFotoPerfil;
 	private String nickname;
 
 	private PanelComentarios panelComentarios;
 
-	public DialogoPublicacion(JFrame frame, List<Publicacion> fotos, int indice, String fotoPerfil, String nickname) {
+	public DialogoPublicacion(JFrame frame, List<Publicacion> publicaciones, int indice, String fotoPerfil, String nickname) {
 		super(frame, true);
 		this.framePadre = frame;
-		this.fotos = fotos;
+		this.publicaciones = publicaciones;
 		this.indice = indice;
 		this.rutaFotoPerfil = fotoPerfil;
 		this.nickname = nickname;
 		this.overCross = this.overPrev = this.overNext = false;
 		this.clickCross = this.clickPrev = this.clickNext = false;
 		
-		this.fotoActual = fotos.get(indice);
+		this.publicacionActual = publicaciones.get(indice);
 
 		this.anchoFoto = (int) (frame.getSize().width * PORCENTAJE_ANCHO_FOTO);
 		this.prevIcon = new ImageIcon(getClass().getResource("/imagenes/iconos-dialogo_publicaciones/prev.png"))
@@ -99,6 +92,7 @@ public class DialogoPublicacion extends JDialog {
 	}
 
 	private void inicializar() {
+		// setSize(600, 600);
 		setSize(framePadre.getSize().width, framePadre.getSize().height);
 		setLocationRelativeTo(framePadre);
 		setUndecorated(true);
@@ -126,11 +120,7 @@ public class DialogoPublicacion extends JDialog {
 					g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
 					g2d.setColor(Color.lightGray);
-					g2d.fillOval(0, 0, DIAMETRO_ICONO_CROSS, DIAMETRO_ICONO_CROSS);
-
-					g2d.setStroke(new BasicStroke(GROSOR_CIRCUNFERENCIA));
-					g2d.setColor(Color.black);
-					g2d.drawOval(0, 0, DIAMETRO_ICONO_CROSS, DIAMETRO_ICONO_CROSS);
+					g2d.fillOval(0, 0, getWidth(), getHeight());
 
 					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
 					g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
@@ -159,14 +149,9 @@ public class DialogoPublicacion extends JDialog {
 			}
 		});
 
-		System.out.println(DIAMETRO_ICONO_CROSS);
 		lblCross.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblCross.setPreferredSize(new Dimension(DIAMETRO_ICONO_CROSS, DIAMETRO_ICONO_CROSS));
-		lblCross.setMinimumSize(new Dimension(DIAMETRO_ICONO_CROSS, DIAMETRO_ICONO_CROSS));
-		lblCross.setBorder(new LineBorder(Color.red));
 
 		GridBagConstraints gbc_lblCross = new GridBagConstraints();
-		gbc_lblCross.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblCross.insets = new Insets(15, 0, 15, 10);
 		gbc_lblCross.gridx = 3;
 		gbc_lblCross.gridy = 0;
@@ -185,7 +170,7 @@ public class DialogoPublicacion extends JDialog {
 				g2d.setColor(c);
 				// int x = (getWidth() - DIAMETRO) / 2; // Coordenada x del centro del JLabel
 				// int y = (getHeight() - DIAMETRO) / 2; // Coordenada y del centro del JLabel
-				g2d.fillOval(0, 0, DIAMETRO_ICONO_FLECHA, DIAMETRO_ICONO_FLECHA);
+				g2d.fillOval(0, 0, getWidth(), getHeight());
 
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
@@ -227,9 +212,6 @@ public class DialogoPublicacion extends JDialog {
 			}
 		});
 
-		lblPrev.setPreferredSize(new Dimension(DIAMETRO_ICONO_FLECHA, DIAMETRO_ICONO_FLECHA));
-		lblPrev.setSize(new Dimension(DIAMETRO_ICONO_FLECHA, DIAMETRO_ICONO_FLECHA));
-		lblPrev.setMinimumSize(new Dimension(DIAMETRO_ICONO_FLECHA, DIAMETRO_ICONO_FLECHA));
 		
 		GridBagConstraints gbc_lblPrev = new GridBagConstraints();
 		gbc_lblPrev.insets = new Insets(0, 5, 5, 10);
@@ -237,20 +219,17 @@ public class DialogoPublicacion extends JDialog {
 		gbc_lblPrev.gridy = 1;
 		panelCentral.add(lblPrev, gbc_lblPrev);
 
-		String ruta = ((Foto) fotoActual).getRuta();
-		Image imagen = new ImageIcon(ruta).getImage().getScaledInstance(anchoFoto, anchoFoto, Image.SCALE_SMOOTH);
-		lblFoto = new JLabel(new ImageIcon(imagen));
-		GridBagConstraints gbc_lblFoto = new GridBagConstraints();
-		gbc_lblFoto.fill = GridBagConstraints.BOTH;
-		gbc_lblFoto.insets = new Insets(0, 0, 5, 5);
-		gbc_lblFoto.gridx = 1;
-		gbc_lblFoto.gridy = 1;
-		panelCentral.add(lblFoto, gbc_lblFoto);
-		lblFoto.setBorder(new LineBorder(Color.yellow));
 
-		panelComentarios = new PanelComentarios(fotoActual.getComentarios(), rutaFotoPerfil, nickname,
-				fotoActual.getLikes(), fotoActual.getFecha());
-		panelComentarios.setBorder(new LineBorder(Color.blue));
+		
+		panelPublicacion = new PanelPublicacion(anchoFoto, publicacionActual);
+		GridBagConstraints gbc_panelPublicacion = new GridBagConstraints();
+		gbc_panelPublicacion.fill = GridBagConstraints.BOTH;
+		gbc_panelPublicacion.insets = new Insets(0, 0, 5, 5);
+		gbc_panelPublicacion.gridx = 1;
+		gbc_panelPublicacion.gridy = 1;
+		panelCentral.add(panelPublicacion, gbc_panelPublicacion);
+
+		panelComentarios = new PanelComentarios(rutaFotoPerfil, nickname, publicacionActual);
 		GridBagConstraints gbc_panelComentarios = new GridBagConstraints();
 		gbc_panelComentarios.insets = new Insets(0, 0, 5, 5);
 		gbc_panelComentarios.fill = GridBagConstraints.BOTH;
@@ -266,11 +245,11 @@ public class DialogoPublicacion extends JDialog {
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-				Color c = overNext ? colorOverLabelFlecha : colorLabelFlecha;
+				Color c = !overNext ? colorLabelFlecha : (clickNext ? colorClickLabelFlecha : colorOverLabelFlecha);
 				g2d.setColor(c);
 				// int x = (getWidth() - DIAMETRO) / 2; // Coordenada x del centro del JLabel
 				// int y = (getHeight() - DIAMETRO) / 2; // Coordenada y del centro del JLabel
-				g2d.fillOval(0, 0, DIAMETRO_ICONO_FLECHA, DIAMETRO_ICONO_FLECHA);
+				g2d.fillOval(0, 0, getWidth(), getHeight());
 
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
@@ -300,16 +279,16 @@ public class DialogoPublicacion extends JDialog {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (lblNext.isEnabled()) {
+					clickNext = true;
 					indice++;
 					checkBotones();
 					cargarFoto();
+					lblNext.repaint();
 				}
 
 			}
 		});
-		lblNext.setPreferredSize(new Dimension(DIAMETRO_ICONO_FLECHA, DIAMETRO_ICONO_FLECHA));
-		lblNext.setMinimumSize(new Dimension(DIAMETRO_ICONO_FLECHA, DIAMETRO_ICONO_FLECHA));
-		// lblNext.setBorder(new LineBorder(Color.green));
+		
 		GridBagConstraints gbc_lblNext = new GridBagConstraints();
 		gbc_lblNext.insets = new Insets(0, 10, 5, 5);
 		gbc_lblNext.gridx = 3;
@@ -323,20 +302,20 @@ public class DialogoPublicacion extends JDialog {
 	private void checkBotones() {
 		if (indice == 0) {
 			lblPrev.setEnabled(false);
-		} else if (indice > 0 && indice < fotos.size() - 1) {
+			lblNext.setEnabled(true);
+		} else if (indice > 0 && indice < publicaciones.size() - 1) {
 			lblPrev.setEnabled(true);
 			lblNext.setEnabled(true);
 		} else {
 			lblNext.setEnabled(false);
+			lblPrev.setEnabled(true);
 		}
 	}
 
 	private void cargarFoto() {
-		this.fotoActual = (Foto) fotos.get(indice);
-		String ruta = ((Foto) fotoActual).getRuta();
-		Image imagen = new ImageIcon(ruta).getImage().getScaledInstance(anchoFoto, anchoFoto, Image.SCALE_SMOOTH);
-		lblFoto.setIcon(new ImageIcon(imagen));
-		panelComentarios.cambiarFoto(fotoActual.getComentarios(), fotoActual.getLikes(), fotoActual.getFecha());
+		this.publicacionActual = publicaciones.get(indice);
+		panelPublicacion.setPublicacion(publicacionActual);
+		panelComentarios.cambiarFoto(publicacionActual);
 		revalidate();
 		repaint();
 	}

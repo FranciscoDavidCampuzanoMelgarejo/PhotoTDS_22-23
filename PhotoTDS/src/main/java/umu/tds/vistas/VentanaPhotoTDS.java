@@ -224,7 +224,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			case "publi" : {				// Subir nueva publicación
 				VentanaSubirFoto.getInstancia().mostrar();	
 				VentanaSubirFoto.getInstancia().addActionListener(this);
-				panelUsuario.actualizarPerfil();
+				// panelUsuario.actualizarPerfil();
 				break;
 			}
 			case "user" : {					// Perfil de usuario

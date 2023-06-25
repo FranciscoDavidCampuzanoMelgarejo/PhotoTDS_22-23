@@ -25,6 +25,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import umu.tds.modelo.pojos.Comentario;
+import umu.tds.modelo.pojos.Publicacion;
+
 import java.awt.Font;
 
 public class PanelComentarios extends JPanel {
@@ -44,15 +46,15 @@ public class PanelComentarios extends JPanel {
 	private PanelIconos panelIconos;
 	private JTextArea areaComentario;
 	private JLabel lblPublicar;
+	
+	private Publicacion publicacion;
 
-	public PanelComentarios(Set<Comentario> comentarios, String rutaFotoPerfil, String nickname, int likes,
-			LocalDateTime fecha) {
+	public PanelComentarios(String rutaFotoPerfil, String nickname, Publicacion publicacion) {
+		this.publicacion = publicacion;
 		this.fotoPerfil = rutaFotoPerfil;
 		this.nickname = nickname;
-		this.likes = likes;
-		this.fecha = fecha;
 
-		this.comentarios = comentarios;
+		this.comentarios = publicacion.getComentarios();
 		this.model = new DefaultListModel<Comentario>();
 
 		// Añadir los comentarios al modelo
@@ -63,13 +65,12 @@ public class PanelComentarios extends JPanel {
 		inicializar();
 	}
 
-	public void cambiarFoto(Set<Comentario> comentarios, int likes, LocalDateTime fecha) {
-		this.comentarios = comentarios;
-		this.likes = likes;
-		this.fecha = fecha;
+	public void cambiarFoto(Publicacion publicacion) {
+		this.publicacion = publicacion;
+		this.comentarios = publicacion.getComentarios();
 		cambiarModelo();
 		areaComentario.setText("");
-		panelIconos.cambiarFoto(likes, fecha);
+		panelIconos.cambiarFoto(publicacion);
 		// revalidate();
 		// repaint();
 
@@ -118,7 +119,7 @@ public class PanelComentarios extends JPanel {
 		gbc_separator_1.gridy = 3;
 		add(separator_1, gbc_separator_1);
 
-		panelIconos = new PanelIconos(likes, fecha);
+		panelIconos = new PanelIconos(publicacion);
 		GridBagConstraints gbc_panelIconos = new GridBagConstraints();
 		gbc_panelIconos.insets = new Insets(0, 0, 5, 0);
 		gbc_panelIconos.fill = GridBagConstraints.BOTH;

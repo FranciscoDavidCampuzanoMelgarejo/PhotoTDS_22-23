@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import umu.tds.modelo.pojos.Album;
 import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.vistas.publicaciones.DialogoPublicacion;
@@ -41,7 +43,7 @@ public class PanelScrollFotos extends JScrollPane {
 	private final int maximoPermitido = (int) (Toolkit.getDefaultToolkit().getScreenSize().width * PORCENTAJE_VENTANA);
 
 	// private List<String> rutas; // Rutas absolutas a cada foto
-	private List<Publicacion> fotos;
+	private List<Publicacion> publicaciones;
 	private int fotosCargadas, fotosRestantes;
 	private int filasActuales = 0;
 	int row, col;
@@ -62,15 +64,15 @@ public class PanelScrollFotos extends JScrollPane {
 	private String fotoPerfil;
 	private String nickname;
 
-	public PanelScrollFotos(List<Publicacion> fotos, int anchoVentana, String fotoPerfil, String nickname) {
+	public PanelScrollFotos(List<Publicacion> publicaciones, int anchoVentana, String fotoPerfil, String nickname) {
 		this.mapaEtiquetas = new HashMap<JLabel, Integer>();
 		this.anchoVentana = anchoVentana;
-		this.fotos = fotos;
+		this.publicaciones = publicaciones;
 		this.fotoPerfil = fotoPerfil;
 		this.nickname = nickname;
 		
 		this.fotosCargadas = 0;
-		this.fotosRestantes = fotos.size();
+		this.fotosRestantes = publicaciones.size();
 		this.col = this.row = 0;
 		this.iconoLike = new ImageIcon(getClass().getResource("/imagenes/iconos-perfil/heart-solid.png")).getImage();
 		this.iconoComentario = new ImageIcon(getClass().getResource("/imagenes/iconos-perfil/comment-solid.png"))
@@ -132,9 +134,9 @@ public class PanelScrollFotos extends JScrollPane {
 	
 	
 	public void cargarFotos(List<Publicacion> publicaciones) {
-		this.fotos = publicaciones;
+		this.publicaciones = publicaciones;
 		this.fotosCargadas = 0;
-		this.fotosRestantes = fotos.size();
+		this.fotosRestantes = publicaciones.size();
 		this.row = this.col = 0;
 		cargar(Math.min(NUMERO_FOTOS_CARGAR, fotosRestantes));
 	}
@@ -142,9 +144,9 @@ public class PanelScrollFotos extends JScrollPane {
 	// Metodos auxiliares (privados)
 
 	// Metodo para cargar las fotos del usuario
-	private void cargar(int numeroFotos) {
+	private void cargar(int numeroPublicaciones) {
 		System.out.println("Cargar Fotos");
-		filasActuales = filasActuales + (int) (Math.ceil(numeroFotos / COLUMNAS));
+		filasActuales = filasActuales + (int) (Math.ceil(numeroPublicaciones / COLUMNAS));
 		gbl_panelFotos.rowHeights = new int[filasActuales + 1];
 
 		double[] pesosFilas = new double[filasActuales + 1];
@@ -153,9 +155,16 @@ public class PanelScrollFotos extends JScrollPane {
 
 		int anchoFoto = getAnchoFoto();
 		System.out.println(anchoFoto);
-		for (int i = 0; i < numeroFotos; i++) {
+		for (int i = 0; i < numeroPublicaciones; i++) {
 
-			Foto foto = (Foto) fotos.get(fotosCargadas);
+			Foto foto;
+			Publicacion p = publicaciones.get(fotosCargadas);
+			
+			if (p instanceof Foto) {
+				foto = (Foto) p;
+			} else {
+				foto = ((Album) p).getFotos().iterator().next();
+			}
 			JLabel lblCelda = new EtiquetaFotoPerfil(foto.getRuta(), iconoLike, iconoComentario, foto.getLikes(), foto.getComentarios().size(), anchoFoto);
 			mapaEtiquetas.put(lblCelda, fotosCargadas++);
 			
@@ -164,7 +173,7 @@ public class PanelScrollFotos extends JScrollPane {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(PanelScrollFotos.this);
-					DialogoPublicacion dialogoPublicacion = new DialogoPublicacion(frame, fotos, mapaEtiquetas.get(lblCelda), fotoPerfil, nickname);
+					DialogoPublicacion dialogoPublicacion = new DialogoPublicacion(frame, publicaciones, mapaEtiquetas.get(lblCelda), fotoPerfil, nickname);
 					dialogoPublicacion.mostrar();
 				}
 			});
@@ -182,7 +191,7 @@ public class PanelScrollFotos extends JScrollPane {
 				row++;
 		}
 
-		fotosRestantes -= numeroFotos;
+		fotosRestantes -= numeroPublicaciones;
 		reescalar(anchoFoto);
 		System.out.println("FIN CARGAR FOTOS");
 	}

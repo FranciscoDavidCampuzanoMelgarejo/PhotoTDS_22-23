@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 
 import javax.swing.BoxLayout;
@@ -22,6 +23,7 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Scrollbar;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
@@ -37,7 +39,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Component;
 import javax.swing.Box;
 import java.awt.Dimension;
@@ -45,6 +49,8 @@ import java.awt.FlowLayout;
 import javax.swing.JSeparator;
 
 import umu.tds.controlador.Controlador;
+import umu.tds.modelo.pojos.Album;
+import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.modelo.pojos.Usuario;
 import umu.tds.vistas.Utils;
@@ -59,9 +65,12 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-public class PanelPerfilUsuario extends JPanel implements ActionListener{
+public class PanelPerfilUsuario extends JPanel implements ActionListener {
 
 	private static final int ANCHO_FOTO_PERFIL = 150; // Ancho de la foto de perfil en la ventana del perfil del usuario
+
+	private static final String PANEL_FOTOS = "PanelFotos";
+	private static final String PANEL_ALBUMES = "PanelAlbumes";
 
 	private Usuario usuarioPerfil;
 
@@ -69,22 +78,32 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 	private Icon fotoPerfil; // Foto de perfil sin retocar
 	private String rutaFotoPerfil;
 	private JLabel lblFotoPerfil;
-	
+
 	private List<ActionListener> listeners;
-	
+
 	/* Listener para la ventana principal */
 	public void addActionListener(ActionListener a) {
-		if(listeners==null) listeners = new LinkedList<ActionListener>();
+		if (listeners == null)
+			listeners = new LinkedList<ActionListener>();
 		listeners.add(a);
 	}
-	
-	/* Notificación de nueva foto de perfil a la ventana principal para que actualice la del Dock */
+
+	/*
+	 * Notificación de nueva foto de perfil a la ventana principal para que
+	 * actualice la del Dock
+	 */
 	public void notificarCambioFotoPerfil(ActionEvent a) {
 		listeners.stream().forEach(l -> l.actionPerformed(a));
 	}
 
-	// Panel de scroll que contiene las fotos del perfil del usuario
-	private JScrollPane panelScrollFotos;
+	// Paneles para visualizar las fotos y los albumes
+	private JPanel panelFotosAlbumes;
+	private PanelScrollFotos panelFotos, panelAlbumes;
+
+	// Para saber que boton esta seleccionado (FOTOS, ALBUMES)
+	private JButton btnFotos, btnAlbumes;
+	private boolean fotosSeleccionado = true;
+	private boolean albumesSeleccionado = false;
 
 	private List<String> rutasFotos; // Path de cada foto que se va a cargar
 
@@ -98,11 +117,12 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 
 		System.out.println(rutaFotoPerfil);
 		/*
-		this.fotoPerfil = rutaFotoPerfil == null
-				? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png"))
+		 * this.fotoPerfil = rutaFotoPerfil == null ? new
+		 * ImageIcon(getClass().getResource("/imagenes/noprofilepic.png")) : new
+		 * ImageIcon(rutaFotoPerfil);
+		 */
+		this.fotoPerfil = (rutaFotoPerfil == null) ? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png"))
 				: new ImageIcon(rutaFotoPerfil);
-				*/
-		this.fotoPerfil = (rutaFotoPerfil==null) ? new ImageIcon(getClass().getResource("/imagenes/noprofilepic.png")) : new ImageIcon(rutaFotoPerfil);
 		this.rutasFotos = usuarioPerfil.getRutasFotos();
 
 		// Factoria para crear un boton -> Si el usuario del perfil es el usuario
@@ -120,21 +140,28 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 		else
 			factoria = new FactoriaBotonPerfil.FactoriaBotonPerfilBuilder(estado).build();
 		factoria.addActionListener(this);
+
+		List<Publicacion> fotos = usuario.getPublicaciones().stream().filter((Publicacion p) -> p instanceof Foto)
+				.collect(Collectors.toList());
+		List<Publicacion> albumes = usuario.getPublicaciones().stream().filter((Publicacion p) -> p instanceof Album)
+				.collect(Collectors.toList());
+
+		int anchoVentana = (int) Toolkit.getDefaultToolkit().getScreenSize().width;
+		this.panelFotos = new PanelScrollFotos(fotos, anchoVentana, rutaFotoPerfil, usuario.getUsuario());
+		this.panelAlbumes = new PanelScrollFotos(albumes, anchoVentana, rutaFotoPerfil, usuario.getUsuario());
 		initialize();
 	}
 
 	/*
-	private void cambiarFotoPerfil() {
-		this.rutaFotoPerfil = Controlador.getControlador().getUserPicture();
-		this.fotoPerfil = new ImageIcon(rutaFotoPerfil);
-
-		BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
-		this.lblFotoPerfil.setIcon(new ImageIcon(masked));
-		
-		notificarCambioFotoPerfil(new ActionEvent(this, 6, "cambioFotoPerfil"));
-	}
-	*/
-	
+	 * private void cambiarFotoPerfil() { this.rutaFotoPerfil =
+	 * Controlador.getControlador().getUserPicture(); this.fotoPerfil = new
+	 * ImageIcon(rutaFotoPerfil);
+	 * 
+	 * BufferedImage masked = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
+	 * this.lblFotoPerfil.setIcon(new ImageIcon(masked));
+	 * 
+	 * notificarCambioFotoPerfil(new ActionEvent(this, 6, "cambioFotoPerfil")); }
+	 */
 
 	/**
 	 * Initialize the contents of the frame.
@@ -250,8 +277,8 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 			public void mouseClicked(MouseEvent e) {
 				DialogoSeguidores dialogoSeguidores = new DialogoSeguidores("Seguidores", usuarioPerfil.getSeguidores(),
 						framePadre.getSize().height, framePadre.getContentPane());
-						dialogoSeguidores.mostrar();
-						
+				dialogoSeguidores.mostrar();
+
 			}
 		});
 
@@ -265,7 +292,8 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 		gbc_lblSeguidos.gridy = 2;
 		panelPerfil.add(lblSeguidos, gbc_lblSeguidos);
 
-		// Al clickar en los usuarios seguidos, se debe abrir un dialogo con una lista de
+		// Al clickar en los usuarios seguidos, se debe abrir un dialogo con una lista
+		// de
 		// los usuarios a los que sigue el usuario logueado
 
 		lblSeguidos.addMouseListener(new MouseAdapter() {
@@ -328,64 +356,132 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener{
 		flowLayout_1.setVgap(0);
 		flowLayout_1.setHgap(0);
 		GridBagConstraints gbc_panelBotones = new GridBagConstraints();
+		gbc_panelBotones.ipady = 4;
+		gbc_panelBotones.ipadx = 10;
 		gbc_panelBotones.anchor = GridBagConstraints.NORTH;
 		gbc_panelBotones.gridx = 0;
 		gbc_panelBotones.gridy = 0;
 		panelContenedorBotones.add(panelBotones, gbc_panelBotones);
+		
 
-		JButton btnFotos = new JButton("FOTOS");
+		JButton btnFotos = new JButton("FOTOS") {
+			@Override
+			protected void paintComponent(Graphics g) {
+				System.out.println("Dibujando el boton de fotos");
+				super.paintComponent(g);
+
+				if (fotosSeleccionado) {
+					int ancho = getWidth();
+					int alto = getHeight();
+					System.out.println(ancho);
+					System.out.println(alto);
+					// Dibujar una linea inferior
+					g.setColor(Color.white);
+					g.drawLine(0, alto - 1, ancho - 1, alto - 1);
+				}
+
+			}
+		};
+		btnFotos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnFotos.setOpaque(false);
 		btnFotos.setContentAreaFilled(false);
 		btnFotos.setBorderPainted(false);
 		btnFotos.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
 		panelBotones.add(btnFotos);
 
-		Component rigidArea_1 = Box.createRigidArea(new Dimension(30, 20));
+		Component rigidArea_1 = Box.createRigidArea(new Dimension(40, 20));
 		panelBotones.add(rigidArea_1);
 
-		JButton btnAlbumes = new JButton("ALBUMES");
+		JButton btnAlbumes = new JButton("ALBUMES") {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+
+				if (albumesSeleccionado) {
+					int ancho = getWidth();
+					int alto = getHeight();
+
+					g.setColor(Color.white);
+					g.drawLine(0, alto - 1, ancho - 1, alto - 1);
+				}
+			}
+		};
+		btnAlbumes.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
 		btnAlbumes.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnAlbumes.setContentAreaFilled(false);
 		btnAlbumes.setBorderPainted(false);
 		btnAlbumes.setOpaque(false);
+
+		// ActionListener en el boton para las fotos
+		btnFotos.addActionListener((ActionEvent e) -> {
+			fotosSeleccionado = true;
+			albumesSeleccionado = false;
+
+			CardLayout c = (CardLayout) panelFotosAlbumes.getLayout();
+			c.show(panelFotosAlbumes, PANEL_FOTOS);
+
+			btnFotos.repaint();
+			btnAlbumes.repaint();
+		});
+		
+
+		// ActionListener en el boton para cambiar a los albumes
+		btnAlbumes.addActionListener((ActionEvent e) -> {
+			albumesSeleccionado = true;
+			fotosSeleccionado = false;
+
+			CardLayout c = (CardLayout) panelFotosAlbumes.getLayout();
+			c.show(panelFotosAlbumes, PANEL_ALBUMES);
+
+			btnAlbumes.repaint();
+			btnFotos.repaint();
+		});
 		panelBotones.add(btnAlbumes);
+
+		panelFotosAlbumes = new JPanel();
+		GridBagConstraints gbc_panelFotosAlbumes = new GridBagConstraints();
+		gbc_panelFotosAlbumes.insets = new Insets(0, 0, 5, 5);
+		gbc_panelFotosAlbumes.fill = GridBagConstraints.BOTH;
+		gbc_panelFotosAlbumes.gridx = 1;
+		gbc_panelFotosAlbumes.gridy = 5;
+		panelContenedor.add(panelFotosAlbumes, gbc_panelFotosAlbumes);
+		panelFotosAlbumes.setLayout(new CardLayout(0, 0));
+
+		// Añadir los paneles al CardLayout
+		panelFotosAlbumes.add(panelFotos, PANEL_FOTOS);
+		panelFotosAlbumes.add(panelAlbumes, PANEL_ALBUMES);
 
 		System.out.println("me adentro al abismo");
 		System.out.println(framePadre.getSize().width);
-		panelScrollFotos = new PanelScrollFotos(usuarioPerfil.getPublicaciones(), framePadre.getSize().width,
-				rutaFotoPerfil, usuarioPerfil.getUsuario());
-		GridBagConstraints gbc_panelScrollFotos = new GridBagConstraints();
-		gbc_panelScrollFotos.insets = new Insets(0, 0, 5, 5);
-		gbc_panelScrollFotos.fill = GridBagConstraints.BOTH;
-		gbc_panelScrollFotos.gridx = 1;
-		gbc_panelScrollFotos.gridy = 5;
-		panelContenedor.add(panelScrollFotos, gbc_panelScrollFotos);
-		
 
 	}
-	
+
 	public void cambiarFotoPerfil() {
 		if (!rutaFotoPerfil.equals(usuarioPerfil.getPerfil().getFoto())) {
 			this.rutaFotoPerfil = usuarioPerfil.getPerfil().getFoto();
 			this.fotoPerfil = new ImageIcon(rutaFotoPerfil);
-			
+
 			BufferedImage fotoRedondeada = Utils.redondearImagen(ANCHO_FOTO_PERFIL, fotoPerfil);
 			lblFotoPerfil.setIcon(new ImageIcon(fotoRedondeada));
 			factoria.setFotoPerfil(fotoPerfil);
 			factoria.setRutaFotoPerfil(rutaFotoPerfil);
-			
+
 		}
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		notificarCambioFotoPerfil(e);
 	}
-	
-	// Metodo que se llama cuando un usuario sube una foto -> Se debe actualizar el panel
-	public void actualizarPerfil() {
-		this.usuarioPerfil = Controlador.getControlador().getUsuarioLogueado();
-		((PanelScrollFotos)this.panelScrollFotos).cargarFotos(usuarioPerfil.getPublicaciones());
-	}
+
+	// Metodo que se llama cuando un usuario sube una foto -> Se debe actualizar el
+	// panel
+	/*
+	 * public void actualizarPerfil() { this.usuarioPerfil =
+	 * Controlador.getControlador().getUsuarioLogueado(); ((PanelScrollFotos)
+	 * this.panelScrollFotos).cargarFotos(usuarioPerfil.getPublicaciones()); }
+	 */
 
 }
