@@ -299,6 +299,7 @@ public class Controlador implements FotosListener {
 		return album;
 	}
 
+
 	public void eliminarPublicacion(Integer id) {
 		Publicacion publicacion = catalogoPublicaciones.get(id);
 		catalogoPublicaciones.remove(publicacion);
