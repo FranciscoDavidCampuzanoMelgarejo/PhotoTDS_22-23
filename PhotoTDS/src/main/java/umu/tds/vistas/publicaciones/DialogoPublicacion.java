@@ -300,16 +300,23 @@ public class DialogoPublicacion extends JDialog {
 	}
 
 	private void checkBotones() {
-		if (indice == 0) {
+		
+		if(publicaciones.size() == 1) {
 			lblPrev.setEnabled(false);
-			lblNext.setEnabled(true);
-		} else if (indice > 0 && indice < publicaciones.size() - 1) {
-			lblPrev.setEnabled(true);
-			lblNext.setEnabled(true);
-		} else {
 			lblNext.setEnabled(false);
-			lblPrev.setEnabled(true);
+		} else {
+			if (indice == 0) {
+				lblPrev.setEnabled(false);
+				lblNext.setEnabled(true);
+			} else if (indice > 0 && indice < publicaciones.size() - 1) {
+				lblPrev.setEnabled(true);
+				lblNext.setEnabled(true);
+			} else {
+				lblNext.setEnabled(false);
+				lblPrev.setEnabled(true);
+			}
 		}
+		
 	}
 
 	private void cargarFoto() {

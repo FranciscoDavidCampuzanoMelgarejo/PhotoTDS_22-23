@@ -127,7 +127,7 @@ public class PanelIconos extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				Controlador.getControlador().darLike(publicacion.getId());
 				numLikes++;
-				publicacion.setLikes(numLikes);
+				publicacion.darLike();
 				String value = String.valueOf(numLikes);
 				value += " Me gusta";
 				lblNumLikes.setText(value);

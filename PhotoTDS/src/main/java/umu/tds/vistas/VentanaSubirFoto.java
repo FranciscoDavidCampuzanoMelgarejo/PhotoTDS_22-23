@@ -266,7 +266,8 @@ public class VentanaSubirFoto {
 					
 					float iw = fotoPubli.getWidth(null), ih = fotoPubli.getHeight(null), s = 1.0f;
 					s = (iw>ih) ? (384/iw) : (384/ih);
-					if(fotoPubli!=null) fotoElegida.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH)));
+					if(fotoPubli!=null) 
+						fotoElegida.setIcon(new ImageIcon(fotoPubli.getScaledInstance((int)(iw*s), (int)(ih*s), Image.SCALE_SMOOTH)));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

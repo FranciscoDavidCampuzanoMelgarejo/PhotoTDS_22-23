@@ -102,6 +102,12 @@ public class Controlador implements FotosListener {
 
 		publicacionDAO.save(publicacion);
 		catalogoPublicaciones.add(publicacion);
+		
+		if(publicacion instanceof Album) {
+			((Album)publicacion).getFotos().stream()
+				.forEach((Foto f) -> catalogoPublicaciones.add(f));
+		}
+		
 		this.usuario.addPublicacion(publicacion);
 	}
 
@@ -270,12 +276,13 @@ public class Controlador implements FotosListener {
 		
 		// Crear cada una de las fotos y añadirlas al album
 		// Crear el album 
-		
+		System.out.println(fotos);
 		Set<Foto> fotosAlbum = new HashSet<Foto>(fotos.size());
 		fotos.stream()
 			.forEach((String ruta) -> {
 				Foto foto = new Foto(titulo, descripcion, ruta, null, null);
 				foto.setUsuario(usuario);
+				usuario.addPublicacion(foto);
 				fotosAlbum.add(foto);
 			});
 		
@@ -286,6 +293,7 @@ public class Controlador implements FotosListener {
 	public Publicacion addFotoToAlbum(Album album, String ruta) {
 		Foto foto = new Foto(album.getTitulo(), album.getDescripcion(), ruta, null, null);
 		foto.setUsuario(usuario);
+		usuario.addPublicacion(foto);
 		album.addFoto(foto);
 		publicacionDAO.update(album);
 		return album;
@@ -309,8 +317,9 @@ public class Controlador implements FotosListener {
 	}
 
 	public void darLike(Integer id) {
-		Publicacion publicacion = catalogoPublicaciones.get(id);
+		Publicacion publicacion = publicacionDAO.findBy(id);
 		publicacion.darLike();
+		System.out.println("Dar Like: " + publicacion);
 		publicacionDAO.update(publicacion);
 	}
 

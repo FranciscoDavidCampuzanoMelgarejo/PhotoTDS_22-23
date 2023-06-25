@@ -34,6 +34,8 @@ public class EtiquetaFotoPerfil extends JLabel {
 
 	public EtiquetaFotoPerfil(String ruta, Image iconoLike, Image iconoComentario, int numLikes, int numComentarios, int ancho) {
 		this.imagenOriginal = new ImageIcon(ruta).getImage();
+		System.out.println("Etiqueta");
+		System.out.println(numLikes);
 		this.numLikes = numLikes;
 		this.numComentarios = numComentarios;
 		this.iconoLike = iconoLike.getScaledInstance(ANCHO_ICONO, ANCHO_ICONO, Image.SCALE_SMOOTH);
@@ -75,6 +77,7 @@ public class EtiquetaFotoPerfil extends JLabel {
 		gbc_lblComentario.gridy = 1;
 		add(lblComentario, gbc_lblComentario);
 		
+		System.out.println(String.valueOf(numLikes));
 		lblNumLikes = new JLabel(String.valueOf(numLikes));
 		lblNumLikes.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNumLikes.setForeground(Color.WHITE);

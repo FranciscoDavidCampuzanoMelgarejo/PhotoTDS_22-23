@@ -228,6 +228,7 @@ public class VentanaPhotoTDS implements ActionListener{
 				break;
 			}
 			case "user" : {					// Perfil de usuario
+				panelUsuario.actualizarPanel();
 				c.show(apprender, "panelUsuario");
 				break;
 			}

@@ -13,8 +13,10 @@ import javax.swing.JOptionPane;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.awt.Color;
 import java.awt.Font;
@@ -49,6 +51,7 @@ public class PanelDescripcionAlbum extends JPanel {
 
 	private List<String> rutasFotos;
 	private List<String> hashtags;
+	
 
 	public PanelDescripcionAlbum(JPanel panelFotos) {
 		this.panelFotos = (PanelFotosAlbum) panelFotos;

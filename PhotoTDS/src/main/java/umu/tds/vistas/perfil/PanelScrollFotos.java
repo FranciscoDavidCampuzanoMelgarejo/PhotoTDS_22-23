@@ -25,7 +25,6 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
 
 import umu.tds.modelo.pojos.Album;
 import umu.tds.modelo.pojos.Foto;
@@ -92,7 +91,6 @@ public class PanelScrollFotos extends JScrollPane {
 		gbl_panelFotos.columnWidths = new int[] { 0, 0, 0, 0 };
 		gbl_panelFotos.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		panelFotos.setLayout(gbl_panelFotos);
-		panelFotos.setBorder(new LineBorder(Color.RED));
 
 		// Al cambiar el tamaño de la ventana principal (cambia el tamaño del panel de
 		// scroll), reescalar las imagenes
@@ -134,6 +132,9 @@ public class PanelScrollFotos extends JScrollPane {
 	
 	
 	public void cargarFotos(List<Publicacion> publicaciones) {
+		panelFotos.removeAll();
+		panelFotos.revalidate();
+		panelFotos.repaint();
 		this.publicaciones = publicaciones;
 		this.fotosCargadas = 0;
 		this.fotosRestantes = publicaciones.size();
@@ -165,7 +166,8 @@ public class PanelScrollFotos extends JScrollPane {
 			} else {
 				foto = ((Album) p).getFotos().iterator().next();
 			}
-			JLabel lblCelda = new EtiquetaFotoPerfil(foto.getRuta(), iconoLike, iconoComentario, foto.getLikes(), foto.getComentarios().size(), anchoFoto);
+			
+			JLabel lblCelda = new EtiquetaFotoPerfil(foto.getRuta(), iconoLike, iconoComentario, p.getLikes(), p.getComentarios().size(), anchoFoto);
 			mapaEtiquetas.put(lblCelda, fotosCargadas++);
 			
 			// Añadir MouseListener a la etiqueta
@@ -193,6 +195,8 @@ public class PanelScrollFotos extends JScrollPane {
 
 		fotosRestantes -= numeroPublicaciones;
 		reescalar(anchoFoto);
+		panelFotos.revalidate();
+		panelFotos.repaint();
 		System.out.println("FIN CARGAR FOTOS");
 	}
 

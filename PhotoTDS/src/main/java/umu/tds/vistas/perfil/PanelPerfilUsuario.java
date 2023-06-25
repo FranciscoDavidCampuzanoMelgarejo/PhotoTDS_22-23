@@ -78,6 +78,8 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 	private Icon fotoPerfil; // Foto de perfil sin retocar
 	private String rutaFotoPerfil;
 	private JLabel lblFotoPerfil;
+	
+	private JLabel lblPublicaciones, lblSeguidores, lblSeguidos;
 
 	private List<ActionListener> listeners;
 
@@ -168,7 +170,6 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 	 */
 	private void initialize() {
 
-		this.setBorder(new LineBorder(Color.yellow));
 		setLayout(new BorderLayout(0, 0));
 		JPanel panelContenedor = new JPanel();
 		add(panelContenedor, BorderLayout.CENTER);
@@ -250,7 +251,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		JButton botonPerfil = factoria.crearBoton();
 		panelNombreUsuario.add(botonPerfil);
 
-		JLabel lblPublicaciones = new JLabel(
+		lblPublicaciones = new JLabel(
 				Controlador.getControlador().getUsuarioLogueado().numeroPublicaciones() + " Publicaciones");
 		lblPublicaciones.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblPublicaciones = new GridBagConstraints();
@@ -259,7 +260,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		gbc_lblPublicaciones.gridy = 2;
 		panelPerfil.add(lblPublicaciones, gbc_lblPublicaciones);
 
-		JLabel lblSeguidores = new JLabel(usuarioPerfil.numeroSeguidores() + " Seguidores");
+		lblSeguidores = new JLabel(usuarioPerfil.numeroSeguidores() + " Seguidores");
 		lblSeguidores.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSeguidores.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		GridBagConstraints gbc_lblSeguidores = new GridBagConstraints();
@@ -282,7 +283,7 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 			}
 		});
 
-		JLabel lblSeguidos = new JLabel(
+		lblSeguidos = new JLabel(
 				Controlador.getControlador().getNumeroUsuariosSeguidos(usuarioPerfil) + " Seguidos");
 		lblSeguidos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblSeguidos.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -469,6 +470,28 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 			factoria.setRutaFotoPerfil(rutaFotoPerfil);
 
 		}
+	}
+	
+	public void actualizarPanel() {
+		this.usuarioPerfil = Controlador.getControlador().getUsuarioLogueado();
+		lblPublicaciones.setText(usuarioPerfil.numeroPublicaciones() + " Publicaciones");
+		lblSeguidores.setText(usuarioPerfil.numeroSeguidores() + " Seguidores");
+		lblSeguidos.setText(Controlador.getControlador().getNumeroUsuariosSeguidos(usuarioPerfil) + " Seguidos");
+		
+		List<Publicacion> fotos = usuarioPerfil.getPublicaciones().stream().filter((Publicacion p) -> p instanceof Foto)
+				.collect(Collectors.toList());
+		List<Publicacion> albumes = usuarioPerfil.getPublicaciones().stream().filter((Publicacion p) -> p instanceof Album)
+				.collect(Collectors.toList());
+		
+		System.out.println("Actualizar Perfil");
+		System.out.println(fotos);
+		System.out.println(fotos.size());
+		System.out.println(albumes);
+		System.out.println(albumes.size());
+		System.out.println("Comentarios: " + albumes.get(0).getComentarios().size());
+		
+		this.panelFotos.cargarFotos(fotos);
+		this.panelAlbumes.cargarFotos(albumes);
 	}
 
 	@Override

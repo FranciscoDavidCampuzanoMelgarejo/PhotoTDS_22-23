@@ -145,13 +145,14 @@ public abstract class Publicacion implements Serializable {
 	}
 
 	public void setComentarios(Set<Comentario> comentarios) {
+		System.out.println("Añadiendo el comentario");
 		addComentarios(comentarios);
 	}
 
 	@Override
 	public String toString() {
 		return "Publicacion [id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", likes=" + likes
-				+ ", fecha=" + fecha.toString() + ", hashtags=" + hashtags + ", usuario=" + usuario.getUsuario() + "]";
+				+ ", fecha=" + fecha.toString() + ", hashtags=" + hashtags + ", usuario=" + usuario.getUsuario() + "comentarios=" + comentarios.size() + "]";
 	}
 
 	// METODOS AUXILIARES
