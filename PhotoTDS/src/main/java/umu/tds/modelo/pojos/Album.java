@@ -21,7 +21,7 @@ public class Album extends Publicacion {
 	private static final long serialVersionUID = 1L;
 
 	// Al eliminar un album se eliminan las fotos (hay que ver lo que dice el PDF)
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "album_id")
 	private Set<Foto> fotos = new HashSet<Foto>(16);
 

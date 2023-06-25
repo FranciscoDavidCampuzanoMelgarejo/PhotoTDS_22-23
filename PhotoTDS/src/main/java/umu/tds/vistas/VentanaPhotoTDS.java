@@ -39,6 +39,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 
 import java.awt.Insets;
@@ -166,6 +167,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			private static final long serialVersionUID = 1L;
 			{setOpaque(false);} 
 		};
+		apprender.setBorder(new LineBorder(Color.pink));
 		GridBagConstraints gbc_apprender = new GridBagConstraints();
 		gbc_apprender.fill = GridBagConstraints.BOTH;
 		gbc_apprender.gridx = 1;
@@ -208,6 +210,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String comando = e.getActionCommand();
+		System.out.println(comando);
 		
 		switch(comando) {
 			case "home" :					// Publicaciones recientes
@@ -221,6 +224,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			case "publi" : {				// Subir nueva publicación
 				VentanaSubirFoto.getInstancia().mostrar();	
 				VentanaSubirFoto.getInstancia().addActionListener(this);
+				// panelUsuario.actualizarPerfil();
 				break;
 			}
 			case "user" : {					// Perfil de usuario
@@ -229,6 +233,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			}
 			case "cambioFotoPerfil" : {		// Notificación para actualizar perfil en el dock
 				dock.recargarImagenUsuario();
+				panelUsuario.cambiarFotoPerfil();
 				break;
 			}
 			case "about" :					// Ventana "Acerca de"

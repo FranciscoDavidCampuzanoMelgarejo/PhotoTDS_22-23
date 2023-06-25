@@ -71,6 +71,14 @@ public class FactoriaBotonPerfil {
 		}
 		return boton;
 	}
+	
+	public void setRutaFotoPerfil(String rutaFotoPerfil) {
+		this.rutaFotoPerfil = rutaFotoPerfil;
+	}
+	
+	public void setFotoPerfil(Icon fotoPerfil) {
+		this.fotoPerfil = fotoPerfil;
+	}
 
 	
 	public static class FactoriaBotonPerfilBuilder {
