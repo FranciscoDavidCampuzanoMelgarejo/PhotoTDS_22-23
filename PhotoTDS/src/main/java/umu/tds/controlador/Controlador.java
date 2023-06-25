@@ -317,7 +317,7 @@ public class Controlador implements FotosListener {
 	}
 
 	public void darLike(Integer id) {
-		Publicacion publicacion = publicacionDAO.findBy(id);
+		Publicacion publicacion = catalogoPublicaciones.get(id);
 		publicacion.darLike();
 		System.out.println("Dar Like: " + publicacion);
 		publicacionDAO.update(publicacion);
