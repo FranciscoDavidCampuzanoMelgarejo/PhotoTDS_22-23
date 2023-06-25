@@ -14,9 +14,13 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
+import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Album;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.vistas.Utils;
@@ -38,7 +42,7 @@ public class PanelIconos extends JPanel {
 	private JLabel lblNumLikes;
 	private JLabel lblFecha;
 
-	private JLabel lblLike, lblComentario, lblBasura, lblAddAlbum;
+	private JLabel lblLike, lblBasura, lblAddAlbum;
 
 	public PanelIconos(Publicacion publicacion) {
 		this.publicacion = publicacion;
@@ -71,6 +75,13 @@ public class PanelIconos extends JPanel {
 		String s = String.valueOf(numLikes) + " Me gusta";
 		lblNumLikes.setText(s);
 		lblFecha.setText(fechaPublicacion);
+
+		lblBasura.setVisible(true);
+		lblAddAlbum.setVisible(true);
+		if (!Controlador.getControlador().getUsuarioLogueado().equals(publicacion.getUsuario())) {
+			lblBasura.setVisible(false);
+			lblAddAlbum.setVisible(false);
+		}
 		// revalidate();
 		// repaint();
 	}
@@ -111,29 +122,20 @@ public class PanelIconos extends JPanel {
 			public void mouseExited(MouseEvent e) {
 				lblLike.setIcon(new ImageIcon(iconoLike));
 			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Controlador.getControlador().darLike(publicacion.getId());
+				numLikes++;
+				publicacion.setLikes(numLikes);
+				String value = String.valueOf(numLikes);
+				value += " Me gusta";
+				lblNumLikes.setText(value);
+			}
 		});
 
 		Component horizontalStrut = Box.createHorizontalStrut(15);
 		panelIconos.add(horizontalStrut);
-
-		lblComentario = new JLabel(new ImageIcon(iconoComentario));
-		lblComentario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panelIconos.add(lblComentario);
-		
-		lblComentario.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				Image imagen = new ImageIcon(
-						getClass().getResource("/imagenes/iconos-dialogo_publicaciones/comentario.png")).getImage()
-								.getScaledInstance(ANCHO_ICONO_REESCALADO, ANCHO_ICONO_REESCALADO, Image.SCALE_SMOOTH);
-				lblComentario.setIcon(new ImageIcon(imagen));
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				lblComentario.setIcon(new ImageIcon(iconoComentario));
-			}
-		});
 
 		Component horizontalStrut_1 = Box.createHorizontalStrut(15);
 		panelIconos.add(horizontalStrut_1);
@@ -141,19 +143,30 @@ public class PanelIconos extends JPanel {
 		lblBasura = new JLabel(new ImageIcon(iconoBasura));
 		lblBasura.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelIconos.add(lblBasura);
-		
+
 		lblBasura.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				Image imagen = new ImageIcon(
-						getClass().getResource("/imagenes/iconos-dialogo_publicaciones/trash.png")).getImage()
-								.getScaledInstance(ANCHO_ICONO_REESCALADO, ANCHO_ICONO_REESCALADO, Image.SCALE_SMOOTH);
+				Image imagen = new ImageIcon(getClass().getResource("/imagenes/iconos-dialogo_publicaciones/trash.png"))
+						.getImage()
+						.getScaledInstance(ANCHO_ICONO_REESCALADO, ANCHO_ICONO_REESCALADO, Image.SCALE_SMOOTH);
 				lblBasura.setIcon(new ImageIcon(imagen));
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				lblBasura.setIcon(new ImageIcon(iconoBasura));
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int opcion = JOptionPane.showConfirmDialog(null, "¿Deseas eliminar la publicacion?",
+						"Confirmar borrado", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+				if (opcion == JOptionPane.YES_OPTION) {
+					Controlador.getControlador().eliminarPublicacion(publicacion.getId());
+					SwingUtilities.getWindowAncestor(PanelIconos.this).dispose();
+				}
 			}
 		});
 
@@ -163,35 +176,44 @@ public class PanelIconos extends JPanel {
 		lblAddAlbum = new JLabel(new ImageIcon(iconoAddAlbum));
 		lblAddAlbum.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panelIconos.add(lblAddAlbum);
-		
+
 		lblAddAlbum.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				Image imagen = new ImageIcon(
-						getClass().getResource("/imagenes/iconos-dialogo_publicaciones/plus.png")).getImage()
-								.getScaledInstance(ANCHO_ICONO_REESCALADO, ANCHO_ICONO_REESCALADO, Image.SCALE_SMOOTH);
+				Image imagen = new ImageIcon(getClass().getResource("/imagenes/iconos-dialogo_publicaciones/plus.png"))
+						.getImage()
+						.getScaledInstance(ANCHO_ICONO_REESCALADO, ANCHO_ICONO_REESCALADO, Image.SCALE_SMOOTH);
 				lblAddAlbum.setIcon(new ImageIcon(imagen));
 			}
-			
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				lblAddAlbum.setIcon(new ImageIcon(iconoAddAlbum));
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (publicacion instanceof Album) {
+					Album album = (Album) publicacion;
+					if (album.getFotos().size() < 16) {
+						JFileChooser fileChooser = new JFileChooser();
+						fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+						if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+							Controlador.getControlador().addFotoToAlbum((Album) publicacion,
+									fileChooser.getSelectedFile().getAbsolutePath());
+
+						}
+					} else {
+						JOptionPane.showMessageDialog(null, "El album no acepta mas foto", "Añadir foto",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
 			}
 		});
 
 		if (!(publicacion instanceof Album))
 			lblAddAlbum.setVisible(false);
-
-		/*
-		 * lblComentario.addMouseListener(new MouseAdapter() {
-		 * 
-		 * @Override public void mouseEntered(MouseEvent e) { BufferedImage
-		 * imagenBrillante = Utils.cambiarBrillo(0.7f, iconoComentario);
-		 * lblComentario.setIcon(new ImageIcon(imagenBrillante)); }
-		 * 
-		 * @Override public void mouseExited(MouseEvent e) { lblComentario.setIcon(new
-		 * ImageIcon(iconoComentario)); } });
-		 */
 
 		String s = String.valueOf(numLikes) + " Me gusta";
 		lblNumLikes = new JLabel(s);
@@ -209,6 +231,11 @@ public class PanelIconos extends JPanel {
 		gbc_lblFecha.gridx = 1;
 		gbc_lblFecha.gridy = 2;
 		add(lblFecha, gbc_lblFecha);
+
+		if (!Controlador.getControlador().getUsuarioLogueado().equals(publicacion.getUsuario())) {
+			lblBasura.setVisible(false);
+			lblAddAlbum.setVisible(false);
+		}
 
 	}
 

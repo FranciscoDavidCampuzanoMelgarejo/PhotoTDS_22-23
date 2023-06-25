@@ -24,6 +24,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Comentario;
 import umu.tds.modelo.pojos.Publicacion;
 
@@ -194,6 +195,13 @@ public class PanelComentarios extends JPanel {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				lblPublicar.setForeground(foregroundPublicar);
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Comentario comentario = Controlador.getControlador().comentar(publicacion.getId(), areaComentario.getText());
+				model.addElement(comentario);
+				areaComentario.setText("");
 			}
 		});
 	}
