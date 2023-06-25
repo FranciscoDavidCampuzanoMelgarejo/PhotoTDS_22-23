@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 
 import umu.tds.controlador.Controlador;
 import umu.tds.modelo.pojos.Album;
+import umu.tds.modelo.pojos.Foto;
 import umu.tds.modelo.pojos.Publicacion;
 import umu.tds.vistas.Utils;
 
@@ -82,6 +83,10 @@ public class PanelIconos extends JPanel {
 			lblBasura.setVisible(false);
 			lblAddAlbum.setVisible(false);
 		}
+
+		if (!(publicacion instanceof Album)) {
+			lblAddAlbum.setVisible(false);
+		}
 		// revalidate();
 		// repaint();
 	}
@@ -127,7 +132,7 @@ public class PanelIconos extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				Controlador.getControlador().darLike(publicacion.getId());
 				numLikes++;
-				publicacion.darLike();
+				// publicacion.darLike();
 				String value = String.valueOf(numLikes);
 				value += " Me gusta";
 				lblNumLikes.setText(value);
@@ -136,9 +141,6 @@ public class PanelIconos extends JPanel {
 
 		Component horizontalStrut = Box.createHorizontalStrut(15);
 		panelIconos.add(horizontalStrut);
-
-		Component horizontalStrut_1 = Box.createHorizontalStrut(15);
-		panelIconos.add(horizontalStrut_1);
 
 		lblBasura = new JLabel(new ImageIcon(iconoBasura));
 		lblBasura.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -212,7 +214,8 @@ public class PanelIconos extends JPanel {
 			}
 		});
 
-		if (!(publicacion instanceof Album))
+		if ((!(publicacion instanceof Album))
+				|| !(Controlador.getControlador().getUsuarioLogueado().equals(publicacion.getUsuario())))
 			lblAddAlbum.setVisible(false);
 
 		String s = String.valueOf(numLikes) + " Me gusta";

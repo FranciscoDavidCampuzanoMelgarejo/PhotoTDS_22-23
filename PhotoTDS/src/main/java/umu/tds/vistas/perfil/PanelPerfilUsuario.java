@@ -483,12 +483,14 @@ public class PanelPerfilUsuario extends JPanel implements ActionListener {
 		List<Publicacion> albumes = usuarioPerfil.getPublicaciones().stream().filter((Publicacion p) -> p instanceof Album)
 				.collect(Collectors.toList());
 		
+		/*
 		System.out.println("Actualizar Perfil");
 		System.out.println(fotos);
 		System.out.println(fotos.size());
 		System.out.println(albumes);
 		System.out.println(albumes.size());
 		System.out.println("Comentarios: " + albumes.get(0).getComentarios().size());
+		*/
 		
 		this.panelFotos.cargarFotos(fotos);
 		this.panelAlbumes.cargarFotos(albumes);

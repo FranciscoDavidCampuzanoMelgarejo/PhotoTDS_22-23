@@ -302,6 +302,7 @@ public class Controlador implements FotosListener {
 	public void eliminarPublicacion(Integer id) {
 		Publicacion publicacion = catalogoPublicaciones.get(id);
 		catalogoPublicaciones.remove(publicacion);
+		usuario.removePublicacion(publicacion);
 		publicacionDAO.delete(publicacion);
 		
 	}
@@ -309,8 +310,8 @@ public class Controlador implements FotosListener {
 	public Comentario comentar(Integer id, String texto) {
 		Publicacion publicacion = catalogoPublicaciones.get(id);
 		Comentario comentario = new Comentario(texto, usuario);
-		comentarioDAO.save(comentario);
 		publicacion.addComentario(comentario);
+		comentarioDAO.save(comentario);
 		publicacionDAO.update(publicacion);
 		return comentario;
 		
