@@ -25,6 +25,7 @@ import umu.tds.vistas.lists.PubliListPanel;
 import umu.tds.vistas.lists.PubliListRenderer;
 //import umu.tds.vistas.perfil.VentanaPerfilUsuario;
 import umu.tds.vistas.perfil.PanelPerfilUsuario;
+import umu.tds.vistas.publicaciones.DialogoPublicacion;
 
 import java.awt.GridBagConstraints;
 import java.awt.Color;
@@ -33,6 +34,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -45,6 +48,7 @@ import javax.swing.event.ListSelectionEvent;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.event.ListSelectionListener;
 
 
 /**@title Ventana principal de PhotoTDS
@@ -85,6 +89,7 @@ public class VentanaPhotoTDS implements ActionListener{
 	private void recargarRecientes() {
 		publiListModel.clear();
 		publiListModel.addAll(Controlador.getControlador().getUltimasFotos());
+		publiJList.clearSelection();
 		publiJList.revalidate();
 	}
 	
@@ -167,7 +172,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			private static final long serialVersionUID = 1L;
 			{setOpaque(false);} 
 		};
-		apprender.setBorder(new LineBorder(Color.pink));
+		apprender.setBorder(null);
 		GridBagConstraints gbc_apprender = new GridBagConstraints();
 		gbc_apprender.fill = GridBagConstraints.BOTH;
 		gbc_apprender.gridx = 1;
@@ -193,6 +198,19 @@ public class VentanaPhotoTDS implements ActionListener{
 				private static final long serialVersionUID = 1L;
 				{setOpaque(false);} 
 			};
+			publiJList.clearSelection();
+			publiJList.addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent e) {
+					if(!e.getValueIsAdjusting()) {
+						Publicacion p = publiJList.getSelectedValue();
+						if(p!=null) {
+							System.out.println(p.toString());
+							VentanaPubli v = new VentanaPubli(p);
+							v.mostrar();
+						}
+					}
+				}
+			});
 			publiJList.setCellRenderer(new PubliListRenderer(128));
 			publiJList.setSelectedIndex(ListSelectionModel.SINGLE_SELECTION);
 			scrollPubliList.setViewportView(publiJList);
@@ -216,7 +234,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			case "home" :					// Publicaciones recientes
 				recargarRecientes();
 				c.show(apprender, "panelInicio");
-				System.out.println(Controlador.getControlador().getUltimasPublicaciones());
+				System.out.println("PHOTOTDS> Ultimas publicacion: " + Controlador.getControlador().getUltimasPublicaciones());
 				break; 
 			case "finder" : 				// Búsqueda de publicaciones por usuaro y etiqueta
 				c.show(apprender, "panelBusqueda"); 
@@ -224,7 +242,7 @@ public class VentanaPhotoTDS implements ActionListener{
 			case "publi" : {				// Subir nueva publicación
 				VentanaSubirFoto.getInstancia().mostrar();	
 				VentanaSubirFoto.getInstancia().addActionListener(this);
-				// panelUsuario.actualizarPerfil();
+				System.out.println("PHOTOTDS> Nueva publicacion");
 				break;
 			}
 			case "user" : {					// Perfil de usuario

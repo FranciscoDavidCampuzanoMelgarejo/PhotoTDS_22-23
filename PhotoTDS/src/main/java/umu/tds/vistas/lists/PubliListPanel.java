@@ -55,13 +55,10 @@ public class PubliListPanel extends JPanel{
 		this.publi = publi;
 		
 		try {
-			// CAMBIAR PARA ALBUMES
-			
-			
 			if(publi.getClass()!=Foto.class) {	// Si es un album, ponemos de foto un mosaico
 				Album album = (Album) publi;
 				LinkedList<Foto> lFotos = new LinkedList<Foto>(album.getFotos());
-				//int ancho = (lFotos.size()==1) ? img = Utils. 
+				// CAMBIAR PARA QUE EL MOSAICO NO SE VEA TAN FEO
 				img = Utils.crearMosaico(alto, alto, lFotos.size(), lFotos);
 				
 			} else {							// Si es una foto, pues la foto jaja
